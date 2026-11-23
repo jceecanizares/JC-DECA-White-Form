@@ -22,38 +22,29 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
           },
           colors: {
             brand: {
-              50: '#fef2f2',
-              100: '#fee2e2',
-              500: '#ef4444',
-              600: '#dc2626',
-              700: '#b91c1c',
-              800: '#991b1b',
-              900: '#7f1d1d',
-              gold: '#d97706',
-              navy: '#0f172a',
+              crimson: '#8B0000',
+              ruby: '#a81c1c',
+              gold: '#D4AF37',
+              dark: '#0B0F19',
+              card: '#111827',
+              border: '#1F2937'
             }
           }
         }
       }
-    }
-  </script>
-  
-  <!-- Anti-flash Dark Mode Init -->
-  <script>
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    };
   </script>
 
   <style>
-    body { font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    /* Theme anti-flash script */
+    :root { color-scheme: light dark; }
+    html.dark { color-scheme: dark; }
+    
     /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -61,48 +52,53 @@
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .dark ::-webkit-scrollbar-track { background: #0f172a; }
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
     /* Signature Canvas Touch Action */
     .sig-canvas {
       touch-action: none;
       cursor: crosshair;
     }
+
+    /* Force uppercase input text display */
+    .uppercase-input {
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-red-700 selection:text-white transition-colors duration-150">
 
-  <!-- TOP HEADER (Exact Brand Alignment with buyer-database) -->
+  <!-- TOP HEADER -->
   <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-30 shadow-md">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-950/40">
-          <i data-lucide="file-check-2" class="w-5 h-5 text-white font-bold"></i>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center font-bold text-white shadow-lg shadow-red-900/30 font-display text-sm">
+          DH
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-lg font-bold font-display tracking-tight text-white flex items-center gap-1.5">
-              Deca Homes Urdaneta <span class="text-rose-300 font-semibold text-xs px-2.5 py-0.5 bg-red-950/80 border border-red-800/70 rounded-full">Principal Beneficiary Form</span>
-            </h1>
-          </div>
-          <p class="text-xs text-slate-400">
-            Expanded 4PH Pre-Qualification Assistant • <span class="text-slate-200 font-semibold">John Edcee Cañizares</span> (0919 368 2062)
+          <h1 class="text-sm sm:text-base font-bold tracking-tight text-white flex items-center gap-2">
+            Deca Homes Urdaneta
+            <span class="text-[10px] font-semibold bg-red-950 text-rose-300 border border-red-800/80 px-2 py-0.5 rounded-full hidden sm:inline-block">
+              White Form Portal
+            </span>
+          </h1>
+          <p class="text-[11px] text-slate-400">
+            Assisting SC: <span class="text-amber-400 font-medium">John Edcee Cañizares</span> • Deca Gold / North Forbes
           </p>
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-2">
-        <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition shadow-sm" title="Toggle Light / Dark Mode">
-          <i data-lucide="moon" id="theme-toggle-icon" class="w-3.5 h-3.5 text-amber-400"></i>
-          <span class="hidden sm:inline" id="theme-toggle-label">Dark</span>
+      <div class="flex items-center space-x-2">
+        <!-- Theme Toggle -->
+        <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition flex items-center gap-1.5 text-xs" title="Toggle Dark/Light Mode">
+          <i id="theme-toggle-icon" data-lucide="moon" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span id="theme-toggle-label" class="hidden sm:inline text-[11px] font-medium">Dark</span>
         </button>
+
+        <!-- Sample Data Autofill Button -->
         <button onclick="fillSampleData()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-950/80 hover:bg-red-900 text-rose-200 border border-red-800/70 flex items-center gap-1.5 transition shadow-sm" title="Autofill sample buyer data for testing">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
           <span>Sample Fill</span>
         </button>
-        <a href="../buyer-database/index.html" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition shadow-sm">
-          <i data-lucide="database" class="w-3.5 h-3.5 text-amber-400"></i>
-          <span class="hidden sm:inline">CRM Pipeline</span>
-        </a>
       </div>
     </div>
   </header>
@@ -121,58 +117,47 @@
             Principal Beneficiary Information Slip (White Form)
           </h2>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Kumpletuhin ang form sa loob ng 2 minuto gamit ang iyong cellphone. Awtomatikong mabubuo ang opisyal na imahe na may lagda mo upang mai-endorse ang iyong slot.
+            Punan ang mga detalye sa ibaba upang makabuo ng opisyal na White Form na may digital signature para sa iyong Pag-IBIG 4PH Pre-Qualification.
           </p>
         </div>
-      </div>
-
-      <!-- Quick 4PH Specs Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-xs">
-        <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Move-In Outlay</div>
-          <div class="text-sm font-bold font-display text-red-700 dark:text-rose-400 mt-0.5">₱10,000 Total</div>
-          <div class="text-[10px] text-slate-500 dark:text-slate-400">₱5k Res + ₱5k DP (2 mos)</div>
-        </div>
-        <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monthly Amort.</div>
-          <div class="text-sm font-bold font-display text-slate-900 dark:text-white mt-0.5">₱4,849.04 / mo</div>
-          <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">3% Special 4PH Rate</div>
-        </div>
-        <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Unit Type</div>
-          <div class="text-sm font-bold font-display text-slate-900 dark:text-white mt-0.5">40 sqm Townhouse</div>
-          <div class="text-[10px] text-slate-500 dark:text-slate-400">2-Storey (42 sqm Lot)</div>
-        </div>
-        <div class="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Submission Office</div>
-          <div class="text-sm font-bold font-display text-slate-900 dark:text-white mt-0.5">San Vicente East</div>
-          <div class="text-[10px] text-slate-500 dark:text-slate-400">Urdaneta City, Pangasinan</div>
+        <div class="text-right sm:border-l sm:border-slate-200 dark:sm:border-slate-800 sm:pl-5 self-stretch sm:self-auto flex sm:flex-col justify-between items-center sm:items-end bg-slate-50 dark:bg-slate-800/40 sm:bg-transparent p-3 sm:p-0 rounded-xl">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">Monthly Amortization:</span>
+          <span class="text-base sm:text-lg font-extrabold text-red-600 dark:text-rose-400 font-display">₱4,005 / buwan</span>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">₱10,000 Move-In Outlay</span>
         </div>
       </div>
 
-      <!-- Seller Attribution Banner -->
-      <div class="mt-4 p-3 bg-red-50/70 dark:bg-red-950/30 rounded-xl border border-red-200/70 dark:border-red-900/50 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div class="flex items-center gap-2">
-          <i data-lucide="shield-check" class="w-4 h-4 text-red-700 dark:text-rose-400"></i>
-          <span class="text-slate-700 dark:text-slate-300 font-medium">Assisting Consultant:</span>
-          <strong class="text-red-900 dark:text-rose-200">John Edcee Cañizares</strong>
-          <span class="text-slate-400">•</span>
-          <span class="text-slate-600 dark:text-slate-400">AM: <strong>Rowena Comilang</strong> (North Forbes Realty / Deca Gold)</span>
+      <!-- Quick Trust Indicators -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-4 text-center">
+        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 block">Lungsod</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Urdaneta City</span>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/60 text-red-800 dark:text-rose-200 text-[10px] font-bold">Seller Tag Guaranteed</span>
+        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 block">Interest Rate</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">3% Subsidized</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 block">Lot / Floor Area</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">35 sqm / 40 sqm</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 block">Turnover Delivery</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">2-Storey Townhouse</span>
+        </div>
       </div>
     </div>
 
-    <!-- STEPPER PROGRESS BAR -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 sm:p-4 shadow-sm mb-6 transition-colors">
-      <div class="grid grid-cols-4 gap-2 text-center text-xs">
-        <button onclick="goToStep(1)" id="step-btn-1" class="py-2 px-1 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-red-700 text-white shadow-md shadow-red-900/30">
+    <!-- STEP PROGRESS TABS -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 shadow-sm mb-6 transition-colors">
+      <div class="grid grid-cols-4 gap-1 text-xs">
+        <button onclick="goToStep(1)" id="step-btn-1" class="py-2 px-1 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-red-600 text-white shadow-sm">
           <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]">1</span>
-          <span class="truncate">Personal</span>
+          <span class="truncate">Borrower</span>
         </button>
         <button onclick="goToStep(2)" id="step-btn-2" class="py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
           <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">2</span>
-          <span class="truncate">Income</span>
+          <span class="truncate">Work & Income</span>
         </button>
         <button onclick="goToStep(3)" id="step-btn-3" class="py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
           <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">3</span>
@@ -191,401 +176,507 @@
       <!-- ==============================================
            STEP 1: PERSONAL & CIVIL STATUS
            ============================================== -->
-      <div id="step-panel-1" class="space-y-5">
-        <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h3 class="text-base font-bold font-display text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-red-700 text-white flex items-center justify-center text-xs font-bold">1</span>
-            Personal Information & Civil Status
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ilagay ang pangalan ayon sa iyong Valid Government ID o PSA Birth Certificate.</p>
+      <section id="step-1" class="space-y-5">
+        <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="user" class="w-4 h-4 text-red-600 dark:text-rose-400"></i>
+              Impormasyon ng Principal Beneficiary
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Lahat ng detalye ay awtomatikong magiging ALL CAPS at eksaktong sukat sa White Form.</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 1 ng 4</span>
         </div>
 
-        <!-- Name Inputs -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Surname -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apelyido (Last Name) <span class="text-rose-500">*</span></label>
-            <input type="text" id="surname" required placeholder="dela Cruz" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apelyido (Surname) *</label>
+            <input type="text" id="surname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
+          <!-- First Name -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan (First Name) <span class="text-rose-500">*</span></label>
-            <input type="text" id="firstName" required placeholder="Juan" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan (First Name) *</label>
+            <input type="text" id="firstName" placeholder="JUAN" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
+          <!-- Middle Name -->
           <div>
             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Gitnang Pangalan (Middle Name)</label>
-            <input type="text" id="middleName" placeholder="Santos (o N/A kung wala)" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
+            <input type="text" id="middleName" placeholder="SANTOS (O N/A KUNG WALA)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition">
+          </div>
+        </div>
+
+        <!-- Smart 3-Segment Date of Birth Picker -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            Petsa ng Kapanganakan (Date of Birth) *
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <!-- Month -->
+            <div>
+              <select id="dob-month" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+                <option value="">Buwan (Month)</option>
+                <option value="01">01 - Enero</option>
+                <option value="02">02 - Pebrero</option>
+                <option value="03">03 - Marso</option>
+                <option value="04">04 - Abril</option>
+                <option value="05">05 - Mayo</option>
+                <option value="06">06 - Hunyo</option>
+                <option value="07">07 - Hulyo</option>
+                <option value="08">08 - Agosto</option>
+                <option value="09">09 - Setyembre</option>
+                <option value="10">10 - Oktubre</option>
+                <option value="11">11 - Nobyembre</option>
+                <option value="12">12 - Disyembre</option>
+              </select>
+            </div>
+            <!-- Day -->
+            <div>
+              <select id="dob-day" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+                <option value="">Araw (Day)</option>
+              </select>
+            </div>
+            <!-- Year -->
+            <div>
+              <select id="dob-year" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+                <option value="">Taon (Year)</option>
+              </select>
+            </div>
+          </div>
+          <!-- Hidden standard input synced with dropdowns for canvas & validation -->
+          <input type="hidden" id="dob" value="">
+          <div id="age-badge" class="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+            Piliin ang buwan, araw, at taon ng kapanganakan.
+          </div>
+        </div>
+
+        <!-- Pag-IBIG Membership & MID -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Miyembro ba ng Pag-IBIG Fund? *</label>
+            <div class="flex items-center space-x-6 py-2">
+              <label class="inline-flex items-center text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                <input type="radio" name="pagibigMember" value="YES" checked class="text-red-600 focus:ring-red-500 mr-2">
+                <span>Oo (Miyembro / Active)</span>
+              </label>
+              <label class="inline-flex items-center text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                <input type="radio" name="pagibigMember" value="NO" class="text-red-600 focus:ring-red-500 mr-2">
+                <span>Hindi Pa (Tutulungang mag-apply)</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pag-IBIG MID Number (12-Digit) *</label>
+            <input type="text" id="pagibigMid" placeholder="1212-3456-7890" maxlength="14" oninput="formatMID(this)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold tracking-wide transition" required>
+            <span class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">Makikita sa iyong Virtual Pag-IBIG o Loyalty Card Plus</span>
           </div>
         </div>
 
         <!-- Contact & Civil Status -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Petsa ng Kapanganakan (DOB) <span class="text-rose-500">*</span></label>
-            <input type="date" id="dob" required onchange="calculateAge()" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 transition">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mobile Contact Number *</label>
+            <input type="text" id="contact" placeholder="0919 123 4567" maxlength="13" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Cellphone Number <span class="text-rose-500">*</span></label>
-            <input type="text" id="contact" required oninput="formatPhone(this)" placeholder="0919 123 4567" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 transition">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address *</label>
+            <input type="email" id="email" placeholder="JUAN.DELACRUZ@GMAIL.COM" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address <span class="text-rose-500">*</span></label>
-            <input type="email" id="email" required placeholder="juan@gmail.com" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 transition">
-          </div>
-        </div>
-
-        <!-- Civil Status & Address -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Civil Status <span class="text-rose-500">*</span></label>
-            <select id="maritalStatus" onchange="handleMaritalChange()" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
-              <option value="SINGLE">Single (Walang Asawa)</option>
-              <option value="MARRIED">Married (Kasal - May Co-Borrower)</option>
-              <option value="WIDOWED">Widowed (Biyudo / Biyuda)</option>
-              <option value="LEGALLY SEPARATED">Legally Separated</option>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Katayuang Sibil (Civil Status) *</label>
+            <select id="maritalStatus" onchange="handleMaritalChange()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <option value="SINGLE">WALANG ASAWA (SINGLE)</option>
+              <option value="MARRIED">KASAL (MARRIED)</option>
+              <option value="WIDOWED">BYUDO / BYUDA (WIDOWED)</option>
+              <option value="SEPARATED">HIWALAY SA ASAWA (SEPARATED)</option>
             </select>
           </div>
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kasalukuyang Tirahan (Current Address) <span class="text-rose-500">*</span></label>
-            <input type="text" id="address" required placeholder="House No., Street, Brgy., City/Municipality, Province" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
-          </div>
         </div>
 
-        <!-- Pag-IBIG Membership Check -->
-        <div class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <div class="text-xs font-bold text-slate-800 dark:text-slate-200">Aktibong Miyembro ba ng Pag-IBIG Fund? <span class="text-rose-500">*</span></div>
-            <div class="text-[11px] text-slate-500 dark:text-slate-400">Dapat mayroong kahit 12 buwan ng posted contributions upang maging eligible sa 4PH.</div>
-          </div>
-          <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
-              <input type="radio" name="pagibigMember" value="YES" checked class="text-red-700 focus:ring-red-600">
-              <span>Oo (Yes)</span>
-            </label>
-            <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
-              <input type="radio" name="pagibigMember" value="NO" class="text-red-700 focus:ring-red-600">
-              <span>Hindi pa (No)</span>
-            </label>
-          </div>
+        <!-- Present Address -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kasalukuyang Tirahan (Present Home Address) *</label>
+          <input type="text" id="address" placeholder="HOUSE NO., STREET, BARANGAY, LUNGSOD/BAYAN, PROBINSYA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
         </div>
 
-        <!-- Step 1 Nav -->
-        <div class="flex justify-end pt-3">
-          <button type="button" onclick="nextToStep(2)" class="px-6 py-2.5 text-xs font-bold rounded-xl bg-red-700 hover:bg-red-600 text-white flex items-center gap-2 shadow-md shadow-red-900/30 transition transform active:scale-95">
-            <span>Next: Trabaho & Kita</span>
+        <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="validateStep1()" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition">
+            <span>Kasunod (Trabaho & Sahod)</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
-      </div>
+      </section>
 
       <!-- ==============================================
-           STEP 2: EMPLOYMENT & INCOME
+           STEP 2: WORK, EMPLOYMENT & INCOME
            ============================================== -->
-      <div id="step-panel-2" class="space-y-5 hidden">
-        <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h3 class="text-base font-bold font-display text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-red-700 text-white flex items-center justify-center text-xs font-bold">2</span>
-            Trabaho at Buwanang Kita (Employment & Income)
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">I-verify ang iyong gross monthly income laban sa 8th decile income ceiling ng 4PH program.</p>
+      <section id="step-2" class="space-y-5 hidden">
+        <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="briefcase" class="w-4 h-4 text-red-600 dark:text-rose-400"></i>
+              Hanapbuhay at Buwanang Kita (4PH Income Track)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Mahalagang impormasyon para sa Pag-IBIG 4PH Subsidized Loan Pre-screening.</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 2 ng 4</span>
         </div>
 
-        <!-- Category & Employer -->
+        <!-- Occupation Category Track -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kategorya ng Trabaho (Track) <span class="text-rose-500">*</span></label>
-            <select id="occType" onchange="updateTrackRequirements()" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
-              <option value="PRIVATE EMPLOYEE">Track I: Pribadong Empleyado (Private)</option>
-              <option value="GOVERNMENT EMPLOYEE">Track I: Empleyado ng Gobyerno (Gov't / LGU)</option>
-              <option value="VIRTUAL ASSISTANT / FREELANCE">Track II: Virtual Assistant / Freelancer</option>
-              <option value="OVERSEAS FILIPINO WORKER">Track III: OFW (Land-based / Sea-based)</option>
-              <option value="SELF-EMPLOYED">Track IV: Self-Employed / May Negosyo</option>
-              <option value="COMMISSION-BASED">Track V: Commission-Based Professional</option>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kategorya ng Trabaho (Occupation Track) *</label>
+            <select id="occType" onchange="updateTrackRequirements()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <option value="PRIVATE EMPLOYEE">PRIVATE EMPLOYEE (Lokal na Empleyado)</option>
+              <option value="GOVERNMENT EMPLOYEE">GOVERNMENT EMPLOYEE (Gobyerno / LGU)</option>
+              <option value="VIRTUAL ASSISTANT / FREELANCE">VIRTUAL ASSISTANT / FREELANCER (Online)</option>
+              <option value="OVERSEAS FILIPINO WORKER">OFW (Land-based o Seaman - Bayani Track)</option>
+              <option value="SELF-EMPLOYED">SELF-EMPLOYED / NEGOSYANTE</option>
+              <option value="COMMISSION-BASED">COMMISSION-BASED / AGENT</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan ng Kumpanya / Employer <span class="text-rose-500">*</span></label>
-            <input type="text" id="employer" required placeholder="Pangalan ng kumpanya o negosyo" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
-          </div>
-        </div>
-
-        <!-- Workplace & Occupation -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Lugar ng Trabaho (Workplace) <span class="text-rose-500">*</span></label>
-            <input type="text" id="workPlace" required placeholder="e.g. Urdaneta / NCR / Abroad" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Posisyon / Propesyon <span class="text-rose-500">*</span></label>
-            <input type="text" id="occupation" required placeholder="e.g. Teacher / VA / Driver" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status ng Trabaho <span class="text-rose-500">*</span></label>
-            <select id="empStatus" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
-              <option value="PERMANENT / REGULAR">Permanent / Regular</option>
-              <option value="CONTRACTUAL">Contractual / Project-Based</option>
-              <option value="PROBATIONARY">Probationary</option>
-              <option value="SELF-EMPLOYED">Self-Employed</option>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Katayuan sa Trabaho (Employment Status) *</label>
+            <select id="empStatus" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <option value="PERMANENT / REGULAR">PERMANENT / REGULAR</option>
+              <option value="CONTRACTUAL">CONTRACTUAL</option>
+              <option value="PART-TIME / TEMPORARY">PART-TIME / TEMPORARY</option>
+              <option value="PROBATIONARY">PROBATIONARY</option>
             </select>
           </div>
         </div>
 
-        <!-- Gross Income & MID -->
+        <!-- Employer / Business Details -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Buwanang Sahod (Monthly Gross Income in ₱) <span class="text-rose-500">*</span></label>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan ng Kumpanya / Employer *</label>
+            <input type="text" id="employer" placeholder="KUMPANYA O PANGALAN NG NEGOSYO" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Lugar ng Trabaho (Place of Work / Address) *</label>
+            <input type="text" id="workPlace" placeholder="LUNGSOD O PROBINSYA (HAL. URDANETA / NCR / OVERSEAS)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+          </div>
+        </div>
+
+        <!-- Position & Income -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Posisyon o Katungkulan (Occupation / Designation) *</label>
+            <input type="text" id="occupation" placeholder="STAFF / SUPERVISOR / VA / SEAFARER" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Basic Monthly Income (Buwanang Sahod) *</label>
             <div class="relative">
-              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400">₱</span>
-              <input type="number" id="income" required oninput="evaluateIncomeCeiling()" placeholder="18500" class="w-full pl-8 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 font-bold transition">
+              <span class="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
+              <input type="number" id="income" placeholder="20000" min="5000" step="500" oninput="evaluateIncomeCeiling()" class="w-full pl-8 pr-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-bold transition" required>
             </div>
-            <div id="income-feedback" class="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-              *Minimum qualifying: ₱12,648/mo. Provincial ceiling: ≤ ₱34,685.83/mo (OFWs exempt).
+            <!-- Dynamic Income ceiling advice badge -->
+            <div id="income-feedback" class="text-[11px] mt-1.5 text-slate-500 dark:text-slate-400">
+              Ilagay ang basic pay o average monthly net disposable income.
             </div>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pag-IBIG MID Number (12 Digits)</label>
-            <input type="text" id="pagibigMid" maxlength="14" oninput="formatMID(this)" placeholder="1212-3456-7890" class="w-full px-3.5 py-2.5 text-sm font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 transition">
-            <div class="mt-1.5 text-[10px] text-slate-400 dark:text-slate-500">Iwanang blangko kung hindi pa alam; tutulungan ka naming hanapin.</div>
           </div>
         </div>
 
-        <!-- Track Requirement Alert Card -->
-        <div id="track-guidance-box" class="p-3.5 bg-amber-50/70 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900/50 text-xs text-amber-900 dark:text-amber-300 flex items-start gap-2.5">
-          <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+        <!-- Requirements Guidance Callout -->
+        <div id="track-guidance-box" class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2.5">
+          <i data-lucide="info" class="w-4 h-4 text-red-600 dark:text-rose-400 flex-shrink-0 mt-0.5"></i>
           <div id="track-guidance-text">
             <strong>Pribadong Empleyado:</strong> Maghanda ng 1-month latest payslip at Certificate of Employment and Compensation (COEC).
           </div>
         </div>
 
-        <!-- Step 2 Nav -->
-        <div class="flex justify-between pt-3">
-          <button type="button" onclick="goToStep(1)" class="px-5 py-2.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center gap-2 transition">
+        <div class="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="goToStep(1)" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Bumalik</span>
           </button>
-          <button type="button" onclick="nextToStep(3)" class="px-6 py-2.5 text-xs font-bold rounded-xl bg-red-700 hover:bg-red-600 text-white flex items-center gap-2 shadow-md shadow-red-900/30 transition transform active:scale-95">
-            <span>Next: Asawa / Co-Borrower</span>
+          <button type="button" onclick="validateStep2()" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition">
+            <span>Kasunod (Asawa / Co-Borrower)</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
-      </div>
+      </section>
 
       <!-- ==============================================
-           STEP 3: SPOUSE / CO-BORROWER
+           STEP 3: SPOUSE & CO-BORROWER (CONDITIONAL)
            ============================================== -->
-      <div id="step-panel-3" class="space-y-5 hidden">
-        <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h3 class="text-base font-bold font-display text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-red-700 text-white flex items-center justify-center text-xs font-bold">3</span>
-            Impormasyon ng Asawa (Spouse Information)
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Awtomatikong magiging co-borrower ang asawa kung Married sa batas ng Pilipinas.</p>
+      <section id="step-3" class="space-y-5 hidden">
+        <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="heart" class="w-4 h-4 text-red-600 dark:text-rose-400"></i>
+              Detalye ng Asawa (Spouse Information)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Kailangan lamang punan kung KASAL (Married) sa civil status.</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 3 ng 4</span>
         </div>
 
         <div id="single-skip-notice" class="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 text-center py-8 hidden">
           <i data-lucide="check-circle-2" class="w-10 h-10 text-emerald-500 mx-auto mb-2"></i>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-white">Ikaw ay nag-register bilang Single</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-            Hindi na kailangan punan ang bahaging ito. Maaari ka nang dumiretso sa Digital Signature step!
-          </p>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white">Ikaw ay nag-register bilang Single / Walang Asawa</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">Hindi kailangang punan ang bahaging ito. Maaari ka nang magpatuloy sa Signature step.</p>
+          <button type="button" onclick="goToStep(4)" class="mt-4 px-6 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition">
+            Pumunta sa Lagda (Step 4) &rarr;
+          </button>
         </div>
 
         <div id="spouse-fields-container" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apelyido ng Asawa <span class="text-rose-500">*</span></label>
-              <input type="text" id="spouseSurname" placeholder="dela Cruz" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apelyido ng Asawa *</label>
+              <input type="text" id="spouseSurname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan ng Asawa <span class="text-rose-500">*</span></label>
-              <input type="text" id="spouseFirstName" placeholder="Maria" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan ng Asawa *</label>
+              <input type="text" id="spouseFirstName" placeholder="MARIA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Gitnang Pangalan (Middle Name)</label>
-              <input type="text" id="spouseMiddleName" placeholder="Santos" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 uppercase transition">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Petsa ng Kapanganakan (DOB)</label>
-              <input type="date" id="spouseDob" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Cellphone Number ng Asawa</label>
-              <input type="text" id="spouseContact" oninput="formatPhone(this)" placeholder="0917 123 4567" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pag-IBIG MID ng Asawa</label>
-              <input type="text" id="spousePagibigMid" maxlength="14" oninput="formatMID(this)" placeholder="1212-3456-7890" class="w-full px-3.5 py-2.5 text-sm font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Gitnang Pangalan ng Asawa</label>
+              <input type="text" id="spouseMiddleName" placeholder="GARCIA (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Trabaho / Negosyo</label>
-              <input type="text" id="spouseEmployer" placeholder="Company / Housewife" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 uppercase transition">
+          <!-- Spouse Smart DOB Dropdown -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Petsa ng Kapanganakan ng Asawa</label>
+            <div class="grid grid-cols-3 gap-2">
+              <select id="spouse-dob-month" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+                <option value="">Buwan</option>
+                <option value="01">01 - Enero</option>
+                <option value="02">02 - Pebrero</option>
+                <option value="03">03 - Marso</option>
+                <option value="04">04 - Abril</option>
+                <option value="05">05 - Mayo</option>
+                <option value="06">06 - Hunyo</option>
+                <option value="07">07 - Hulyo</option>
+                <option value="08">08 - Agosto</option>
+                <option value="09">09 - Setyembre</option>
+                <option value="10">10 - Oktubre</option>
+                <option value="11">11 - Nobyembre</option>
+                <option value="12">12 - Disyembre</option>
+              </select>
+              <select id="spouse-dob-day" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+                <option value="">Araw</option>
+              </select>
+              <select id="spouse-dob-year" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+                <option value="">Taon</option>
+              </select>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Lugar ng Trabaho</label>
-              <input type="text" id="spouseWorkPlace" placeholder="Urdaneta / N/A" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 uppercase transition">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Buwanang Sahod (₱ kung mayroon)</label>
-              <input type="number" id="spouseIncome" placeholder="e.g. 15000" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
+            <input type="hidden" id="spouseDob" value="">
+            <div id="spouse-age-badge" class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+              Piliin ang petsa ng kapanganakan ng asawa.
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Person / Emergency</label>
-              <input type="text" id="spouseContactPerson" placeholder="Kamag-anak / Contact person" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 uppercase transition">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pag-IBIG MID ng Asawa</label>
+              <input type="text" id="spousePagibigMid" placeholder="1212-3456-7890 (KUNG MERON)" maxlength="14" oninput="formatMID(this)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address ng Asawa</label>
-              <input type="email" id="spouseEmail" placeholder="maria@gmail.com" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 transition">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Buwanang Sahod ng Asawa (Gross Monthly Income)</label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
+                <input type="number" id="spouseIncome" placeholder="0" min="0" step="500" class="w-full pl-8 pr-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-bold transition">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Employer / Kumpanya ng Asawa</label>
+              <input type="text" id="spouseEmployer" placeholder="KUMPANYA O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Lugar ng Trabaho ng Asawa</label>
+              <input type="text" id="spouseWorkPlace" placeholder="LUNGSOD O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Person ng Kumpanya (HR/Admin)</label>
+              <input type="text" id="spouseContactPerson" placeholder="HR NAME O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Number ng Kumpanya</label>
+              <input type="text" id="spouseContact" placeholder="0919 000 0000 O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email ng Kumpanya</label>
+              <input type="email" id="spouseEmail" placeholder="HR@COMPANY.COM O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
         </div>
 
-        <!-- Step 3 Nav -->
-        <div class="flex justify-between pt-3">
-          <button type="button" onclick="goToStep(2)" class="px-5 py-2.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center gap-2 transition">
+        <div class="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="goToStep(2)" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Bumalik</span>
           </button>
-          <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 text-xs font-bold rounded-xl bg-red-700 hover:bg-red-600 text-white flex items-center gap-2 shadow-md shadow-red-900/30 transition transform active:scale-95">
-            <span>Next: Lagda & Pagbuo</span>
+          <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition">
+            <span>Kasunod (Digital Signature)</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
-      </div>
+      </section>
 
       <!-- ==============================================
-           STEP 4: DIGITAL SIGNATURE & GENERATION
+           STEP 4: INK PEN DIGITAL SIGNATURE & GENERATION
            ============================================== -->
-      <div id="step-panel-4" class="space-y-5 hidden">
-        <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h3 class="text-base font-bold font-display text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-red-700 text-white flex items-center justify-center text-xs font-bold">4</span>
-            Digital Signature at Pagbuo ng Opisyal na Form
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pumirma gamit ang daliri sa cellphone screen o mouse sa computer.</p>
+      <section id="step-4" class="space-y-5 hidden">
+        <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="pen-tool" class="w-4 h-4 text-red-600 dark:text-rose-400"></i>
+              Digital Lagda (Executive Ink Pen Style)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pumirma gamit ang daliri o mouse sa loob ng kahon. Bold at makinis tulad ng totoong ink pen.</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 4 ng 4</span>
+        </div>
+
+        <!-- Ink Style Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-600 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+              <i data-lucide="palette" class="w-3.5 h-3.5 text-amber-500"></i> Kulay ng Ink:
+            </span>
+            <button type="button" onclick="setPenColor('#0a2254')" id="pen-blue-btn" class="px-3 py-1 rounded-lg border-2 border-blue-600 bg-blue-50 dark:bg-blue-950/60 text-blue-900 dark:text-blue-200 font-bold flex items-center gap-1.5 shadow-sm">
+              <span class="w-3 h-3 rounded-full bg-[#0a2254]"></span>
+              <span>Classic Blue Ink</span>
+            </button>
+            <button type="button" onclick="setPenColor('#000000')" id="pen-black-btn" class="px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-black"></span>
+              <span>Jet Black</span>
+            </button>
+          </div>
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i>
+            <span>Bold Rollerball (4.8px Smooth Flow)</span>
+          </div>
         </div>
 
         <!-- Principal Signature Pad -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <label class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-              <i data-lucide="pen-tool" class="w-4 h-4 text-red-700 dark:text-rose-400"></i>
-              Lagda ng Principal Beneficiary (Ikaw) <span class="text-rose-500">*</span>
+              <span>Lagda ng Principal Beneficiary (Borrower)</span>
+              <span class="text-red-500">*</span>
             </label>
-            <button type="button" onclick="clearSignature('principal')" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1">
-              <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
-              <span>Burahin / Ulitin</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="drawSampleSignature('principal')" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
+                <i data-lucide="wand-2" class="w-3 h-3"></i> Sample Signature
+              </button>
+              <button type="button" onclick="clearSignature('principal')" class="text-xs text-red-600 dark:text-rose-400 hover:underline flex items-center gap-1">
+                <i data-lucide="eraser" class="w-3 h-3"></i> Burahin
+              </button>
+            </div>
           </div>
           
           <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-white overflow-hidden shadow-inner p-1">
-            <canvas id="sigCanvas" class="sig-canvas w-full h-36 bg-white block rounded-xl" width="600" height="150"></canvas>
+            <canvas id="sigCanvas" class="sig-canvas w-full h-40 bg-white block rounded-xl" width="1000" height="260"></canvas>
           </div>
-          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma sa loob ng kahon gamit ang daliri.</p>
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Gamitin ang daliri o mouse para pumirma nang buo at malinaw.</p>
         </div>
 
         <!-- Spouse Signature Pad (Conditional) -->
         <div id="spouse-sig-wrapper" class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800 hidden">
           <div class="flex items-center justify-between">
             <label class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-              <i data-lucide="pen-tool" class="w-4 h-4 text-red-700 dark:text-rose-400"></i>
-              Lagda ng Asawa (Spouse Signature) <span class="text-rose-500">*</span>
+              <span>Lagda ng Asawa (Spouse)</span>
+              <span class="text-red-500">*</span>
             </label>
-            <button type="button" onclick="clearSignature('spouse')" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1">
-              <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
-              <span>Burahin / Ulitin</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="drawSampleSignature('spouse')" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
+                <i data-lucide="wand-2" class="w-3 h-3"></i> Sample
+              </button>
+              <button type="button" onclick="clearSignature('spouse')" class="text-xs text-red-600 dark:text-rose-400 hover:underline flex items-center gap-1">
+                <i data-lucide="eraser" class="w-3 h-3"></i> Burahin
+              </button>
+            </div>
           </div>
           
           <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-white overflow-hidden shadow-inner p-1">
-            <canvas id="spouseSigCanvas" class="sig-canvas w-full h-36 bg-white block rounded-xl" width="600" height="150"></canvas>
+            <canvas id="spouseSigCanvas" class="sig-canvas w-full h-40 bg-white block rounded-xl" width="1000" height="260"></canvas>
           </div>
-          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma ang asawa sa loob ng kahon.</p>
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma ang asawa sa loob ng kahon gamit ang daliri o mouse.</p>
         </div>
 
         <!-- Final Submission Agreement Box -->
         <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 space-y-2">
-          <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold">
-            <i data-lucide="check-shield" class="w-4 h-4 text-emerald-600"></i>
-            <span>Pagpapatotoo at Awtorisasyon (4PH Pag-IBIG Pre-Qualification)</span>
+          <div class="flex items-start gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5"></i>
+            <div>
+              <strong>Pagpapatunay at Pahintulot (Authority to Verify):</strong> Pinatutunayan ko na ang lahat ng impormasyong aking ibinigay ay totoo, tama, at buong kusang-loob para sa aking Pag-IBIG 4PH Housing Loan Application sa ilalim ng pamamahala ng Sales Consultant na si <span class="text-slate-900 dark:text-white font-bold">John Edcee Cañizares</span> (Deca Gold Realty / North Forbes Realty).
+            </div>
           </div>
-          <p class="text-[11px] leading-relaxed">
-            Pinatutunayan ko na ang lahat ng impormasyong ibinigay sa itaas ay totoo at tama ayon sa aking pinakamahusay na kaalaman. Binibigyan ko ng pahintulot si <strong>John Edcee Cañizares (Sales Consultant)</strong> at si <strong>Rowena Comilang (Agency Manager)</strong> ng Deca Gold / North Forbes Realty na ipasa ang form na ito sa tanggapan ng 8990 Holdings, Inc. (San Vicente East, Urdaneta City) para sa aking unit reservation at Pag-IBIG 4PH loan pre-screening.
-          </p>
         </div>
 
-        <!-- Generate Button -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3">
-          <button type="button" onclick="goToStep(3)" class="px-5 py-2.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2 transition">
+        <div class="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="goToStep(3)" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Bumalik</span>
           </button>
-          
-          <button type="button" onclick="generateForm()" class="px-8 py-3.5 text-sm font-bold rounded-xl bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 hover:to-red-500 text-white flex items-center justify-center gap-2 shadow-xl shadow-red-950/30 transition transform active:scale-95">
-            <i data-lucide="file-check-2" class="w-5 h-5 text-amber-300"></i>
-            <span>Bumuo ng High-Res White Form (Generate)</span>
+          <button type="button" onclick="generateForm()" class="px-8 py-3 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-red-900/30 transition transform hover:-translate-y-0.5">
+            <i data-lucide="file-check" class="w-4 h-4 text-amber-300"></i>
+            <span>BUMUO NG WHITE FORM (GENERATE)</span>
           </button>
         </div>
-      </div>
+      </section>
 
     </div>
   </main>
 
-  <!-- HIDDEN 1792x2400 HIGH-RES CANVAS FOR EXPORT -->
+  <!-- HIDDEN CANVAS FOR HIGH-RES RENDERING (1792 x 2400) -->
   <canvas id="renderCanvas" width="1792" height="2400" class="hidden"></canvas>
 
-  <!-- ==============================================
-       OUTPUT PREVIEW & EXPORT MODAL
-       ============================================== -->
-  <div id="outputModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-5 hidden">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[94vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col text-slate-900 dark:text-slate-100 animate-in fade-in zoom-in-95 duration-200">
+  <!-- OUTPUT MODAL (PREVIEW, DOWNLOAD & MESSENGER SHARE) -->
+  <div id="outputModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       
       <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur z-10">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold">
+      <div class="px-6 py-4 bg-slate-900 border-b border-slate-800 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold">
             <i data-lucide="check" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-base font-bold font-display text-slate-900 dark:text-white leading-tight">Nabuong White Form</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Handa nang i-download at ipadala kay Consultant JC</p>
+            <h3 class="text-sm sm:text-base font-bold">Nabuong Deca Homes White Form</h3>
+            <p class="text-[11px] text-slate-400">Handa nang i-download at i-send kay JC sa Messenger</p>
           </div>
         </div>
-        <button onclick="closeOutputModal()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <button onclick="closeOutputModal()" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Modal Body -->
-      <div class="p-5 sm:p-6 space-y-5">
-        
-        <!-- Live Form Image Preview -->
-        <div class="bg-slate-100 dark:bg-slate-800/80 rounded-2xl p-2 border border-slate-200 dark:border-slate-700 overflow-hidden text-center">
-          <img id="formPreviewImg" alt="Deca Homes White Form Generated Preview" class="max-h-[55vh] mx-auto rounded-lg shadow-md object-contain">
+      <!-- Preview Image Container -->
+      <div class="p-4 overflow-y-auto flex-1 bg-slate-100 dark:bg-slate-950/50 flex flex-col items-center">
+        <div class="bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-md max-w-md w-full">
+          <img id="formPreviewImg" src="" alt="White Form Preview" class="w-full h-auto rounded-lg border border-slate-200 dark:border-slate-800">
         </div>
+      </div>
 
-        <!-- 3 Primary Action Buttons -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          <!-- 1. Download Button -->
-          <button onclick="downloadImage()" class="px-5 py-3 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-900/30 transition transform active:scale-95">
+      <!-- Modal Actions Toolbar -->
+      <div class="p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-3">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <!-- 1. Download High-Res JPG -->
+          <button onclick="downloadImage()" class="px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-red-900/20 transition">
             <i data-lucide="download" class="w-4 h-4"></i>
-            <span>1. Download High-Res JPG</span>
+            <span>1. I-download ang Larawan (JPG)</span>
           </button>
-          
-          <!-- 2. Send to Messenger -->
-          <a href="https://m.me/DecaHomeUrda" target="_blank" class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 transition transform active:scale-95 text-center">
-            <i data-lucide="send" class="w-4 h-4"></i>
+
+          <!-- 2. Send to JC on Messenger -->
+          <a href="https://m.me/DecaHomeUrda" target="_blank" class="px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-900/20 transition">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
             <span>2. I-send kay JC sa Messenger</span>
           </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <!-- 3. Copy Summary -->
           <button onclick="copyLeadSummary()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 transition">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
@@ -646,12 +737,104 @@
     }
 
     /* ========================================================
-       SIGNATURE PADS ENGINE
+       SMART DATE OF BIRTH INITIALIZER & SYNC ENGINE
        ======================================================== */
+    function initDateDropdowns() {
+      populateDaysAndYears('dob-day', 'dob-year');
+      populateDaysAndYears('spouse-dob-day', 'spouse-dob-year');
+    }
+
+    function populateDaysAndYears(dayId, yearId) {
+      const dayEl = document.getElementById(dayId);
+      const yearEl = document.getElementById(yearId);
+      if (!dayEl || !yearEl) return;
+
+      // Populate Days 01-31
+      let dayHtml = '<option value="">Araw (Day)</option>';
+      for (let d = 1; d <= 31; d++) {
+        const dStr = d < 10 ? '0' + d : '' + d;
+        dayHtml += '<option value="' + dStr + '">' + dStr + '</option>';
+      }
+      dayEl.innerHTML = dayHtml;
+
+      // Populate Years from 2008 down to 1945
+      const currentYear = new Date().getFullYear();
+      let yearHtml = '<option value="">Taon (Year)</option>';
+      for (let y = 2008; y >= 1945; y--) {
+        const approxAge = currentYear - y;
+        yearHtml += '<option value="' + y + '">' + y + ' (' + approxAge + ' taong gulang)</option>';
+      }
+      yearEl.innerHTML = yearHtml;
+    }
+
+    function syncDateOfBirth(type) {
+      const prefix = type === 'spouse' ? 'spouse-dob-' : 'dob-';
+      const hiddenId = type === 'spouse' ? 'spouseDob' : 'dob';
+      const badgeId = type === 'spouse' ? 'spouse-age-badge' : 'age-badge';
+
+      const m = document.getElementById(prefix + 'month').value;
+      const d = document.getElementById(prefix + 'day').value;
+      const y = document.getElementById(prefix + 'year').value;
+      const hiddenEl = document.getElementById(hiddenId);
+      const badgeEl = document.getElementById(badgeId);
+
+      if (m && d && y) {
+        hiddenEl.value = y + '-' + m + '-' + d;
+
+        // Calculate exact age
+        const birthDate = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const mDiff = today.getMonth() - birthDate.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+
+        if (badgeEl) {
+          if (age < 18) {
+            badgeEl.innerHTML = '<span class="text-amber-600 dark:text-amber-400 font-semibold">Edad: ' + age + ' taong gulang (Dapat 18+ para maging borrower)</span>';
+          } else if (age > 65) {
+            badgeEl.innerHTML = '<span class="text-amber-600 dark:text-amber-400 font-semibold">Edad: ' + age + ' taong gulang (Senior / loan term limits apply)</span>';
+          } else {
+            badgeEl.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">&#10003; Edad: ' + age + ' taong gulang (Eligible sa Pag-IBIG 4PH)</span>';
+          }
+        }
+      } else {
+        hiddenEl.value = '';
+        if (badgeEl) {
+          badgeEl.innerHTML = '<span class="text-slate-500 dark:text-slate-400">Piliin ang buwan, araw, at taon</span>';
+        }
+      }
+    }
+
+    /* ========================================================
+       REALISTIC INK PEN SIGNATURE ENGINE
+       ======================================================== */
+    let currentPenColor = '#0a2254'; // Deep Executive Midnight Blue Ink
     const sigPads = {
-      principal: { canvas: null, ctx: null, drawing: false, hasSignature: false },
-      spouse: { canvas: null, ctx: null, drawing: false, hasSignature: false }
+      principal: { canvas: null, ctx: null, drawing: false, hasSignature: false, points: [] },
+      spouse: { canvas: null, ctx: null, drawing: false, hasSignature: false, points: [] }
     };
+
+    function setPenColor(color) {
+      currentPenColor = color;
+      ['principal', 'spouse'].forEach(key => {
+        if (sigPads[key].ctx) {
+          sigPads[key].ctx.strokeStyle = color;
+          sigPads[key].ctx.shadowColor = color;
+        }
+      });
+
+      const blueBtn = document.getElementById('pen-blue-btn');
+      const blackBtn = document.getElementById('pen-black-btn');
+      if (color === '#0a2254') {
+        blueBtn.className = 'px-3 py-1 rounded-lg border-2 border-blue-600 bg-blue-50 dark:bg-blue-950/60 text-blue-900 dark:text-blue-200 font-bold flex items-center gap-1.5 shadow-sm';
+        blackBtn.className = 'px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5';
+      } else {
+        blackBtn.className = 'px-3 py-1 rounded-lg border-2 border-slate-800 dark:border-slate-400 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold flex items-center gap-1.5 shadow-sm';
+        blueBtn.className = 'px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5';
+      }
+    }
 
     function initSignaturePads() {
       setupPad('principal', 'sigCanvas');
@@ -665,10 +848,13 @@
       sigPads[key].canvas = canvas;
       sigPads[key].ctx = ctx;
 
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 2.5;
+      // Realistic Bold Ink Pen Configuration (4.8px rounded smooth flow)
+      ctx.strokeStyle = currentPenColor;
+      ctx.lineWidth = 4.8;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
+      ctx.shadowColor = currentPenColor;
+      ctx.shadowBlur = 0.6; // subtle ink-bleed depth
 
       function getPos(e) {
         const rect = canvas.getBoundingClientRect();
@@ -686,16 +872,39 @@
         e.preventDefault();
         sigPads[key].drawing = true;
         const pos = getPos(e);
+        sigPads[key].points = [pos];
+        
+        ctx.strokeStyle = currentPenColor;
+        ctx.shadowColor = currentPenColor;
         ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
+        ctx.arc(pos.x, pos.y, ctx.lineWidth / 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = currentPenColor;
+        ctx.fill();
       }
 
       function moveDraw(e) {
         if (!sigPads[key].drawing) return;
         e.preventDefault();
         const pos = getPos(e);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
+        const pts = sigPads[key].points;
+        pts.push(pos);
+
+        ctx.strokeStyle = currentPenColor;
+        ctx.shadowColor = currentPenColor;
+
+        if (pts.length >= 3) {
+          const xc = (pts[pts.length - 2].x + pts[pts.length - 1].x) / 2;
+          const yc = (pts[pts.length - 2].y + pts[pts.length - 1].y) / 2;
+          ctx.beginPath();
+          ctx.moveTo(pts[pts.length - 3].x, pts[pts.length - 3].y);
+          ctx.quadraticCurveTo(pts[pts.length - 2].x, pts[pts.length - 2].y, xc, yc);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.moveTo(pts[0].x, pts[0].y);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        }
         sigPads[key].hasSignature = true;
       }
 
@@ -718,7 +927,57 @@
       const pad = sigPads[key];
       if (!pad || !pad.ctx) return;
       pad.ctx.clearRect(0, 0, pad.canvas.width, pad.canvas.height);
+      pad.points = [];
       pad.hasSignature = false;
+    }
+
+    function drawSampleSignature(key) {
+      const pad = sigPads[key];
+      if (!pad || !pad.ctx) return;
+      const ctx = pad.ctx;
+      ctx.clearRect(0, 0, pad.canvas.width, pad.canvas.height);
+
+      ctx.strokeStyle = currentPenColor;
+      ctx.lineWidth = 5.0;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.shadowColor = currentPenColor;
+      ctx.shadowBlur = 0.8;
+
+      // Realistic Executive Cursive Signature Flourish
+      ctx.beginPath();
+      // Capital letter J ascending loop
+      ctx.moveTo(140, 160);
+      ctx.bezierCurveTo(110, 80, 190, 40, 220, 110);
+      ctx.bezierCurveTo(240, 160, 210, 210, 170, 220);
+      ctx.bezierCurveTo(140, 225, 130, 200, 160, 170);
+      
+      // Stem and upward hook
+      ctx.bezierCurveTo(230, 100, 280, 70, 310, 140);
+      
+      // Flowing cursive middle letters
+      ctx.bezierCurveTo(340, 170, 360, 120, 390, 145);
+      ctx.bezierCurveTo(420, 170, 440, 115, 470, 140);
+      ctx.bezierCurveTo(500, 165, 520, 105, 560, 135);
+      ctx.bezierCurveTo(600, 165, 630, 90, 680, 130);
+      ctx.stroke();
+
+      // Bold dynamic baseline flourish underline
+      ctx.beginPath();
+      ctx.lineWidth = 4.2;
+      ctx.moveTo(180, 195);
+      ctx.bezierCurveTo(360, 205, 560, 185, 780, 190);
+      ctx.bezierCurveTo(810, 190, 830, 180, 850, 175);
+      ctx.stroke();
+
+      // Signature terminal flourish dots
+      ctx.beginPath();
+      ctx.arc(810, 215, 3.5, 0, Math.PI * 2);
+      ctx.arc(840, 215, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = currentPenColor;
+      ctx.fill();
+
+      pad.hasSignature = true;
     }
 
     /* ========================================================
@@ -727,119 +986,102 @@
     let currentStep = 1;
 
     function goToStep(step) {
-      document.getElementById('step-panel-1').classList.add('hidden');
-      document.getElementById('step-panel-2').classList.add('hidden');
-      document.getElementById('step-panel-3').classList.add('hidden');
-      document.getElementById('step-panel-4').classList.add('hidden');
+      document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('step-' + step).classList.remove('hidden');
 
-      document.getElementById('step-panel-' + step).classList.remove('hidden');
-      currentStep = step;
-
-      // Update Stepper Buttons
       for (let i = 1; i <= 4; i++) {
         const btn = document.getElementById('step-btn-' + i);
-        if (!btn) continue;
         if (i === step) {
-          btn.className = 'py-2 px-1 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-red-700 text-white shadow-md shadow-red-900/30';
+          btn.className = 'py-2 px-1 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-red-600 text-white shadow-sm';
           btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]';
         } else if (i < step) {
-          btn.className = 'py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
-          btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-emerald-200 dark:bg-emerald-800 flex items-center justify-center text-[10px] font-bold';
+          btn.className = 'py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-emerald-600 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800';
+          btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-[10px]';
         } else {
           btn.className = 'py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
           btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]';
         }
       }
-
+      currentStep = step;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function nextToStep(step) {
-      if (step === 2 && !validateStep1()) return;
-      if (step === 3 && !validateStep2()) return;
-      
-      // If single and moving to step 3, show notice or allow direct skip to 4
-      if (step === 3) {
-        const marital = document.getElementById('maritalStatus').value;
-        if (marital === 'SINGLE' || marital === 'WIDOWED' || marital === 'LEGALLY SEPARATED') {
-          document.getElementById('single-skip-notice').classList.remove('hidden');
-          document.getElementById('spouse-fields-container').classList.add('hidden');
-        } else {
-          document.getElementById('single-skip-notice').classList.add('hidden');
-          document.getElementById('spouse-fields-container').classList.remove('hidden');
-        }
-      }
-
-      goToStep(step);
-    }
-
-    function handleMaritalChange() {
-      const marital = document.getElementById('maritalStatus').value;
-      const isMarried = (marital === 'MARRIED');
-      const spouseSigWrapper = document.getElementById('spouse-sig-wrapper');
-      if (isMarried) {
-        if (spouseSigWrapper) spouseSigWrapper.classList.remove('hidden');
-      } else {
-        if (spouseSigWrapper) spouseSigWrapper.classList.add('hidden');
-      }
-    }
-
     function validateStep1() {
-      const required = ['surname', 'firstName', 'dob', 'contact', 'email', 'maritalStatus', 'address'];
-      for (let id of required) {
-        const el = document.getElementById(id);
-        if (!el || !el.value || !el.value.trim()) {
-          alert('Paki-fill up ang lahat ng required fields (*) sa Step 1');
-          if (el) el.focus();
-          return false;
-        }
+      const surname = document.getElementById('surname').value.trim();
+      const firstName = document.getElementById('firstName').value.trim();
+      const dob = document.getElementById('dob').value;
+      const contact = document.getElementById('contact').value.trim();
+      const address = document.getElementById('address').value.trim();
+
+      if (!surname || !firstName) {
+        alert('Paki-lagay ang iyong Apelyido (Surname) at Pangalan (First Name).');
+        return;
       }
-      return true;
+      if (!dob) {
+        alert('Paki-pili ang iyong Buwan, Araw, at Taon ng Kapanganakan (Date of Birth).');
+        return;
+      }
+      if (!contact) {
+        alert('Paki-lagay ang iyong Mobile Contact Number.');
+        return;
+      }
+      if (!address) {
+        alert('Paki-lagay ang iyong Kasalukuyang Tirahan (Present Home Address).');
+        return;
+      }
+      goToStep(2);
     }
 
     function validateStep2() {
-      const required = ['occType', 'employer', 'workPlace', 'occupation', 'empStatus', 'income'];
-      for (let id of required) {
-        const el = document.getElementById(id);
-        if (!el || !el.value || !el.value.trim()) {
-          alert('Paki-fill up ang lahat ng required fields (*) sa Step 2');
-          if (el) el.focus();
-          return false;
-        }
+      const employer = document.getElementById('employer').value.trim();
+      const workPlace = document.getElementById('workPlace').value.trim();
+      const occupation = document.getElementById('occupation').value.trim();
+      const income = document.getElementById('income').value;
+
+      if (!employer || !workPlace || !occupation) {
+        alert('Paki-kumpleto ang detalye ng iyong Trabaho (Employer, Lugar, at Posisyon).');
+        return;
       }
-      return true;
+      if (!income || parseFloat(income) <= 0) {
+        alert('Paki-lagay ang iyong tinatayang Buwanang Kita (Monthly Income).');
+        return;
+      }
+
+      const isMarried = document.getElementById('maritalStatus').value === 'MARRIED';
+      if (!isMarried) {
+        goToStep(4);
+      } else {
+        goToStep(3);
+      }
+    }
+
+    function handleMaritalChange() {
+      const status = document.getElementById('maritalStatus').value;
+      const isMarried = status === 'MARRIED';
+      const singleNotice = document.getElementById('single-skip-notice');
+      const spouseFields = document.getElementById('spouse-fields-container');
+      const spouseSigWrapper = document.getElementById('spouse-sig-wrapper');
+
+      if (isMarried) {
+        singleNotice.classList.add('hidden');
+        spouseFields.classList.remove('hidden');
+        spouseSigWrapper.classList.remove('hidden');
+      } else {
+        singleNotice.classList.remove('hidden');
+        spouseFields.classList.add('hidden');
+        spouseSigWrapper.classList.add('hidden');
+      }
     }
 
     function formatMID(el) {
       let val = el.value.replace(/\D/g, '');
       if (val.length > 12) val = val.substring(0, 12);
-      const parts = [];
-      if (val.length > 0) parts.push(val.substring(0, 4));
-      if (val.length > 4) parts.push(val.substring(4, 8));
-      if (val.length > 8) parts.push(val.substring(8, 12));
-      el.value = parts.join('-');
-    }
-
-    function formatPhone(el) {
-      let val = el.value.replace(/\D/g, '');
-      if (val.length > 11) val = val.substring(0, 11);
-      if (val.length > 7) {
-        el.value = val.substring(0, 4) + ' ' + val.substring(4, 7) + ' ' + val.substring(7);
+      if (val.length > 8) {
+        el.value = val.substring(0, 4) + '-' + val.substring(4, 8) + '-' + val.substring(8);
       } else if (val.length > 4) {
-        el.value = val.substring(0, 4) + ' ' + val.substring(4);
+        el.value = val.substring(0, 4) + '-' + val.substring(4);
       } else {
         el.value = val;
-      }
-    }
-
-    function calculateAge() {
-      const dobVal = document.getElementById('dob').value;
-      if (!dobVal) return;
-      const dob = new Date(dobVal);
-      const diff = Date.now() - dob.getTime();
-      const age = new Date(diff).getUTCFullYear() - 1970;
-      if (age > 65) {
-        alert('Paalala: Ayon sa Pag-IBIG guidelines, ang aplikante ay dapat 65 taong gulang pababa sa petsa ng loan application.');
       }
     }
 
@@ -850,7 +1092,7 @@
       if (!feedback) return;
 
       if (occType === 'OVERSEAS FILIPINO WORKER') {
-        feedback.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">★ OFW: 100% EXEMPT sa income ceiling. Pasok sa 4PH program!</span>';
+        feedback.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">&#9733; OFW: 100% EXEMPT sa income ceiling. Pasok sa 4PH program!</span>';
         return;
       }
 
@@ -859,7 +1101,7 @@
       } else if (val > 34685.83) {
         feedback.innerHTML = '<span class="text-rose-600 dark:text-rose-400 font-semibold">Higit sa Pangasinan 8th decile ceiling (₱34,685.83). Kung may NCR work, pasok hanggang ₱47,855.83.</span>';
       } else {
-        feedback.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">✓ Pasok sa 4PH Income Qualification at Decile Ceiling!</span>';
+        feedback.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">&#10003; Pasok sa 4PH Income Qualification at Decile Ceiling!</span>';
       }
     }
 
@@ -882,6 +1124,21 @@
         box.innerHTML = '<strong>Commission-Based:</strong> Maghanda ng BIR 1701 + 1-year official bank statements + 1-year vouchers.';
       }
       evaluateIncomeCeiling();
+    }
+
+    /* ========================================================
+       SMART TEXT FITTING ENGINE (EXACT 28px WHITE FORM MATCH)
+       ======================================================== */
+    function drawTextFit(ctx, text, x, y, maxW, baseSize = 28) {
+      if (!text) return;
+      const upperText = String(text).toUpperCase().trim();
+      let size = baseSize;
+      ctx.font = 'bold ' + size + 'px Arial, "Helvetica Neue", sans-serif';
+      while (ctx.measureText(upperText).width > maxW && size > 16) {
+        size -= 1;
+        ctx.font = 'bold ' + size + 'px Arial, "Helvetica Neue", sans-serif';
+      }
+      ctx.fillText(upperText, x, y);
     }
 
     /* ========================================================
@@ -919,101 +1176,103 @@
         return;
       }
 
+      // Ink settings: Pure solid carbon black text matching White Form template print
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 30px Arial, sans-serif';
       ctx.textBaseline = 'alphabetic';
 
-      // 2. Pag-IBIG Member Checkmark
+      // 2. Pag-IBIG Member Checkmark inside the box
       const isMember = document.querySelector('input[name="pagibigMember"]:checked').value === 'YES';
-      ctx.font = 'bold 42px Arial, sans-serif';
+      ctx.font = 'bold 36px Arial, sans-serif';
       if (isMember) {
-        ctx.fillText('✓', 496, 560);
+        ctx.fillText('✓', 505, 555);
       } else {
-        ctx.fillText('✓', 674, 560);
+        ctx.fillText('✓', 680, 555);
       }
 
-      // 3. Principal Beneficiary Text Fields
-      ctx.font = 'bold 30px Arial, sans-serif';
+      // 3. Principal Beneficiary Text Fields (Strictly ALL CAPS & Exact Form Font Size 28px)
+      const rawIncome = document.getElementById('income').value;
+      const formattedIncome = rawIncome ? ('PHP ' + Number(rawIncome).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) : 'PHP 18,500.00';
+
       const pFields = [
-        { text: (document.getElementById('surname').value || 'DELA CRUZ').trim(), x: 290, y_line: 343 },
-        { text: (document.getElementById('firstName').value || 'JUAN').trim(), x: 330, y_line: 401 },
-        { text: (document.getElementById('middleName').value || 'N/A').trim(), x: 370, y_line: 459 },
-        { text: formatDate(document.getElementById('dob').value), x: 390, y_line: 517 },
-        { text: (document.getElementById('pagibigMid').value || 'N/A').trim(), x: 520, y_line: 637 },
-        { text: (document.getElementById('contact').value || '0919 123 4567').trim(), x: 455, y_line: 693 },
-        { text: (document.getElementById('address').value || 'URDANETA CITY, PANGASINAN').trim(), x: 585, y_line: 749, small: true },
-        { text: (document.getElementById('email').value || 'buyer@example.com').trim(), x: 410, y_line: 804 },
-        { text: document.getElementById('maritalStatus').value || 'SINGLE', x: 420, y_line: 858 },
-        { text: (document.getElementById('employer').value || 'COMPANY').trim(), x: 660, y_line: 913 },
-        { text: (document.getElementById('workPlace').value || 'PANGASINAN').trim(), x: 615, y_line: 967 },
-        { text: (document.getElementById('occupation').value || 'EMPLOYEE').trim(), x: 630, y_line: 1021 },
-        { text: document.getElementById('empStatus').value || 'PERMANENT / REGULAR', x: 1350, y_line: 1123 },
-        { text: document.getElementById('occType').value || 'PRIVATE EMPLOYEE', x: 80, y_line: 1219 },
-        { text: (document.getElementById('income').value ? '₱ ' + Number(document.getElementById('income').value).toLocaleString() : '₱ 18,500.00').trim(), x: 565, y_line: 1271 }
+        { text: document.getElementById('surname').value || 'DELA CRUZ', x: 280, y: 334, maxW: 1440 },
+        { text: document.getElementById('firstName').value || 'JUAN', x: 320, y: 392, maxW: 1400 },
+        { text: document.getElementById('middleName').value || 'N/A', x: 360, y: 450, maxW: 1360 },
+        { text: formatDate(document.getElementById('dob').value), x: 380, y: 508, maxW: 1340 },
+        { text: document.getElementById('pagibigMid').value || 'N/A', x: 510, y: 628, maxW: 1210 },
+        { text: document.getElementById('contact').value || '0919 123 4567', x: 450, y: 684, maxW: 1270 },
+        { text: document.getElementById('address').value || 'BRGY. NANCAYASAN, URDANETA CITY, PANGASINAN', x: 580, y: 740, maxW: 1140 },
+        { text: document.getElementById('email').value || 'BUYER@EXAMPLE.COM', x: 400, y: 795, maxW: 1320 },
+        { text: document.getElementById('maritalStatus').value || 'SINGLE', x: 410, y: 849, maxW: 1310 },
+        { text: document.getElementById('employer').value || 'SAN MIGUEL CORPORATION', x: 650, y: 904, maxW: 1070 },
+        { text: document.getElementById('workPlace').value || 'URDANETA CITY, PANGASINAN', x: 605, y: 958, maxW: 1115 },
+        { text: document.getElementById('occupation').value || 'EMPLOYEE', x: 620, y: 1012, maxW: 1100 },
+        { text: document.getElementById('empStatus').value || 'PERMANENT / REGULAR', x: 1350, y: 1114, maxW: 370 },
+        { text: document.getElementById('occType').value || 'PRIVATE EMPLOYEE', x: 80, y: 1210, maxW: 1640 },
+        { text: formattedIncome, x: 555, y: 1262, maxW: 1165 }
       ];
 
       pFields.forEach(f => {
-        if (f.small) ctx.font = 'bold 24px Arial, sans-serif';
-        else ctx.font = 'bold 30px Arial, sans-serif';
-        ctx.fillText(f.text, f.x, f.y_line - 10);
+        drawTextFit(ctx, f.text, f.x, f.y, f.maxW, 28);
       });
 
       // 4. Spouse Text Fields (If Married)
       const isMarried = document.getElementById('maritalStatus').value === 'MARRIED';
       if (isMarried) {
+        const sRawIncome = document.getElementById('spouseIncome').value;
+        const sFormattedIncome = sRawIncome ? ('PHP ' + Number(sRawIncome).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) : 'N/A';
+
         const sFields = [
-          { text: (document.getElementById('spouseSurname').value || '').trim(), x: 290, y_line: 1446 },
-          { text: (document.getElementById('spouseFirstName').value || '').trim(), x: 330, y_line: 1500 },
-          { text: (document.getElementById('spouseMiddleName').value || 'N/A').trim(), x: 360, y_line: 1553 },
-          { text: (document.getElementById('spousePagibigMid').value || 'N/A').trim(), x: 520, y_line: 1607 },
-          { text: formatDate(document.getElementById('spouseDob').value), x: 385, y_line: 1659 },
-          { text: (document.getElementById('spouseIncome').value ? '₱ ' + Number(document.getElementById('spouseIncome').value).toLocaleString() : 'N/A').trim(), x: 580, y_line: 1713 },
-          { text: (document.getElementById('spouseEmployer').value || 'N/A').trim(), x: 655, y_line: 1766 },
-          { text: (document.getElementById('spouseWorkPlace').value || 'N/A').trim(), x: 605, y_line: 1818 },
-          { text: (document.getElementById('spouseContactPerson').value || 'N/A').trim(), x: 755, y_line: 1871 },
-          { text: (document.getElementById('spouseContact').value || 'N/A').trim(), x: 780, y_line: 1925 },
-          { text: (document.getElementById('spouseEmail').value || 'N/A').trim(), x: 725, y_line: 1976 }
+          { text: document.getElementById('spouseSurname').value || '', x: 280, y: 1437, maxW: 1440 },
+          { text: document.getElementById('spouseFirstName').value || '', x: 320, y: 1491, maxW: 1400 },
+          { text: document.getElementById('spouseMiddleName').value || 'N/A', x: 350, y: 1544, maxW: 1370 },
+          { text: document.getElementById('spousePagibigMid').value || 'N/A', x: 510, y: 1598, maxW: 1210 },
+          { text: formatDate(document.getElementById('spouseDob').value), x: 375, y: 1650, maxW: 1345 },
+          { text: sFormattedIncome, x: 575, y: 1704, maxW: 1145 },
+          { text: document.getElementById('spouseEmployer').value || 'N/A', x: 645, y: 1757, maxW: 1075 },
+          { text: document.getElementById('spouseWorkPlace').value || 'N/A', x: 595, y: 1809, maxW: 1125 },
+          { text: document.getElementById('spouseContactPerson').value || 'N/A', x: 745, y: 1862, maxW: 975 },
+          { text: document.getElementById('spouseContact').value || 'N/A', x: 770, y: 1916, maxW: 950 },
+          { text: document.getElementById('spouseEmail').value || 'N/A', x: 715, y: 1967, maxW: 1005 }
         ];
 
         sFields.forEach(f => {
-          if (f.small) ctx.font = 'bold 24px Arial, sans-serif';
-          else ctx.font = 'bold 30px Arial, sans-serif';
-          ctx.fillText(f.text, f.x, f.y_line - 10);
+          drawTextFit(ctx, f.text, f.x, f.y, f.maxW, 28);
         });
       }
 
-      // 5. Printed Names on Signature Line (Y=2193)
-      ctx.font = 'bold 26px Arial, sans-serif';
+      // 5. Printed Names on Signature Line (Centered, Strictly ALL CAPS, Exact Form Size 28px)
+      ctx.font = 'bold 28px Arial, "Helvetica Neue", sans-serif';
       ctx.textAlign = 'center';
+      ctx.fillStyle = '#000000';
 
       const pFirst = (document.getElementById('firstName').value || 'JUAN').trim();
       const pMid = (document.getElementById('middleName').value || '').trim();
       const pSur = (document.getElementById('surname').value || 'DELA CRUZ').trim();
-      const pFullName = (pFirst + ' ' + pMid + ' ' + pSur).replace(/\s+/g, ' ').toUpperCase();
-      ctx.fillText(pFullName, 365, 2185);
+      const pFullName = (pFirst + ' ' + (pMid ? pMid + ' ' : '') + pSur).replace(/\s+/g, ' ').toUpperCase();
+      ctx.fillText(pFullName, 364, 2187);
 
       if (isMarried) {
         const sFirst = (document.getElementById('spouseFirstName').value || 'MARIA').trim();
         const sMid = (document.getElementById('spouseMiddleName').value || '').trim();
         const sSur = (document.getElementById('spouseSurname').value || 'DELA CRUZ').trim();
-        const sFullName = (sFirst + ' ' + sMid + ' ' + sSur).replace(/\s+/g, ' ').toUpperCase();
-        ctx.fillText(sFullName, 1010, 2185);
+        const sFullName = (sFirst + ' ' + (sMid ? sMid + ' ' : '') + sSur).replace(/\s+/g, ' ').toUpperCase();
+        ctx.fillText(sFullName, 975, 2187);
       }
 
-      // Date at bottom right
+      // Date at bottom right (Strictly ALL CAPS, Centered over Date line at X=1531)
       const now = new Date();
       const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
       const dateStr = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
-      ctx.fillText(dateStr, 1530, 2185);
+      ctx.fillText(dateStr, 1531, 2187);
       ctx.textAlign = 'left';
 
-      // 6. Draw Digital Signatures directly on name baseline
+      // 6. Draw Digital Signatures (Directly OVER the Printed Name on the line)
       if (sigPads.principal.hasSignature) {
-        renderSignatureAtName(ctx, sigPads.principal.canvas, 365, 2185, 340, 80);
+        renderSignatureAtName(ctx, sigPads.principal.canvas, 364, 2194, 340, 68);
       }
 
       if (isMarried && sigPads.spouse.hasSignature) {
-        renderSignatureAtName(ctx, sigPads.spouse.canvas, 1010, 2185, 340, 80);
+        renderSignatureAtName(ctx, sigPads.spouse.canvas, 975, 2194, 340, 68);
       }
 
       // 7. Show Modal
@@ -1028,7 +1287,7 @@
       }
     }
 
-    function renderSignatureAtName(ctx, padCanvas, targetCenterX, targetBaseY, maxW, maxH) {
+    function renderSignatureAtName(ctx, padCanvas, targetCenterX, lineY, maxW = 340, maxH = 68) {
       try {
         const padCtx = padCanvas.getContext('2d');
         const imgData = padCtx.getImageData(0, 0, padCanvas.width, padCanvas.height);
@@ -1053,17 +1312,21 @@
 
         const strokeW = maxX - minX + 1;
         const strokeH = maxY - minY + 1;
-        const scale = Math.min(maxW / strokeW, maxH / strokeH, 1.0);
+
+        // Proportional scale: strictly satisfies BOTH maxW (340px) and maxH (68px)
+        const scale = Math.min(maxW / strokeW, maxH / strokeH);
         const drawW = strokeW * scale;
         const drawH = strokeH * scale;
 
         const drawX = targetCenterX - (drawW / 2);
-        const drawY = targetBaseY - drawH + 8;
+        // Position signature resting directly on the green line (lineY = 2194) and cleanly overlapping the printed name (baseline Y = 2187)
+        const drawY = (lineY - 2) - drawH;
 
+        ctx.save();
         ctx.drawImage(padCanvas, minX, minY, strokeW, strokeH, drawX, drawY, drawW, drawH);
+        ctx.restore();
       } catch (e) {
         console.warn('Fallback direct signature draw:', e);
-        ctx.drawImage(padCanvas, targetCenterX - (maxW / 2), targetBaseY - maxH, maxW, maxH);
       }
     }
 
@@ -1073,7 +1336,7 @@
       if (parts.length === 3) {
         return parts[1] + '/' + parts[2] + '/' + parts[0];
       }
-      return val;
+      return val.toUpperCase();
     }
 
     function closeOutputModal() {
@@ -1081,7 +1344,7 @@
     }
 
     function downloadImage() {
-      const surname = document.getElementById('surname').value.trim() || 'BUYER';
+      const surname = (document.getElementById('surname').value.trim() || 'BUYER').toUpperCase();
       const link = document.createElement('a');
       link.download = 'DecaHomes-WhiteForm-' + surname + '.jpg';
       link.href = document.getElementById('renderCanvas').toDataURL('image/jpeg', 0.95);
@@ -1089,10 +1352,10 @@
     }
 
     function printForm() {
+      const dataUrl = document.getElementById('renderCanvas').toDataURL('image/jpeg', 0.95);
       const printWin = window.open('', '_blank');
-      const dataUrl = document.getElementById('renderCanvas').toDataURL('image/jpeg', 0.98);
       printWin.document.write(
-        '<!DOCTYPE html><html><head><title>Deca Homes White Form - Print</title>' +
+        '<!DOCTYPE html><html><head><title>Deca Homes Urdaneta - White Form - Print</title>' +
         '<style>@page { size: portrait; margin: 0; } body { margin: 0; padding: 0; background: #fff; } img { width: 100vw; height: auto; display: block; }</style>' +
         '</head><body onload="window.print(); window.close();"><img src="' + dataUrl + '"></body></html>'
       );
@@ -1100,33 +1363,40 @@
     }
 
     function copyLeadSummary() {
-      const surname = document.getElementById('surname').value.trim();
-      const first = document.getElementById('firstName').value.trim();
-      const mid = document.getElementById('middleName').value.trim();
-      const contact = document.getElementById('contact').value.trim();
-      const income = document.getElementById('income').value.trim();
-      const occType = document.getElementById('occType').value;
-      const marital = document.getElementById('maritalStatus').value;
+      const surname = (document.getElementById('surname').value.trim() || 'DELA CRUZ').toUpperCase();
+      const firstName = (document.getElementById('firstName').value.trim() || 'JUAN').toUpperCase();
+      const middleName = (document.getElementById('middleName').value.trim() || '').toUpperCase();
+      const fullName = (firstName + ' ' + (middleName ? middleName + ' ' : '') + surname).replace(/\s+/g, ' ');
+      const dob = document.getElementById('dob').value || 'N/A';
+      const contact = (document.getElementById('contact').value.trim() || 'N/A').toUpperCase();
+      const mid = (document.getElementById('pagibigMid').value.trim() || 'N/A').toUpperCase();
+      const occType = (document.getElementById('occType').value || 'PRIVATE EMPLOYEE').toUpperCase();
+      const employer = (document.getElementById('employer').value.trim() || 'N/A').toUpperCase();
+      const workPlace = (document.getElementById('workPlace').value.trim() || 'N/A').toUpperCase();
+      const occupation = (document.getElementById('occupation').value.trim() || 'N/A').toUpperCase();
+      const income = document.getElementById('income').value ? ('PHP ' + Number(document.getElementById('income').value).toLocaleString()) : 'N/A';
+      const marital = (document.getElementById('maritalStatus').value || 'SINGLE').toUpperCase();
+      const address = (document.getElementById('address').value.trim() || 'N/A').toUpperCase();
 
-      const summary = "🏠 DECA HOMES URDANETA — 4PH PRE-SCREENING SUMMARY\n" +
-        "-----------------------------------------\n" +
-        "👤 Buyer Name: " + first + " " + mid + " " + surname + "\n" +
-        "📞 Contact: " + contact + "\n" +
-        "💍 Marital Status: " + marital + "\n" +
-        "💼 Occupation: " + occType + "\n" +
-        "💰 Monthly Income: ₱" + Number(income || 0).toLocaleString() + "\n" +
-        "📋 Pag-IBIG MID: " + (document.getElementById('pagibigMid').value.trim() || 'To follow') + "\n" +
-        "📍 Address: " + document.getElementById('address').value.trim() + "\n" +
-        "-----------------------------------------\n" +
-        "Assisting Consultant: John Edcee Cañizares (0919 368 2062)\n" +
-        "Agency Manager: Rowena Comilang (0917 755 9492)\n" +
-        "Realty: Deca Gold Realty / North Forbes Realty\n" +
-        "Submission Desk: San Vicente East, Urdaneta City";
+      const summaryText = 
+"[DECA HOMES URDANETA - OFFICIAL WHITE FORM LEAD]\n" +
+"PANGALAN: " + fullName + "\n" +
+"CIVIL STATUS: " + marital + "\n" +
+"PETSA NG KAPANGANAKAN: " + dob + "\n" +
+"PAG-IBIG MID: " + mid + "\n" +
+"CONTACT: " + contact + "\n" +
+"TIRAHAN: " + address + "\n" +
+"KATEGORYA: " + occType + "\n" +
+"TRABAHO: " + occupation + "\n" +
+"EMPLOYER: " + employer + " (" + workPlace + ")\n" +
+"BUWANANG KITA: " + income + "\n" +
+"ASSISTING SC: JOHN EDCEE CAÑIZARES (0919 368 2062)\n" +
+"AGENCY: CASSIA DECA / NORTH FORBES REALTY";
 
-      navigator.clipboard.writeText(summary).then(() => {
-        alert('Na-kopyang buod! Maaari niyo na itong i-paste sa ating Messenger chat kay JC.');
-      }).catch(() => {
-        alert(summary);
+      navigator.clipboard.writeText(summaryText).then(() => {
+        alert('Na-kopya na sa clipboard ang buod ng White Form! Maaari mo na itong i-paste sa Messenger chat kay JC.');
+      }).catch(err => {
+        prompt('Kopyahin ang buod sa ibaba:', summaryText);
       });
     }
 
@@ -1134,12 +1404,17 @@
       document.getElementById('surname').value = 'ARANTON';
       document.getElementById('firstName').value = 'JOHN LAWRENCE';
       document.getElementById('middleName').value = 'VALDEZ';
-      document.getElementById('dob').value = '1995-08-14';
       document.getElementById('contact').value = '0919 456 7890';
-      document.getElementById('email').value = 'john.aranton@sample.com';
+      document.getElementById('email').value = 'JOHN.ARANTON@SAMPLE.COM';
       document.getElementById('address').value = 'BRGY. NANCAYASAN, URDANETA CITY, PANGASINAN';
       document.getElementById('maritalStatus').value = 'SINGLE';
       document.getElementById('pagibigMid').value = '1212-9876-5432';
+
+      // Set Sample DOB (August 14, 1995 -> 31 yo)
+      document.getElementById('dob-month').value = '08';
+      document.getElementById('dob-day').value = '14';
+      document.getElementById('dob-year').value = '1995';
+      syncDateOfBirth('principal');
 
       document.getElementById('occType').value = 'PRIVATE EMPLOYEE';
       document.getElementById('employer').value = 'SAN MIGUEL CORP';
@@ -1152,27 +1427,26 @@
       evaluateIncomeCeiling();
       drawSampleSignature('principal');
 
-      alert('Napunan na ang sample buyer data! Pwede mo nang subukan ang "Next" o pumunta sa Step 4 upang i-generate ang form.');
+      alert('Napunan na ang sample buyer data sa ALL CAPS kasama ang bold ink signature at Date of Birth (Aug 14, 1995)! Pwede mo nang i-click ang Next.');
     }
 
-    function drawSampleSignature(key) {
-      const pad = sigPads[key];
-      if (!pad || !pad.ctx) return;
-      const ctx = pad.ctx;
-      ctx.clearRect(0, 0, pad.canvas.width, pad.canvas.height);
-      ctx.beginPath();
-      ctx.moveTo(80, 80);
-      ctx.bezierCurveTo(150, 40, 220, 110, 300, 70);
-      ctx.bezierCurveTo(340, 50, 360, 90, 420, 60);
-      ctx.moveTo(120, 95);
-      ctx.lineTo(460, 95);
-      ctx.stroke();
-      pad.hasSignature = true;
+    // Force all text inputs to automatically uppercase as user types
+    function initUppercaseInputs() {
+      document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+        el.addEventListener('input', () => {
+          const start = el.selectionStart;
+          const end = el.selectionEnd;
+          el.value = el.value.toUpperCase();
+          if (start !== null) el.setSelectionRange(start, end);
+        });
+      });
     }
 
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
+      initDateDropdowns();
       initSignaturePads();
+      initUppercaseInputs();
       updateThemeToggleUI();
       handleMaritalChange();
       if (window.lucide) lucide.createIcons();
