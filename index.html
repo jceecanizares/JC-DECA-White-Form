@@ -337,26 +337,26 @@
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 shadow-sm mb-6 transition-colors">
       <div class="grid grid-cols-4 gap-1 text-xs">
         <button onclick="goToStep(1)" id="step-btn-1" class="py-2 px-1 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-red-600 text-white shadow-sm">
-          <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]">1</span>
+          <span class="w-5 h-5 rounded-full bg-white text-red-600 font-black flex items-center justify-center text-[11px] shadow-sm">1</span>
           <span class="truncate">Borrower</span>
         </button>
-        <button onclick="goToStep(2)" id="step-btn-2" class="py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">2</span>
+        <button onclick="goToStep(2)" id="step-btn-2" class="py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span class="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-200 text-slate-900 font-black border border-slate-300 dark:border-white shadow-sm flex items-center justify-center text-[11px]">2</span>
           <span class="truncate">Work & Income</span>
         </button>
-        <button onclick="goToStep(3)" id="step-btn-3" class="py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">3</span>
+        <button onclick="goToStep(3)" id="step-btn-3" class="py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span class="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-200 text-slate-900 font-black border border-slate-300 dark:border-white shadow-sm flex items-center justify-center text-[11px]">3</span>
           <span class="truncate">Spouse</span>
         </button>
-        <button onclick="goToStep(4)" id="step-btn-4" class="py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">4</span>
+        <button onclick="goToStep(4)" id="step-btn-4" class="py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span class="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-200 text-slate-900 font-black border border-slate-300 dark:border-white shadow-sm flex items-center justify-center text-[11px]">4</span>
           <span class="truncate">Signature</span>
         </button>
       </div>
     </div>
 
     <!-- FORM CARD -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-sm transition-colors">
+    <div id="form-card" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-sm transition-colors scroll-mt-20">
       
       <!-- ==============================================
            STEP 1: PERSONAL & CIVIL STATUS
@@ -364,52 +364,19 @@
       <section id="step-1" class="space-y-5">
         <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
           <div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <i data-lucide="user" class="w-4 h-4 text-red-600 dark:text-rose-400"></i>
-              Impormasyon ng Principal Beneficiary
+            <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-red-600 text-white flex items-center justify-center text-xs font-black shrink-0">1</span>
+              <span>Impormasyon ng Principal Beneficiary</span>
             </h3>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Lahat ng detalye ay awtomatikong magiging ALL CAPS at eksaktong sukat sa White Form.</p>
           </div>
           <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 1 ng 4</span>
         </div>
 
-        <!-- START HERE GUIDE / ARROW CALLOUT FOR NON-TECHY CLIENTS -->
-        <div id="startHereCallout" class="relative p-4 rounded-2xl bg-gradient-to-r from-red-600/15 via-rose-600/10 to-amber-500/10 border-2 border-red-500/50 dark:border-rose-500/60 shadow-lg shadow-red-900/10 transition-all">
-          <div class="flex items-start sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white flex items-center justify-center text-xl shadow-lg shadow-red-600/40 animate-bounce shrink-0 select-none">
-                👇
-              </div>
-              <div>
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-red-600 dark:text-rose-400 flex items-center gap-1.5">
-                    <span class="inline-block animate-bounce">👉</span> DITO PO MAG-UMPISA (START HERE)
-                  </span>
-                  <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-rose-300 font-bold border border-red-300 dark:border-red-800">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-rose-400 animate-ping"></span> Unang Hakbang
-                  </span>
-                </div>
-                <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 mt-1 leading-snug">
-                  I-type ang iyong <strong>Apelyido (Surname)</strong> sa kahon sa ibaba. Ang mga kahon na may <span class="text-red-600 dark:text-rose-400 font-bold underline decoration-red-400">pulang bilog (red ring)</span> ay kailangang punan. Awtomatikong mawawala ang pula kapag natapos mong i-type.
-                </p>
-              </div>
-            </div>
-            <div class="hidden sm:flex flex-col items-center justify-center text-red-600 dark:text-rose-400 font-black text-2xl animate-bounce pr-2 select-none" title="I-type dito sa unang kahon">
-              <span>⬇️</span>
-              <span class="text-[9px] font-bold tracking-tighter">SIMULA</span>
-            </div>
-          </div>
-        </div>
-
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <!-- Surname -->
-          <div class="relative">
-            <div class="flex items-center justify-between mb-1">
-              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200">Apelyido (Surname) *</label>
-              <span id="surnameArrowBadge" class="inline-flex items-center gap-1 text-[10px] font-extrabold text-red-600 dark:text-rose-400 bg-red-50 dark:bg-red-950/80 border border-red-300 dark:border-red-800 px-2 py-0.5 rounded-md animate-pulse">
-                <span class="animate-bounce">👉</span> DITO MAG-UMPISA ⬇️
-              </span>
-            </div>
+          <div>
+            <label for="surname" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Apelyido (Surname) *</label>
             <input type="text" id="surname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <!-- First Name -->
@@ -1048,72 +1015,61 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       <!-- Modal Actions Toolbar -->
       <div class="p-4 sm:p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-3">
         
-        <!-- Primary Auto-Save & Send to Messenger Actions -->
+        <!-- 🌟 PRIMARY HIGHLIGHTED HERO ACTION: DOWNLOAD IMAGE (JPG) FOR PHONE GALLERY -->
+        <button type="button" onclick="downloadImage()" class="w-full px-5 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-xl shadow-red-900/30 ring-4 ring-red-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0">
+          <i data-lucide="image-down" class="w-6 h-6 text-amber-300 animate-bounce"></i>
+          <div class="text-left">
+            <div class="text-sm sm:text-base font-extrabold tracking-tight flex items-center gap-2">
+              <span>I-download ang Larawan (JPG)</span>
+              <span class="text-[10px] uppercase font-black bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">Pinakamadali</span>
+            </div>
+            <div class="text-[10px] sm:text-[11px] font-semibold text-rose-100 opacity-95">Direktang papasok sa Gallery • Pinakamadaling i-send sa Messenger</div>
+          </div>
+        </button>
+
+        <!-- Messenger Direct Send Actions (Auto-Saves Image First) -->
         <div class="space-y-2">
-          <!-- 1. Send to JC Personal Messenger (AUTO SAVES FORM FIRST) -->
-          <button onclick="sendToMessengerWithAutoSave('https://m.me/jhn.cnzrs')" class="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/25 transition transform hover:-translate-y-0.5">
+          <!-- 1. Send to JC Personal Messenger -->
+          <button onclick="sendToMessengerWithAutoSave('https://m.me/jhn.cnzrs')" class="w-full px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition">
             <i data-lucide="send" class="w-4 h-4 text-amber-300"></i>
             <span>1. I-save & I-send sa Personal Messenger ni JC (m.me/jhn.cnzrs)</span>
           </button>
 
-          <!-- 2. Send to Official Page Messenger (AUTO SAVES FORM FIRST) -->
-          <button onclick="sendToMessengerWithAutoSave('https://m.me/DecaHomeUrda')" class="w-full px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 shadow-sm transition">
+          <!-- 2. Send to Official Page Messenger -->
+          <button onclick="sendToMessengerWithAutoSave('https://m.me/DecaHomeUrda')" class="w-full px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-slate-700 shadow-sm transition">
             <i data-lucide="message-square" class="w-4 h-4 text-blue-400"></i>
             <span>2. I-save & I-send sa Page (@DecaHomeUrda)</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <!-- Download High-Res JPG -->
-          <button onclick="downloadImage()" class="px-3 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            <span>I-download (JPG)</span>
+        <!-- Document & Viewing Grid (PDF & Tab) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <!-- Download Official Vector PDF -->
+          <button type="button" onclick="downloadOfficialPdf()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition" title="I-download bilang opisyal na vector PDF document">
+            <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-500"></i>
+            <span>I-download ang Opisyal na PDF (File)</span>
           </button>
 
           <!-- View Full Image in New Tab -->
-          <button onclick="openImageInNewTab()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-            <span>Tingnan sa Tab</span>
+          <button type="button" onclick="openImageInNewTab()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-xs flex items-center justify-center gap-2 transition">
+            <i data-lucide="external-link" class="w-4 h-4 text-blue-500"></i>
+            <span>Tingnan sa Bagong Tab</span>
           </button>
+        </div>
 
+        <!-- Utility Actions: Copy Summary & Print Form -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
           <!-- Copy Lead Summary -->
-          <button onclick="copyLeadSummary()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <button type="button" onclick="copyLeadSummary()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-500"></i>
             <span>Kopyahin ang Buod</span>
           </button>
 
           <!-- Print Form -->
-          <button onclick="printForm()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
-            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <button type="button" onclick="printForm()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 transition">
+            <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-400"></i>
             <span>I-print Form</span>
           </button>
-        </div>
-
-        <!-- Primary Generated Official Documents Download Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <!-- 1. Download Filled Official Vector PDF Document -->
-          <button type="button" onclick="downloadOfficialPdf()" class="px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 transition transform hover:-translate-y-0.5">
-            <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-200"></i>
-            <span>I-download ang Opisyal na PDF (Deca Gold)</span>
-          </button>
-
-          <!-- 2. Download Image JPG for Mobile Gallery -->
-          <button type="button" onclick="downloadImage()" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-slate-700 shadow-sm transition">
-            <i data-lucide="image" class="w-4 h-4 text-amber-400"></i>
-            <span>I-download ang Larawan (JPG)</span>
-          </button>
-        </div>
-
-        <!-- Secondary PDF View & Pre-printed Links -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <button type="button" onclick="openPdfInNewTab()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold flex items-center justify-center gap-1.5 transition">
-            <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-500"></i>
-            <span>Buksan ang Nabuong PDF sa Bagong Tab</span>
-          </button>
-          <a href="Deca_Gold_Principal_Beneficiary_Form_JC_Canizares.pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold flex items-center justify-center gap-1.5 transition">
-            <i data-lucide="file-text" class="w-3.5 h-3.5 text-emerald-500"></i>
-            <span>Tingnan ang Orihinal na Blankong PDF</span>
-          </a>
         </div>
 
         <!-- Endorsement & Referral Strip -->
@@ -1153,7 +1109,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     };
 
     /* ========================================================
-       DARK MODE ENGINE
+       DARK / LIGHT THEME ENGINE
        ======================================================== */
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
@@ -1161,18 +1117,24 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       updateThemeToggleUI();
     }
 
+    function toggleTheme() {
+      toggleDarkMode();
+    }
+
     function updateThemeToggleUI() {
       const isDark = document.documentElement.classList.contains('dark');
-      const icon = document.getElementById('theme-toggle-icon');
-      const label = document.getElementById('theme-toggle-label');
-      if (icon) {
-        icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-        icon.className = isDark ? 'w-3.5 h-3.5 text-amber-400' : 'w-3.5 h-3.5 text-slate-300';
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (!toggleBtn) return;
+      
+      const iconName = isDark ? 'sun' : 'moon';
+      const iconColor = isDark ? 'text-amber-400' : 'text-blue-300';
+      const labelText = isDark ? 'Light' : 'Dark';
+      
+      toggleBtn.innerHTML = '<i data-lucide="' + iconName + '" class="w-4 h-4 ' + iconColor + '"></i><span id="theme-toggle-label" class="hidden sm:inline text-[11px] font-medium">' + labelText + '</span>';
+      
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
       }
-      if (label) {
-        label.textContent = isDark ? 'Light' : 'Dark';
-      }
-      if (window.lucide) lucide.createIcons();
     }
 
     /* ========================================================
@@ -1480,19 +1442,6 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         }
       });
 
-      // Update Apelyido (Surname) Animated Arrow Pointer Badge
-      const surnameInput = document.getElementById('surname');
-      const surnameBadge = document.getElementById('surnameArrowBadge');
-      if (surnameInput && surnameBadge) {
-        if (surnameInput.value.trim().length > 0) {
-          surnameBadge.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">✓ Apelyido Naisulat!</span>`;
-          surnameBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 px-2 py-0.5 rounded-md";
-        } else {
-          surnameBadge.innerHTML = `<span class="animate-bounce">👉</span> DITO MAG-UMPISA ⬇️`;
-          surnameBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-red-600 dark:text-rose-400 bg-red-50 dark:bg-red-950/80 border border-red-300 dark:border-red-800 px-2 py-0.5 rounded-md animate-pulse";
-        }
-      }
-
       // Step 4 Signature Pad Container Ring
       const sigContainers = document.querySelectorAll('.sig-canvas-container');
       if (sigContainers.length > 0) {
@@ -1521,19 +1470,22 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
 
     function goToStep(step) {
       document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
-      document.getElementById('step-' + step).classList.remove('hidden');
+      const activeSec = document.getElementById('step-' + step);
+      if (activeSec) activeSec.classList.remove('hidden');
 
       for (let i = 1; i <= 4; i++) {
         const btn = document.getElementById('step-btn-' + i);
+        if (!btn) continue;
+        const circle = btn.querySelector('span:first-child');
         if (i === step) {
           btn.className = 'py-2 px-1 rounded-xl font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition bg-red-600 text-white shadow-sm';
-          btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]';
+          if (circle) circle.className = 'w-5 h-5 rounded-full bg-white text-red-600 font-black flex items-center justify-center text-[11px] shadow-sm';
         } else if (i < step) {
           btn.className = 'py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-emerald-600 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800';
-          btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-[10px]';
+          if (circle) circle.className = 'w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-200 text-emerald-900 font-bold border border-emerald-300 flex items-center justify-center text-[11px]';
         } else {
-          btn.className = 'py-2 px-1 rounded-xl font-medium flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
-          btn.querySelector('span:first-child').className = 'w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]';
+          btn.className = 'py-2 px-1 rounded-xl font-semibold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800';
+          if (circle) circle.className = 'w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-200 text-slate-900 font-black border border-slate-300 dark:border-white shadow-sm flex items-center justify-center text-[11px]';
         }
       }
       currentStep = step;
@@ -1546,7 +1498,14 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           if (sn && !sn.value.trim()) sn.focus();
         }, 150);
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Keep viewport smoothly positioned at the active form step
+      const formCard = document.getElementById('form-card') || activeSec;
+      if (formCard) {
+        const offset = 70;
+        const top = formCard.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
     }
 
     function validateStep1() {
@@ -2588,6 +2547,20 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     }
 
     // Initialize on load
+    function scrollToFormStart() {
+      const formCard = document.getElementById('form-card') || document.getElementById('step-1');
+      if (formCard) {
+        const offset = 70;
+        const top = formCard.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+      const sn = document.getElementById('surname');
+      if (sn && !sn.value.trim()) {
+        try { sn.focus({ preventScroll: true }); } catch (e) {}
+      }
+    }
+
+    // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
       initDateDropdowns();
       initSignaturePads();
@@ -2598,12 +2571,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         document.addEventListener('input', updateRequiredFieldHighlights);
         document.addEventListener('change', updateRequiredFieldHighlights);
         updateRequiredFieldHighlights();
-        setTimeout(() => {
-          const sn = document.getElementById('surname');
-          if (sn && !sn.value.trim()) sn.focus();
-        }, 350);
       }
       if (window.lucide) lucide.createIcons();
+
+      // Automatically start screen right at the form where client should type
+      setTimeout(scrollToFormStart, 250);
     });
   
     function openSecurityModal() {
