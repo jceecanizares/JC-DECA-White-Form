@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Deca Homes Urdaneta — Principal Beneficiary White Form Assistant</title>
   <meta name="description" content="Official Deca Homes Urdaneta Pre-Qualification & Principal Beneficiary Form Assistant. Exclusively managed by John Edcee Cañizares (Deca Gold Realty).">
   
+  <!-- Anti-flash Dark Mode Init: Standard/Default is Dark Mode -->
+  <script>
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -87,6 +96,61 @@
       color: #f8fafc !important;
     }
 
+    /* Low-light soft red circling for unfilled required fields */
+    .field-needed-ring,
+    input.field-needed-ring,
+    select.field-needed-ring,
+    textarea.field-needed-ring {
+      border-color: rgba(239, 68, 68, 0.65) !important;
+      box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.22), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+      animation: softRedCirclingPulse 3s infinite ease-in-out;
+    }
+
+    .dark .field-needed-ring,
+    .dark input.field-needed-ring,
+    .dark select.field-needed-ring,
+    .dark textarea.field-needed-ring {
+      border-color: rgba(244, 63, 94, 0.65) !important;
+      box-shadow: 0 0 0 3.5px rgba(244, 63, 94, 0.24), inset 0 0 0 1px rgba(244, 63, 94, 0.12) !important;
+      animation: softRedCirclingPulseDark 3s infinite ease-in-out;
+    }
+
+    @keyframes softRedCirclingPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 2.5px rgba(239, 68, 68, 0.16);
+        border-color: rgba(239, 68, 68, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 0 4.5px rgba(239, 68, 68, 0.32);
+        border-color: rgba(239, 68, 68, 0.85);
+      }
+    }
+
+    @keyframes softRedCirclingPulseDark {
+      0%, 100% {
+        box-shadow: 0 0 0 2.5px rgba(244, 63, 94, 0.18);
+        border-color: rgba(244, 63, 94, 0.55);
+      }
+      50% {
+        box-shadow: 0 0 0 4.5px rgba(244, 63, 94, 0.35);
+        border-color: rgba(244, 63, 94, 0.9);
+      }
+    }
+
+    /* Satisfied / filled state */
+    .field-satisfied,
+    input.field-satisfied,
+    select.field-satisfied {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 1.5px rgba(16, 185, 129, 0.18) !important;
+    }
+    .dark .field-satisfied,
+    .dark input.field-satisfied,
+    .dark select.field-satisfied {
+      border-color: #059669 !important;
+      box-shadow: 0 0 0 1.5px rgba(5, 150, 105, 0.22) !important;
+    }
+
     input[type="text"]:focus,
     input[type="email"]:focus,
     input[type="number"]:focus,
@@ -108,9 +172,22 @@
 
     .sig-canvas-container {
       border: 2.5px dashed #94a3b8 !important;
+      transition: all 0.25s ease;
     }
     .dark .sig-canvas-container {
       border: 2.5px dashed #64748b !important;
+    }
+
+    /* Signature Pad Needed Ring */
+    .sig-needed-ring {
+      border-color: rgba(239, 68, 68, 0.7) !important;
+      box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.22) !important;
+      animation: softRedCirclingPulse 3s infinite ease-in-out;
+    }
+    .dark .sig-needed-ring {
+      border-color: rgba(244, 63, 94, 0.75) !important;
+      box-shadow: 0 0 0 3.5px rgba(244, 63, 94, 0.25) !important;
+      animation: softRedCirclingPulseDark 3s infinite ease-in-out;
     }
   </style>
 </head>
@@ -237,10 +314,43 @@
           <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 1 ng 4</span>
         </div>
 
+        <!-- START HERE GUIDE / ARROW CALLOUT FOR NON-TECHY CLIENTS -->
+        <div id="startHereCallout" class="relative p-4 rounded-2xl bg-gradient-to-r from-red-600/15 via-rose-600/10 to-amber-500/10 border-2 border-red-500/50 dark:border-rose-500/60 shadow-lg shadow-red-900/10 transition-all">
+          <div class="flex items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white flex items-center justify-center text-xl shadow-lg shadow-red-600/40 animate-bounce shrink-0 select-none">
+                👇
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-red-600 dark:text-rose-400 flex items-center gap-1.5">
+                    <span class="inline-block animate-bounce">👉</span> DITO PO MAG-UMPISA (START HERE)
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-rose-300 font-bold border border-red-300 dark:border-red-800">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-rose-400 animate-ping"></span> Unang Hakbang
+                  </span>
+                </div>
+                <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 mt-1 leading-snug">
+                  I-type ang iyong <strong>Apelyido (Surname)</strong> sa kahon sa ibaba. Ang mga kahon na may <span class="text-red-600 dark:text-rose-400 font-bold underline decoration-red-400">pulang bilog (red ring)</span> ay kailangang punan. Awtomatikong mawawala ang pula kapag natapos mong i-type.
+                </p>
+              </div>
+            </div>
+            <div class="hidden sm:flex flex-col items-center justify-center text-red-600 dark:text-rose-400 font-black text-2xl animate-bounce pr-2 select-none" title="I-type dito sa unang kahon">
+              <span>⬇️</span>
+              <span class="text-[9px] font-bold tracking-tighter">SIMULA</span>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <!-- Surname -->
-          <div>
-            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Apelyido (Surname) *</label>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200">Apelyido (Surname) *</label>
+              <span id="surnameArrowBadge" class="inline-flex items-center gap-1 text-[10px] font-extrabold text-red-600 dark:text-rose-400 bg-red-50 dark:bg-red-950/80 border border-red-300 dark:border-red-800 px-2 py-0.5 rounded-md animate-pulse">
+                <span class="animate-bounce">👉</span> DITO MAG-UMPISA ⬇️
+              </span>
+            </div>
             <input type="text" id="surname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <!-- First Name -->
@@ -1110,6 +1220,12 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       function endDraw(e) {
         if (sigPads[key].drawing) {
           sigPads[key].drawing = false;
+          if (sigPads[key].points.length > 2) {
+            sigPads[key].hasSignature = true;
+          }
+          if (typeof updateRequiredFieldHighlights === 'function') {
+            updateRequiredFieldHighlights();
+          }
         }
       }
 
@@ -1128,6 +1244,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       pad.ctx.clearRect(0, 0, pad.canvas.width, pad.canvas.height);
       pad.points = [];
       pad.hasSignature = false;
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        updateRequiredFieldHighlights();
+      }
     }
 
     function drawSampleSignature(key) {
@@ -1177,6 +1296,92 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       ctx.fill();
 
       pad.hasSignature = true;
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        updateRequiredFieldHighlights();
+      }
+    }
+
+    /* ========================================================
+       REAL-TIME REQUIRED FIELD CIRCLING & ATTENTION ENGINE
+       ======================================================== */
+    function updateRequiredFieldHighlights() {
+      // Step 1: Principal Personal Details
+      const step1Fields = [
+        document.getElementById('surname'),
+        document.getElementById('firstName'),
+        document.getElementById('dob-month'),
+        document.getElementById('dob-day'),
+        document.getElementById('dob-year'),
+        document.getElementById('pagibigMid'),
+        document.getElementById('contact'),
+        document.getElementById('email'),
+        document.getElementById('address')
+      ];
+
+      // Step 2: Work & Income
+      const step2Fields = [
+        document.getElementById('employer'),
+        document.getElementById('workPlace'),
+        document.getElementById('occupation'),
+        document.getElementById('income')
+      ];
+
+      // Step 3: Spouse (Only if Married)
+      const maritalStatusEl = document.getElementById('maritalStatus');
+      const isMarried = maritalStatusEl && maritalStatusEl.value === 'MARRIED';
+      const step3Fields = isMarried ? [
+        document.getElementById('spouseSurname'),
+        document.getElementById('spouseFirstName')
+      ] : [];
+
+      const allFields = [...step1Fields, ...step2Fields, ...step3Fields];
+
+      allFields.forEach(el => {
+        if (!el) return;
+        const val = (el.value || '').trim();
+        const isEmpty = (val === '' || (el.tagName === 'SELECT' && val === ''));
+
+        if (isEmpty) {
+          el.classList.add('field-needed-ring');
+          el.classList.remove('field-satisfied');
+        } else {
+          el.classList.remove('field-needed-ring');
+          el.classList.add('field-satisfied');
+        }
+      });
+
+      // Update Apelyido (Surname) Animated Arrow Pointer Badge
+      const surnameInput = document.getElementById('surname');
+      const surnameBadge = document.getElementById('surnameArrowBadge');
+      if (surnameInput && surnameBadge) {
+        if (surnameInput.value.trim().length > 0) {
+          surnameBadge.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">✓ Apelyido Naisulat!</span>`;
+          surnameBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 px-2 py-0.5 rounded-md";
+        } else {
+          surnameBadge.innerHTML = `<span class="animate-bounce">👉</span> DITO MAG-UMPISA ⬇️`;
+          surnameBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-red-600 dark:text-rose-400 bg-red-50 dark:bg-red-950/80 border border-red-300 dark:border-red-800 px-2 py-0.5 rounded-md animate-pulse";
+        }
+      }
+
+      // Step 4 Signature Pad Container Ring
+      const sigContainers = document.querySelectorAll('.sig-canvas-container');
+      if (sigContainers.length > 0) {
+        const principalContainer = sigContainers[0];
+        if (sigPads.principal && sigPads.principal.hasSignature) {
+          principalContainer.classList.remove('sig-needed-ring');
+        } else {
+          principalContainer.classList.add('sig-needed-ring');
+        }
+
+        if (sigContainers.length > 1) {
+          const spouseContainer = sigContainers[1];
+          if (isMarried && sigPads.spouse && !sigPads.spouse.hasSignature) {
+            spouseContainer.classList.add('sig-needed-ring');
+          } else {
+            spouseContainer.classList.remove('sig-needed-ring');
+          }
+        }
+      }
     }
 
     /* ========================================================
@@ -1202,6 +1407,15 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         }
       }
       currentStep = step;
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        updateRequiredFieldHighlights();
+      }
+      if (step === 1) {
+        setTimeout(() => {
+          const sn = document.getElementById('surname');
+          if (sn && !sn.value.trim()) sn.focus();
+        }, 150);
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1269,6 +1483,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         singleNotice.classList.remove('hidden');
         spouseFields.classList.add('hidden');
         spouseSigWrapper.classList.add('hidden');
+      }
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        updateRequiredFieldHighlights();
       }
     }
 
@@ -1808,6 +2025,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       handleMaritalChange();
       evaluateIncomeCeiling();
       drawSampleSignature('principal');
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        updateRequiredFieldHighlights();
+      }
 
       alert('Napunan na ang sample buyer data sa ALL CAPS kasama ang bold ink signature at Date of Birth (Aug 14, 1995)! Pwede mo nang i-click ang Next.');
     }
@@ -1831,6 +2051,15 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       initUppercaseInputs();
       updateThemeToggleUI();
       handleMaritalChange();
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        document.addEventListener('input', updateRequiredFieldHighlights);
+        document.addEventListener('change', updateRequiredFieldHighlights);
+        updateRequiredFieldHighlights();
+        setTimeout(() => {
+          const sn = document.getElementById('surname');
+          if (sn && !sn.value.trim()) sn.focus();
+        }, 350);
+      }
       if (window.lucide) lucide.createIcons();
     });
   </script>
