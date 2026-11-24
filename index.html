@@ -63,6 +63,55 @@
     .uppercase-input {
       text-transform: uppercase;
     }
+
+    /* High-contrast bold input borders */
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      border: 2px solid #94a3b8 !important; /* solid bold slate-400 */
+      background-color: #ffffff;
+      color: #0f172a !important;
+      font-weight: 600 !important;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .dark input[type="text"],
+    .dark input[type="email"],
+    .dark input[type="number"],
+    .dark select,
+    .dark textarea {
+      border: 2px solid #64748b !important; /* solid bold slate-500 in dark mode */
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #dc2626 !important; /* bold red-600 */
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25) !important;
+    }
+
+    .dark input[type="text"]:focus,
+    .dark input[type="email"]:focus,
+    .dark input[type="number"]:focus,
+    .dark select:focus,
+    .dark textarea:focus {
+      border-color: #f43f5e !important;
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.3) !important;
+    }
+
+    .sig-canvas-container {
+      border: 2.5px dashed #94a3b8 !important;
+    }
+    .dark .sig-canvas-container {
+      border: 2.5px dashed #64748b !important;
+    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-red-700 selection:text-white transition-colors duration-150">
@@ -82,7 +131,7 @@
             </span>
           </h1>
           <p class="text-[11px] text-slate-400">
-            Assisting SC: <span class="text-amber-400 font-medium">John Edcee Cañizares</span> • Deca Gold / North Forbes
+            Assisting SC: <a href="https://m.me/jhn.cnzrs" target="_blank" class="text-amber-400 hover:underline font-semibold" title="Chat with JC on Messenger">John Edcee Cañizares</a> • Accredited by <a href="https://facebook.com/DecaHomeUrda" target="_blank" class="text-rose-300 hover:underline font-semibold" title="Follow Official Page">@DecaHomeUrda</a> (Deca Gold Realty)
           </p>
         </div>
       </div>
@@ -191,30 +240,30 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <!-- Surname -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apelyido (Surname) *</label>
-            <input type="text" id="surname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Apelyido (Surname) *</label>
+            <input type="text" id="surname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <!-- First Name -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan (First Name) *</label>
-            <input type="text" id="firstName" placeholder="JUAN" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pangalan (First Name) *</label>
+            <input type="text" id="firstName" placeholder="JUAN" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <!-- Middle Name -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Gitnang Pangalan (Middle Name)</label>
-            <input type="text" id="middleName" placeholder="SANTOS (O N/A KUNG WALA)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition">
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Gitnang Pangalan (Middle Name)</label>
+            <input type="text" id="middleName" placeholder="SANTOS (O N/A KUNG WALA)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition">
           </div>
         </div>
 
         <!-- Smart 3-Segment Date of Birth Picker -->
         <div>
-          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+          <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">
             Petsa ng Kapanganakan (Date of Birth) *
           </label>
           <div class="grid grid-cols-3 gap-2">
             <!-- Month -->
             <div>
-              <select id="dob-month" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+              <select id="dob-month" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
                 <option value="">Buwan (Month)</option>
                 <option value="01">01 - Enero</option>
                 <option value="02">02 - Pebrero</option>
@@ -232,13 +281,13 @@
             </div>
             <!-- Day -->
             <div>
-              <select id="dob-day" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+              <select id="dob-day" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
                 <option value="">Araw (Day)</option>
               </select>
             </div>
             <!-- Year -->
             <div>
-              <select id="dob-year" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+              <select id="dob-year" onchange="syncDateOfBirth('principal')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
                 <option value="">Taon (Year)</option>
               </select>
             </div>
@@ -253,7 +302,7 @@
         <!-- Pag-IBIG Membership & MID -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Miyembro ba ng Pag-IBIG Fund? *</label>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Miyembro ba ng Pag-IBIG Fund? *</label>
             <div class="flex items-center space-x-6 py-2">
               <label class="inline-flex items-center text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input type="radio" name="pagibigMember" value="YES" checked class="text-red-600 focus:ring-red-500 mr-2">
@@ -266,8 +315,8 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pag-IBIG MID Number (12-Digit) *</label>
-            <input type="text" id="pagibigMid" placeholder="1212-3456-7890" maxlength="14" oninput="formatMID(this)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold tracking-wide transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pag-IBIG MID Number (12-Digit) *</label>
+            <input type="text" id="pagibigMid" placeholder="1212-3456-7890" maxlength="14" oninput="formatMID(this)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold tracking-wide transition" required>
             <span class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">Makikita sa iyong Virtual Pag-IBIG o Loyalty Card Plus</span>
           </div>
         </div>
@@ -275,16 +324,16 @@
         <!-- Contact & Civil Status -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mobile Contact Number *</label>
-            <input type="text" id="contact" placeholder="0919 123 4567" maxlength="13" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Mobile Contact Number *</label>
+            <input type="text" id="contact" placeholder="0919 123 4567" maxlength="13" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address *</label>
-            <input type="email" id="email" placeholder="JUAN.DELACRUZ@GMAIL.COM" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Email Address *</label>
+            <input type="email" id="email" placeholder="JUAN.DELACRUZ@GMAIL.COM" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Katayuang Sibil (Civil Status) *</label>
-            <select id="maritalStatus" onchange="handleMaritalChange()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Katayuang Sibil (Civil Status) *</label>
+            <select id="maritalStatus" onchange="handleMaritalChange()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
               <option value="SINGLE">WALANG ASAWA (SINGLE)</option>
               <option value="MARRIED">KASAL (MARRIED)</option>
               <option value="WIDOWED">BYUDO / BYUDA (WIDOWED)</option>
@@ -295,8 +344,8 @@
 
         <!-- Present Address -->
         <div>
-          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kasalukuyang Tirahan (Present Home Address) *</label>
-          <input type="text" id="address" placeholder="HOUSE NO., STREET, BARANGAY, LUNGSOD/BAYAN, PROBINSYA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+          <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Kasalukuyang Tirahan (Present Home Address) *</label>
+          <input type="text" id="address" placeholder="HOUSE NO., STREET, BARANGAY, LUNGSOD/BAYAN, PROBINSYA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
         </div>
 
         <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
@@ -325,8 +374,8 @@
         <!-- Occupation Category Track -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kategorya ng Trabaho (Occupation Track) *</label>
-            <select id="occType" onchange="updateTrackRequirements()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Kategorya ng Trabaho (Occupation Track) *</label>
+            <select id="occType" onchange="updateTrackRequirements()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
               <option value="PRIVATE EMPLOYEE">PRIVATE EMPLOYEE (Lokal na Empleyado)</option>
               <option value="GOVERNMENT EMPLOYEE">GOVERNMENT EMPLOYEE (Gobyerno / LGU)</option>
               <option value="VIRTUAL ASSISTANT / FREELANCE">VIRTUAL ASSISTANT / FREELANCER (Online)</option>
@@ -336,8 +385,8 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Katayuan sa Trabaho (Employment Status) *</label>
-            <select id="empStatus" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Katayuan sa Trabaho (Employment Status) *</label>
+            <select id="empStatus" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
               <option value="PERMANENT / REGULAR">PERMANENT / REGULAR</option>
               <option value="CONTRACTUAL">CONTRACTUAL</option>
               <option value="PART-TIME / TEMPORARY">PART-TIME / TEMPORARY</option>
@@ -349,26 +398,26 @@
         <!-- Employer / Business Details -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan ng Kumpanya / Employer *</label>
-            <input type="text" id="employer" placeholder="KUMPANYA O PANGALAN NG NEGOSYO" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pangalan ng Kumpanya / Employer *</label>
+            <input type="text" id="employer" placeholder="KUMPANYA O PANGALAN NG NEGOSYO" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Lugar ng Trabaho (Place of Work / Address) *</label>
-            <input type="text" id="workPlace" placeholder="LUNGSOD O PROBINSYA (HAL. URDANETA / NCR / OVERSEAS)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Lugar ng Trabaho (Place of Work / Address) *</label>
+            <input type="text" id="workPlace" placeholder="LUNGSOD O PROBINSYA (HAL. URDANETA / NCR / OVERSEAS)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
         </div>
 
         <!-- Position & Income -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Posisyon o Katungkulan (Occupation / Designation) *</label>
-            <input type="text" id="occupation" placeholder="STAFF / SUPERVISOR / VA / SEAFARER" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Posisyon o Katungkulan (Occupation / Designation) *</label>
+            <input type="text" id="occupation" placeholder="STAFF / SUPERVISOR / VA / SEAFARER" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Basic Monthly Income (Buwanang Sahod) *</label>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Basic Monthly Income (Buwanang Sahod) *</label>
             <div class="relative">
               <span class="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
-              <input type="number" id="income" placeholder="20000" min="5000" step="500" oninput="evaluateIncomeCeiling()" class="w-full pl-8 pr-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-bold transition" required>
+              <input type="number" id="income" placeholder="20000" min="5000" step="500" oninput="evaluateIncomeCeiling()" class="w-full pl-8 pr-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-bold transition" required>
             </div>
             <!-- Dynamic Income ceiling advice badge -->
             <div id="income-feedback" class="text-[11px] mt-1.5 text-slate-500 dark:text-slate-400">
@@ -424,24 +473,24 @@
         <div id="spouse-fields-container" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Apelyido ng Asawa *</label>
-              <input type="text" id="spouseSurname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Apelyido ng Asawa *</label>
+              <input type="text" id="spouseSurname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pangalan ng Asawa *</label>
-              <input type="text" id="spouseFirstName" placeholder="MARIA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pangalan ng Asawa *</label>
+              <input type="text" id="spouseFirstName" placeholder="MARIA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Gitnang Pangalan ng Asawa</label>
-              <input type="text" id="spouseMiddleName" placeholder="GARCIA (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Gitnang Pangalan ng Asawa</label>
+              <input type="text" id="spouseMiddleName" placeholder="GARCIA (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
 
           <!-- Spouse Smart DOB Dropdown -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Petsa ng Kapanganakan ng Asawa</label>
+            <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Petsa ng Kapanganakan ng Asawa</label>
             <div class="grid grid-cols-3 gap-2">
-              <select id="spouse-dob-month" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+              <select id="spouse-dob-month" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
                 <option value="">Buwan</option>
                 <option value="01">01 - Enero</option>
                 <option value="02">02 - Pebrero</option>
@@ -456,10 +505,10 @@
                 <option value="11">11 - Nobyembre</option>
                 <option value="12">12 - Disyembre</option>
               </select>
-              <select id="spouse-dob-day" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+              <select id="spouse-dob-day" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
                 <option value="">Araw</option>
               </select>
-              <select id="spouse-dob-year" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-medium transition">
+              <select id="spouse-dob-year" onchange="syncDateOfBirth('spouse')" class="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
                 <option value="">Taon</option>
               </select>
             </div>
@@ -471,41 +520,41 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pag-IBIG MID ng Asawa</label>
-              <input type="text" id="spousePagibigMid" placeholder="1212-3456-7890 (KUNG MERON)" maxlength="14" oninput="formatMID(this)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pag-IBIG MID ng Asawa</label>
+              <input type="text" id="spousePagibigMid" placeholder="1212-3456-7890 (KUNG MERON)" maxlength="14" oninput="formatMID(this)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Buwanang Sahod ng Asawa (Gross Monthly Income)</label>
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Buwanang Sahod ng Asawa (Gross Monthly Income)</label>
               <div class="relative">
                 <span class="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
-                <input type="number" id="spouseIncome" placeholder="0" min="0" step="500" class="w-full pl-8 pr-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-bold transition">
+                <input type="number" id="spouseIncome" placeholder="0" min="0" step="500" class="w-full pl-8 pr-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-bold transition">
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Employer / Kumpanya ng Asawa</label>
-              <input type="text" id="spouseEmployer" placeholder="KUMPANYA O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Employer / Kumpanya ng Asawa</label>
+              <input type="text" id="spouseEmployer" placeholder="KUMPANYA O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Lugar ng Trabaho ng Asawa</label>
-              <input type="text" id="spouseWorkPlace" placeholder="LUNGSOD O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Lugar ng Trabaho ng Asawa</label>
+              <input type="text" id="spouseWorkPlace" placeholder="LUNGSOD O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Person ng Kumpanya (HR/Admin)</label>
-              <input type="text" id="spouseContactPerson" placeholder="HR NAME O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Person ng Kumpanya (HR/Admin)</label>
+              <input type="text" id="spouseContactPerson" placeholder="HR NAME O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Number ng Kumpanya</label>
-              <input type="text" id="spouseContact" placeholder="0919 000 0000 O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Number ng Kumpanya</label>
+              <input type="text" id="spouseContact" placeholder="0919 000 0000 O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email ng Kumpanya</label>
-              <input type="email" id="spouseEmail" placeholder="HR@COMPANY.COM O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Email ng Kumpanya</label>
+              <input type="email" id="spouseEmail" placeholder="HR@COMPANY.COM O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
         </div>
@@ -575,7 +624,7 @@
             </div>
           </div>
           
-          <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-white overflow-hidden shadow-inner p-1">
+          <div class="border-2 border-dashed border-slate-400 dark:border-slate-500 rounded-2xl bg-white overflow-hidden shadow-inner p-1 sig-canvas-container">
             <canvas id="sigCanvas" class="sig-canvas w-full h-40 bg-white block rounded-xl" width="1000" height="260"></canvas>
           </div>
           <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Gamitin ang daliri o mouse para pumirma nang buo at malinaw.</p>
@@ -598,7 +647,7 @@
             </div>
           </div>
           
-          <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-white overflow-hidden shadow-inner p-1">
+          <div class="border-2 border-dashed border-slate-400 dark:border-slate-500 rounded-2xl bg-white overflow-hidden shadow-inner p-1 sig-canvas-container">
             <canvas id="spouseSigCanvas" class="sig-canvas w-full h-40 bg-white block rounded-xl" width="1000" height="260"></canvas>
           </div>
           <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma ang asawa sa loob ng kahon gamit ang daliri o mouse.</p>
@@ -627,6 +676,103 @@
       </section>
 
     </div>
+
+    <!-- ACCREDITED PAGE & FOLLOW ENDORSEMENT CARD -->
+    <div class="mt-8 bg-gradient-to-br from-slate-900 via-slate-900 to-red-950 rounded-2xl border border-red-900/40 p-5 sm:p-6 text-white shadow-xl transition-all">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start space-x-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center text-white font-bold shadow-lg shadow-red-900/40 flex-shrink-0">
+            <i data-lucide="award" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-500/40 px-2 py-0.5 rounded-full">
+                Opisyal na Akreditasyon
+              </span>
+              <span class="text-[10px] text-amber-400 font-semibold flex items-center gap-1">
+                <i data-lucide="shield-check" class="w-3 h-3"></i> Pag-IBIG 4PH Verified Partner
+              </span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">
+              Deca Homes Urdaneta — Accredited Partner Page (@DecaHomeUrda)
+            </h3>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Ang assistant portal na ito ay opisyal na pinapamahalaan ng iyong Accredited Sales Consultant na si <strong class="text-amber-400">John Edcee Cañizares</strong> (Deca Gold Realty / North Forbes Realty, 8990 Holdings, Inc. • AM Rowena Comilang • Broker Vladimer Pandila).
+            </p>
+            <p class="text-xs text-rose-200 mt-1.5 font-medium">
+              👉 <strong>I-Follow at I-Like ang Aming Opisyal na Facebook Page!</strong> Pindutin ang button sa kanan upang maging updated sa konstruksyon ng 2-storey townhouses, Pag-IBIG 4PH batch processing, at mga bagong units sa Brgy. Nancayasan, Urdaneta City.
+            </p>
+          </div>
+        </div>
+        <div class="flex-shrink-0 w-full sm:w-auto flex flex-col gap-2">
+          <!-- Follow Official Page Button -->
+          <a href="https://facebook.com/DecaHomeUrda" target="_blank" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition">
+            <i data-lucide="thumbs-up" class="w-4 h-4"></i>
+            <span>I-Follow ang Page: @DecaHomeUrda</span>
+          </a>
+          <!-- Personal Messenger Button -->
+          <a href="https://m.me/jhn.cnzrs" target="_blank" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5 text-blue-400"></i>
+            <span>Personal Messenger: m.me/jhn.cnzrs</span>
+          </a>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2">
+        <span>📍 Lokasyon ng Proyekto: Brgy. Nancayasan, Urdaneta City, Pangasinan</span>
+        <span>📞 Direktang Linya / Tawag: <strong class="text-white">0919 368 2062</strong></span>
+        <span>🏢 Sales Hub: San Vicente East, Urdaneta City</span>
+      </div>
+    </div>
+
+    <!-- FAMILY & FRIENDS REFERRAL HELPER CARD -->
+    <div class="mt-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm transition-colors">
+      <div class="flex items-start gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/50 flex items-center justify-center text-amber-600 dark:text-amber-400 flex-shrink-0">
+          <i data-lucide="users" class="w-6 h-6"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+              Ibahagi ang Pagkakataong Magkabahay sa Iyong Pamilya at Kaibigan!
+            </h3>
+            <span class="text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full">
+              Referral Helper
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+            May kapamilya, kapatid, o kaibigan ka bang nangungupahan pa o naghahanap ng sariling bahay? Sa halagang <strong>₱4,005/buwan</strong> (3% subsidized Pag-IBIG 4PH) at <strong>₱10,000 Total Move-in Outlay</strong>, maaari na rin silang magkabahay sa Deca Homes Urdaneta! I-connect mo lamang sila sa akin at ako ang personal na gagabay sa kanilang White Form at pre-screening.
+          </p>
+
+          <!-- Ready-to-copy forward box -->
+          <div class="mt-3 p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border-2 border-slate-300 dark:border-slate-700 text-xs">
+            <div class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1 flex items-center justify-between">
+              <span>Mensaheng Handa Nang I-Forward:</span>
+              <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
+                <i data-lucide="sparkles" class="w-3 h-3"></i> 1-Click Copy
+              </span>
+            </div>
+            <p id="forwardMessageText" class="text-slate-800 dark:text-slate-100 font-medium select-all leading-relaxed whitespace-pre-line">🏡 Magandang balita! May affordable 2-Storey Townhouse sa Deca Homes Urdaneta sa halagang ₱4,005/buwan lamang sa ilalim ng Pag-IBIG 4PH (3% subsidized interest, ₱10,000 Total Move-In Outlay).
+
+Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si Sir John Edcee Cañizares (Accredited Sales Consultant):
+👉 Personal Messenger: https://m.me/jhn.cnzrs
+👉 Facebook Page: https://facebook.com/DecaHomeUrda
+📱 Mobile: 0919 368 2062</p>
+          </div>
+
+          <div class="mt-3 flex flex-wrap items-center gap-2.5">
+            <button type="button" onclick="copyForwardLink()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs flex items-center gap-2 shadow-md transition">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span>Kopyahin ang Mensahe & Messenger Link para i-Forward</span>
+            </button>
+            <a href="https://m.me/jhn.cnzrs" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5 text-blue-500"></i>
+              <span>I-open ang m.me/jhn.cnzrs</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- HIDDEN CANVAS FOR HIGH-RES RENDERING (1792 x 2400) -->
@@ -634,7 +780,7 @@
 
   <!-- OUTPUT MODAL (PREVIEW, DOWNLOAD & MESSENGER SHARE) -->
   <div id="outputModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       
       <!-- Modal Header -->
       <div class="px-6 py-4 bg-slate-900 border-b border-slate-800 text-white flex items-center justify-between">
@@ -654,45 +800,98 @@
 
       <!-- Preview Image Container -->
       <div class="p-4 overflow-y-auto flex-1 bg-slate-100 dark:bg-slate-950/50 flex flex-col items-center">
-        <div class="bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-md max-w-md w-full">
-          <img id="formPreviewImg" src="" alt="White Form Preview" class="w-full h-auto rounded-lg border border-slate-200 dark:border-slate-800">
+        
+        <!-- Messenger Browser Direct Save Notice Banner -->
+        <div id="messengerNoticeBanner" class="w-full max-w-md mb-3 p-3.5 bg-amber-50 dark:bg-amber-950/70 border-2 border-amber-400 dark:border-amber-700 rounded-2xl text-xs text-amber-950 dark:text-amber-200 flex items-start gap-2.5 shadow-sm">
+          <i data-lucide="smartphone" class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"></i>
+          <div class="flex-1">
+            <strong class="text-xs font-bold text-amber-900 dark:text-amber-100">Paalala para sa Messenger App / In-App Browser:</strong>
+            <p class="mt-1 text-[11px] text-amber-800 dark:text-amber-300 leading-snug">
+              Hindi pinapayagan ng Messenger browser ang background auto-download.
+            </p>
+            <div class="mt-1.5 p-2 bg-amber-100/80 dark:bg-amber-900/40 rounded-lg text-amber-950 dark:text-amber-100 font-bold text-xs flex items-center gap-1.5">
+              <span>👉</span>
+              <span><strong>Pindutin nang matagal (Long-Press / Hold)</strong> ang larawan sa ibaba at piliin ang <strong>"Save Image"</strong>!</span>
+            </div>
+            <div class="mt-2 flex flex-wrap items-center gap-3 text-[11px]">
+              <button type="button" onclick="openImageInNewTab()" class="underline font-bold text-blue-700 dark:text-blue-300 hover:text-blue-900 flex items-center gap-1">
+                <i data-lucide="external-link" class="w-3 h-3"></i> Tingnan sa Bagong Tab
+              </button>
+              <button type="button" onclick="openInExternalBrowser()" class="underline font-bold text-amber-800 dark:text-amber-200 hover:text-amber-950 flex items-center gap-1">
+                <i data-lucide="chrome" class="w-3 h-3"></i> Buksan sa Chrome Browser
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rendered Image Box -->
+        <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-lg max-w-md w-full relative">
+          <img id="formPreviewImg" src="" alt="White Form Preview" class="w-full h-auto rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer" onclick="openImageInNewTab()" title="Pindutin para buksan o i-save">
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-[10px] px-3 py-1 rounded-full pointer-events-none backdrop-blur-sm sm:hidden flex items-center gap-1 shadow">
+            <i data-lucide="hand" class="w-3 h-3 text-amber-400"></i> Long-press image para i-Save
+          </div>
         </div>
       </div>
 
       <!-- Modal Actions Toolbar -->
-      <div class="p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-3">
+      <div class="p-4 sm:p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-3">
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <!-- 1. Download High-Res JPG -->
-          <button onclick="downloadImage()" class="px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-red-900/20 transition">
-            <i data-lucide="download" class="w-4 h-4"></i>
-            <span>1. I-download ang Larawan (JPG)</span>
+        <!-- Primary Auto-Save & Send to Messenger Actions -->
+        <div class="space-y-2">
+          <!-- 1. Send to JC Personal Messenger (AUTO SAVES FORM FIRST) -->
+          <button onclick="sendToMessengerWithAutoSave('https://m.me/jhn.cnzrs')" class="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/25 transition transform hover:-translate-y-0.5">
+            <i data-lucide="send" class="w-4 h-4 text-amber-300"></i>
+            <span>1. I-save & I-send sa Personal Messenger ni JC (m.me/jhn.cnzrs)</span>
           </button>
 
-          <!-- 2. Send to JC on Messenger -->
-          <a href="https://m.me/DecaHomeUrda" target="_blank" class="px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-900/20 transition">
-            <i data-lucide="message-circle" class="w-4 h-4"></i>
-            <span>2. I-send kay JC sa Messenger</span>
-          </a>
+          <!-- 2. Send to Official Page Messenger (AUTO SAVES FORM FIRST) -->
+          <button onclick="sendToMessengerWithAutoSave('https://m.me/DecaHomeUrda')" class="w-full px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 shadow-sm transition">
+            <i data-lucide="message-square" class="w-4 h-4 text-blue-400"></i>
+            <span>2. I-save & I-send sa Page (@DecaHomeUrda)</span>
+          </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <!-- 3. Copy Summary -->
-          <button onclick="copyLeadSummary()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 transition">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <!-- Download High-Res JPG -->
+          <button onclick="downloadImage()" class="px-3 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>I-download (JPG)</span>
+          </button>
+
+          <!-- View Full Image in New Tab -->
+          <button onclick="openImageInNewTab()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>Tingnan sa Tab</span>
+          </button>
+
+          <!-- Copy Lead Summary -->
+          <button onclick="copyLeadSummary()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-            <span>3. Kopyahin ang Buod para sa Chat</span>
+            <span>Kopyahin ang Buod</span>
           </button>
 
-          <!-- 4. Print -->
-          <button onclick="printForm()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 transition">
+          <!-- Print Form -->
+          <button onclick="printForm()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
             <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-            <span>I-print ang Form</span>
+            <span>I-print Form</span>
           </button>
         </div>
 
-        <!-- Next Step Instructions -->
-        <div class="p-3.5 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/50 text-xs text-amber-900 dark:text-amber-300">
-          <strong>Ano ang Sunod na Gagawin?</strong> Pagka-download ng larawan, i-send lamang ito sa ating Messenger chat kay <span class="font-bold">John Edcee Cañizares</span> kasama ang Valid ID at 1-month payslip para ma-reserve agad ang iyong townhouse slot sa San Vicente East Office.
+        <!-- Endorsement & Referral Strip -->
+        <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <i data-lucide="award" class="w-4 h-4 text-amber-500 flex-shrink-0"></i>
+            <span>Accredited Page: <strong class="text-slate-900 dark:text-white">@DecaHomeUrda</strong> (Deca Gold / 8990 Holdings)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="https://facebook.com/DecaHomeUrda" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1">
+              <i data-lucide="thumbs-up" class="w-3 h-3"></i> I-Follow ang Page
+            </a>
+            <span>•</span>
+            <button type="button" onclick="copyForwardLink()" class="text-amber-600 dark:text-amber-400 font-bold hover:underline flex items-center gap-1">
+              <i data-lucide="share-2" class="w-3 h-3"></i> I-share sa Pamilya
+            </button>
+          </div>
         </div>
 
       </div>
@@ -1280,6 +1479,13 @@
         const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
         document.getElementById('formPreviewImg').src = dataUrl;
         document.getElementById('outputModal').classList.remove('hidden');
+        if (isMessengerBrowser()) {
+          const banner = document.getElementById('messengerNoticeBanner');
+          if (banner) {
+            banner.classList.add('ring-4', 'ring-amber-400');
+            setTimeout(() => banner.classList.remove('ring-4', 'ring-amber-400'), 3000);
+          }
+        }
         if (window.lucide) lucide.createIcons();
       } catch (err) {
         console.error('Error generating image preview:', err);
@@ -1343,12 +1549,182 @@
       document.getElementById('outputModal').classList.add('hidden');
     }
 
-    function downloadImage() {
+    function isMessengerBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+      return /FBAN|FBAV|Messenger|FB_IAB|FBSS/i.test(ua);
+    }
+
+    function openInExternalBrowser() {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      if (isAndroid) {
+        const chromeIntent = 'intent://' + location.host + location.pathname + location.search + '#Intent;scheme=https;package=com.android.chrome;end';
+        window.location.href = chromeIntent;
+      } else {
+        alert('Paano buksan sa Safari / Chrome:\n\n1. I-tap ang tatlong tuldok (•••) sa itaas-kanang sulok ng Messenger screen.\n2. Piliin ang "Open in System Browser" o "Open in Safari".');
+      }
+    }
+
+    function openImageInNewTab() {
+      const canvas = document.getElementById('renderCanvas');
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+      const newWin = window.open('', '_blank');
+      if (newWin) {
+        newWin.document.write(
+          '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Deca Homes White Form</title>' +
+          '<style>body{margin:0;padding:16px;background:#0f172a;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;}' +
+          'img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6);}' +
+          '.hint{margin-bottom:12px;padding:10px 16px;background:#92400e;color:#fef3c7;border-radius:8px;font-size:13px;text-align:center;font-weight:bold;}' +
+          '</style></head><body>' +
+          '<div class="hint">📱 Pindutin nang matagal (Long-Press / Hold) ang larawan sa ibaba at piliin ang "Save Image" para ma-save sa gallery!</div>' +
+          '<img src="' + dataUrl + '">' +
+          '</body></html>'
+        );
+        newWin.document.close();
+      } else {
+        window.location.href = dataUrl;
+      }
+    }
+
+    function downloadImage(silent = false) {
       const surname = (document.getElementById('surname').value.trim() || 'BUYER').toUpperCase();
+      const canvas = document.getElementById('renderCanvas');
+      const filename = 'DecaHomes-WhiteForm-' + surname + '.jpg';
+      
+      try {
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              fallbackDataUrlDownload(canvas, filename, silent);
+              return;
+            }
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+
+            if (isMessengerBrowser()) {
+              showMessengerSaveAlert();
+            } else if (!silent) {
+              showToast('✅ Nai-download na ang White Form JPG!');
+            }
+          }, 'image/jpeg', 0.95);
+        } else {
+          fallbackDataUrlDownload(canvas, filename, silent);
+        }
+      } catch (err) {
+        fallbackDataUrlDownload(canvas, filename, silent);
+      }
+    }
+
+    function fallbackDataUrlDownload(canvas, filename, silent = false) {
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
       const link = document.createElement('a');
-      link.download = 'DecaHomes-WhiteForm-' + surname + '.jpg';
-      link.href = document.getElementById('renderCanvas').toDataURL('image/jpeg', 0.95);
+      link.download = filename;
+      link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+
+      if (isMessengerBrowser()) {
+        showMessengerSaveAlert();
+      } else if (!silent) {
+        showToast('✅ Nai-download na ang White Form JPG!');
+      }
+    }
+
+    function showMessengerSaveAlert() {
+      const banner = document.getElementById('messengerNoticeBanner');
+      if (banner) {
+        banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        banner.classList.add('ring-4', 'ring-amber-500');
+        setTimeout(() => banner.classList.remove('ring-4', 'ring-amber-500'), 2500);
+      }
+      alert('📱 PAALALA SA MESSENGER USER:\n\nHindi pinapayagan ng Messenger in-app browser ang direct background download ng files.\n\n👉 Para ma-save sa gallery:\nPindutin nang matagal (Long-Press / Hold) ang larawan sa preview at i-tap ang "Save Image" o "I-save ang Larawan"!');
+    }
+
+    function sendToMessengerWithAutoSave(destinationUrl) {
+      // 1. Automatically trigger download/save
+      downloadImage(true);
+
+      // 2. Automatically copy summary to clipboard
+      copyLeadSummaryQuiet();
+
+      // 3. Show confirmation toast
+      showToast('📥 Awtomatikong nai-save ang White Form! Bubuksan na ang Messenger...');
+
+      // 4. Open destination messenger in new tab/window
+      setTimeout(() => {
+        window.open(destinationUrl, '_blank');
+      }, 500);
+    }
+
+    function copyLeadSummaryQuiet() {
+      const surname = (document.getElementById('surname').value.trim() || 'DELA CRUZ').toUpperCase();
+      const firstName = (document.getElementById('firstName').value.trim() || 'JUAN').toUpperCase();
+      const middleName = (document.getElementById('middleName').value.trim() || '').toUpperCase();
+      const fullName = (firstName + ' ' + (middleName ? middleName + ' ' : '') + surname).replace(/\s+/g, ' ');
+      const dob = document.getElementById('dob').value || 'N/A';
+      const contact = (document.getElementById('contact').value.trim() || 'N/A').toUpperCase();
+      const mid = (document.getElementById('pagibigMid').value.trim() || 'N/A').toUpperCase();
+      const occType = (document.getElementById('occType').value || 'PRIVATE EMPLOYEE').toUpperCase();
+      const employer = (document.getElementById('employer').value.trim() || 'N/A').toUpperCase();
+      const workPlace = (document.getElementById('workPlace').value.trim() || 'N/A').toUpperCase();
+      const occupation = (document.getElementById('occupation').value.trim() || 'N/A').toUpperCase();
+      const income = document.getElementById('income').value ? ('PHP ' + Number(document.getElementById('income').value).toLocaleString()) : 'N/A';
+      const marital = (document.getElementById('maritalStatus').value || 'SINGLE').toUpperCase();
+      const address = (document.getElementById('address').value.trim() || 'N/A').toUpperCase();
+
+      const summaryText = 
+"[DECA HOMES URDANETA - OFFICIAL WHITE FORM LEAD]\n" +
+"PANGALAN: " + fullName + "\n" +
+"CIVIL STATUS: " + marital + "\n" +
+"PETSA NG KAPANGANAKAN: " + dob + "\n" +
+"PAG-IBIG MID: " + mid + "\n" +
+"CONTACT: " + contact + "\n" +
+"TIRAHAN: " + address + "\n" +
+"KATEGORYA: " + occType + "\n" +
+"TRABAHO: " + occupation + "\n" +
+"EMPLOYER: " + employer + " (" + workPlace + ")\n" +
+"BUWANANG KITA: " + income + "\n" +
+"ASSISTING SC: JOHN EDCEE CAÑIZARES (0919 368 2062)\n" +
+"AGENCY: DECA GOLD REALTY / NORTH FORBES (8990 HOLDINGS)\n" +
+"ACCREDITED PAGE: https://facebook.com/DecaHomeUrda";
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summaryText).catch(() => {});
+      }
+    }
+
+    function copyForwardLink() {
+      const text = document.getElementById('forwardMessageText').innerText;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('✅ Na-kopya na ang mensahe at link para i-forward sa pamilya!');
+          alert('Na-kopya na sa clipboard ang mensahe at Messenger link!\n\nMaaari mo na itong i-paste at i-send sa iyong pamilya o kamag-anak sa Messenger.');
+        }).catch(() => {
+          prompt('Kopyahin ang mensahe para i-forward:', text);
+        });
+      } else {
+        prompt('Kopyahin ang mensahe para i-forward:', text);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const label = document.getElementById('toastMessage');
+      if (toast && label) {
+        label.textContent = msg;
+        toast.classList.remove('opacity-0', 'translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'translate-y-4');
+        }, 3200);
+      }
     }
 
     function printForm() {
@@ -1391,13 +1767,19 @@
 "EMPLOYER: " + employer + " (" + workPlace + ")\n" +
 "BUWANANG KITA: " + income + "\n" +
 "ASSISTING SC: JOHN EDCEE CAÑIZARES (0919 368 2062)\n" +
-"AGENCY: CASSIA DECA / NORTH FORBES REALTY";
+"AGENCY: DECA GOLD REALTY / NORTH FORBES (8990 HOLDINGS)\n" +
+"ACCREDITED PAGE: https://facebook.com/DecaHomeUrda";
 
-      navigator.clipboard.writeText(summaryText).then(() => {
-        alert('Na-kopya na sa clipboard ang buod ng White Form! Maaari mo na itong i-paste sa Messenger chat kay JC.');
-      }).catch(err => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summaryText).then(() => {
+          showToast('✅ Na-kopya na sa clipboard ang buod ng White Form!');
+          alert('Na-kopya na sa clipboard ang buod ng White Form! Maaari mo na itong i-paste sa Messenger chat kay JC.');
+        }).catch(err => {
+          prompt('Kopyahin ang buod sa ibaba:', summaryText);
+        });
+      } else {
         prompt('Kopyahin ang buod sa ibaba:', summaryText);
-      });
+      }
     }
 
     function fillSampleData() {
@@ -1452,6 +1834,12 @@
       if (window.lucide) lucide.createIcons();
     });
   </script>
+
+  <!-- FLOATING TOAST NOTIFICATION -->
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white px-5 py-3 rounded-2xl border border-slate-700 shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-none transition-all duration-300 opacity-0 translate-y-4">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toastMessage">Nai-save na ang White Form!</span>
+  </div>
 
 </body>
 </html>
