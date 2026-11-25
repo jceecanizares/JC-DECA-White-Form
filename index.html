@@ -74,17 +74,30 @@
       text-transform: uppercase;
     }
 
-    /* High-contrast bold input borders */
+    /* High-contrast bold input borders & dirty-white fill-in-the-blank surfaces */
     input[type="text"],
     input[type="email"],
     input[type="number"],
     select,
     textarea {
       border: 2px solid #94a3b8 !important; /* solid bold slate-400 */
-      background-color: #ffffff;
+      background-color: #f8fafc !important; /* clean dirty white */
       color: #0f172a !important;
       font-weight: 600 !important;
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder,
+    input[type="number"]::placeholder,
+    textarea::placeholder {
+      color: #64748b !important;
+      opacity: 1;
+    }
+
+    select option {
+      background-color: #ffffff;
+      color: #0f172a;
     }
 
     .dark input[type="text"],
@@ -92,9 +105,9 @@
     .dark input[type="number"],
     .dark select,
     .dark textarea {
-      border: 2px solid #64748b !important; /* solid bold slate-500 in dark mode */
-      background-color: #1e293b !important;
-      color: #f8fafc !important;
+      border: 2px solid #cbd5e1 !important; /* crisp border around dirty-white boxes in dark mode */
+      background-color: #f8fafc !important; /* dirty white fill-in-the-blank */
+      color: #0f172a !important;
     }
 
     /* Low-light soft red circling for unfilled required fields */
@@ -197,8 +210,8 @@
   <!-- TOP HEADER -->
   <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-30 shadow-md">
     <div class="max-w-4xl mx-auto px-3 sm:px-6 py-2.5">
-      <!-- Top Row: Logo & Brand on Left, Compact Actions on Right -->
-      <div class="flex items-center justify-between gap-2">
+      <!-- Top Row: Logo & Brand on Left, Responsive Actions on Right (No Mobile Overlap) -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white p-1 border border-slate-700 shadow flex items-center justify-center shrink-0">
             <img src="logo-deca-homes-square.jpg" alt="Deca Homes Official Logo" class="w-full h-full object-contain" onerror="this.style.display='none'">
@@ -217,8 +230,8 @@
           </div>
         </div>
 
-        <!-- Header Actions: Compact & Touch-Friendly -->
-        <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Header Actions: Wraps cleanly on mobile so it never overlaps the brand title -->
+        <div class="flex flex-wrap items-center justify-end gap-1.5 w-full sm:w-auto">
           <button type="button" onclick="openSecurityModal()" class="px-2 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/80 flex items-center gap-1 text-xs font-semibold transition shadow-sm" title="Bakit ligtas at protektado ang site na ito?">
             <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span class="hidden md:inline">Ligtas Ba Ito?</span>
@@ -233,12 +246,12 @@
             <i data-lucide="cloud" class="w-3.5 h-3.5 text-blue-400"></i>
             <span class="hidden md:inline text-[11px] font-medium">Drive Sync</span>
           </button>
-          <button type="button" onclick="openAbsorbChatModal()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 flex items-center gap-1 transition shadow-sm shrink-0" title="Paste full Messenger chat reply to auto-fill form">
+          <button type="button" onclick="openAbsorbChatModal()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 flex items-center gap-1 transition shadow-sm" title="Paste full Messenger chat reply to auto-fill form">
             <i data-lucide="clipboard-paste" class="w-3 h-3 text-amber-400"></i>
             <span class="hidden sm:inline">Absorb Chat</span>
             <span class="sm:hidden">Absorb</span>
           </button>
-          <button type="button" onclick="fillSampleData()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-red-950/80 hover:bg-red-900 text-rose-200 border border-red-800/70 flex items-center gap-1 transition shadow-sm shrink-0" title="Autofill sample buyer data for testing">
+          <button type="button" onclick="fillSampleData()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-red-950/80 hover:bg-red-900 text-rose-200 border border-red-800/70 flex items-center gap-1 transition shadow-sm" title="Autofill sample buyer data for testing">
             <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
             <span>Sample</span>
           </button>
