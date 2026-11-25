@@ -637,6 +637,43 @@
           </div>
         </div>
 
+        <!-- OFW Country & Authorized Representative in PH (Conditional: Only when OFW is selected) -->
+        <div id="ofw-representative-box" class="hidden p-4 rounded-2xl bg-emerald-950/20 dark:bg-emerald-950/35 border-2 border-emerald-500/40 space-y-4">
+          <div class="border-b border-emerald-500/20 pb-2">
+            <h4 class="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+              <i data-lucide="user-check" class="w-4 h-4"></i>
+              OFW Details: Country Abroad &amp; Authorized Representative sa PH
+            </h4>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+              Ilagay ang bansa kung saan nagtatrabaho at ang awtorisadong mag-asikaso ng papeles sa Pilipinas (SPA Attorney-in-Fact).
+            </p>
+          </div>
+          <div>
+            <label for="ofwCountry" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Bansa / Lokasyon sa Abroad (OFW Country) *</label>
+            <input type="text" id="ofwCountry" placeholder="HAL. SAUDI ARABIA / UAE / SINGAPORE / TAIWAN / SEAFARER" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="ofwRepName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Full Name ng Authorized Person *</label>
+              <input type="text" id="ofwRepName" placeholder="BUONG PANGALAN NG KINATAWAN SA PH" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
+            </div>
+            <div>
+              <label for="ofwRepContact" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Number ng Authorized Person *</label>
+              <input type="text" id="ofwRepContact" placeholder="0919 123 4567" maxlength="13" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="ofwRepEmail" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Email Address ng Authorized Person</label>
+              <input type="email" id="ofwRepEmail" placeholder="REPRESENTATIVE@GMAIL.COM" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
+            </div>
+            <div>
+              <label for="ofwRepAddress" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Address sa Pilipinas ng Authorized Person *</label>
+              <input type="text" id="ofwRepAddress" placeholder="BARANGAY, MUNICIPALITY/CITY, PROVINCE" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
+            </div>
+          </div>
+        </div>
+
         <div class="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
           <button type="button" onclick="goToStep(1)" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
@@ -1594,12 +1631,19 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         document.getElementById('address')
       ];
 
-      // Step 2: Work & Income
+      // Step 2: Work & Income (+ OFW Representative if OFW)
+      const isOfw = document.getElementById('occType') && document.getElementById('occType').value === 'OVERSEAS FILIPINO WORKER';
       const step2Fields = [
         document.getElementById('employer'),
         document.getElementById('workPlace'),
         document.getElementById('occupation'),
-        document.getElementById('income')
+        document.getElementById('income'),
+        ...(isOfw ? [
+          document.getElementById('ofwCountry'),
+          document.getElementById('ofwRepName'),
+          document.getElementById('ofwRepContact'),
+          document.getElementById('ofwRepAddress')
+        ] : [])
       ];
 
       // Step 3: Spouse (Only if Married)
@@ -1751,6 +1795,17 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         return;
       }
 
+      if (document.getElementById('occType').value === 'OVERSEAS FILIPINO WORKER') {
+        const ofwCountry = document.getElementById('ofwCountry').value.trim();
+        const repName = document.getElementById('ofwRepName').value.trim();
+        const repContact = document.getElementById('ofwRepContact').value.trim();
+        const repAddress = document.getElementById('ofwRepAddress').value.trim();
+        if (!ofwCountry || !repName || !repContact || !repAddress) {
+          alert('Para sa OFW: Paki-kumpleto ang Bansa sa Abroad (OFW Country) at ang Full Name, Contact Number, at Address ng Authorized Representative sa Pilipinas.');
+          return;
+        }
+      }
+
       const isMarried = document.getElementById('maritalStatus').value === 'MARRIED';
       if (!isMarried) {
         goToStep(4);
@@ -1829,6 +1884,18 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         box.innerHTML = '<strong>May Negosyo:</strong> Maghanda ng DTI + Mayor\'s Permit + BIR Form 1701 ITR + Audited Financial Statements (AFS) at pictures ng tindahan.';
       } else {
         box.innerHTML = '<strong>Commission-Based:</strong> Maghanda ng BIR 1701 + 1-year official bank statements + 1-year vouchers.';
+      }
+      const ofwBox = document.getElementById('ofw-representative-box');
+      if (ofwBox) {
+        if (track === 'OVERSEAS FILIPINO WORKER') {
+          ofwBox.classList.remove('hidden');
+          if (window.lucide) lucide.createIcons();
+        } else {
+          ofwBox.classList.add('hidden');
+        }
+      }
+      if (typeof updateRequiredFieldHighlights === 'function') {
+        updateRequiredFieldHighlights();
       }
       evaluateIncomeCeiling();
     }
@@ -2185,6 +2252,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const spouseOccupation = (document.getElementById('spouseOccupation').value.trim() || '').toUpperCase();
       const spouseIncome = document.getElementById('spouseIncome').value.trim();
       const spouseAddress = (document.getElementById('spouseAddress').value.trim() || '').toUpperCase();
+      const ofwCountry = (document.getElementById('ofwCountry').value.trim() || '').toUpperCase();
+      const ofwRepName = (document.getElementById('ofwRepName').value.trim() || '').toUpperCase();
+      const ofwRepContact = (document.getElementById('ofwRepContact').value.trim() || '').toUpperCase();
+      const ofwRepEmail = (document.getElementById('ofwRepEmail').value.trim() || '').toUpperCase();
+      const ofwRepAddress = (document.getElementById('ofwRepAddress').value.trim() || '').toUpperCase();
 
       // Convert generated PDF or Canvas JPG to base64
       let base64File = '';
@@ -2245,6 +2317,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         spouseOccupation: spouseOccupation,
         spouseIncome: spouseIncome,
         spouseAddress: spouseAddress,
+        ofwCountry: ofwCountry,
+        ofwRepName: ofwRepName,
+        ofwRepContact: ofwRepContact,
+        ofwRepEmail: ofwRepEmail,
+        ofwRepAddress: ofwRepAddress,
         fileExt: fileExt,
         fileBase64: base64File
       };
@@ -2908,6 +2985,22 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           "- Present Home Address: " + sAddress + "\n";
       }
 
+      if (occType === 'OVERSEAS FILIPINO WORKER') {
+        const ofwCountry = (document.getElementById('ofwCountry').value.trim() || 'N/A').toUpperCase();
+        const repName = (document.getElementById('ofwRepName').value.trim() || 'N/A').toUpperCase();
+        const repContact = (document.getElementById('ofwRepContact').value.trim() || 'N/A').toUpperCase();
+        const repEmail = (document.getElementById('ofwRepEmail').value.trim() || 'N/A').toUpperCase();
+        const repAddress = (document.getElementById('ofwRepAddress').value.trim() || 'N/A').toUpperCase();
+
+        summary +=
+          "\nOFW COUNTRY & AUTHORIZED REPRESENTATIVE IN PH (ATTORNEY-IN-FACT)\n" +
+          "- OFW Country / Location Abroad: " + ofwCountry + "\n" +
+          "- Representative Full Name: " + repName + "\n" +
+          "- Contact Number: " + repContact + "\n" +
+          "- Email Address: " + repEmail + "\n" +
+          "- Present Address in PH: " + repAddress + "\n";
+      }
+
       summary +=
         "\nASSISTING SC: JOHN EDCEE CAÑIZARES (0919 368 2062)\n" +
         "AGENCY: DECA GOLD REALTY / NORTH FORBES (8990 HOLDINGS)\n" +
@@ -3107,7 +3200,13 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       "- Employment Category:\n" +
       "- Source of Income / Job or Business:\n" +
       "- Gross Monthly Income (PHP):\n" +
-      "- Present Home Address (Region / Province / Municipality):";
+      "- Present Home Address (Region / Province / Municipality):\n\n" +
+      "AUTHORIZED REPRESENTATIVE IN PH (IF OFW ONLY)\n" +
+      "- Country / Location Abroad:\n" +
+      "- Full Name:\n" +
+      "- Contact Number:\n" +
+      "- Email Address:\n" +
+      "- Present Home Address:";
 
     function openAbsorbChatModal() {
       const modal = document.getElementById('absorbChatModal');
@@ -3251,12 +3350,14 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
 
     function parseMessengerLeadChat(rawText) {
       const lines = String(rawText || '').replace(/\r/g, '').split('\n');
-      const result = { applicant: {}, spouse: {} };
+      const result = { applicant: {}, spouse: {}, rep: {} };
       let section = 'applicant';
       let lastKey = null;
 
       function mapKey(rawKey) {
         const k = rawKey.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (k.includes('country') || k.includes('location abroad') || k.includes('bansa')) return 'country';
+        if (k === 'full name' || k === 'name' || k.includes('representative name')) return 'fullName';
         if (k.includes('last name') || k.includes('surname') || k.includes('apelyido')) return 'lastName';
         if (k.includes('first name') || k.includes('given name') || k === 'pangalan') return 'firstName';
         if (k.includes('middle name') || k.includes('gitnang')) return 'middleName';
@@ -3279,6 +3380,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       for (const rawLine of lines) {
         const line = rawLine.trim();
         if (!line) { lastKey = null; continue; }
+        if (/^(ofw\s*)?(authorized\s*representative|attorney[-\s]*in[-\s]*fact|representative\s*details)/i.test(line)) { section = 'rep'; lastKey = null; continue; }
         if (/^spouse\s*details/i.test(line)) { section = 'spouse'; lastKey = null; continue; }
         if (/^applicant\s*details/i.test(line)) { section = 'applicant'; lastKey = null; continue; }
 
@@ -3308,6 +3410,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const parsed = parseMessengerLeadChat(raw);
       const a = parsed.applicant;
       const s = parsed.spouse;
+      const r = parsed.rep || {};
       let filledCount = 0;
 
       function setVal(id, val) {
@@ -3392,6 +3495,14 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         const sInc = parseIncomeNumber(s.income);
         if (sInc) setVal('spouseIncome', sInc);
         setVal('spouseAddress', s.address || a.address);
+      }
+
+      if (aOccType === 'OVERSEAS FILIPINO WORKER' || r.country || r.fullName || r.contact || r.address) {
+        setVal('ofwCountry', r.country || a.country);
+        setVal('ofwRepName', r.fullName);
+        setVal('ofwRepContact', r.contact);
+        setVal('ofwRepEmail', r.email);
+        setVal('ofwRepAddress', r.address);
       }
 
       handleMaritalChange();
