@@ -373,25 +373,25 @@
           <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 1 ng 4</span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
           <!-- Surname -->
-          <div>
+          <div class="flex flex-col justify-end">
             <label for="surname" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Apelyido (Last Name) *</label>
             <input type="text" id="surname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <!-- First Name -->
-          <div>
+          <div class="flex flex-col justify-end">
             <label for="firstName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pangalan (First Name) *</label>
             <input type="text" id="firstName" placeholder="JUAN" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition" required>
           </div>
           <!-- Middle Name -->
-          <div>
-            <label for="middleName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Gitnang Pangalan (Middle Name)</label>
-            <input type="text" id="middleName" placeholder="SANTOS (O N/A KUNG WALA)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition">
+          <div class="flex flex-col justify-end">
+            <label for="middleName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Middle Name</label>
+            <input type="text" id="middleName" placeholder="SANTOS (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition">
           </div>
           <!-- Name Extension (Pag-IBIG 4PH Evaluation Only) -->
-          <div>
-            <label for="nameExt" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Name Extension (Jr, III, or N/A)</label>
+          <div class="flex flex-col justify-end">
+            <label for="nameExt" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Name Ext. (Jr, III, N/A)</label>
             <input type="text" id="nameExt" placeholder="JR, III, O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 dark:focus:ring-red-500 text-slate-900 dark:text-slate-100 font-semibold transition">
           </div>
         </div>
@@ -656,21 +656,21 @@
         </div>
 
         <div id="spouse-fields-container" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+            <div class="flex flex-col justify-end">
               <label for="spouseSurname" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Apelyido ng Asawa *</label>
               <input type="text" id="spouseSurname" placeholder="DELA CRUZ" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
-            <div>
+            <div class="flex flex-col justify-end">
               <label for="spouseFirstName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Pangalan ng Asawa *</label>
               <input type="text" id="spouseFirstName" placeholder="MARIA" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
-            <div>
-              <label for="spouseMiddleName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Gitnang Pangalan ng Asawa</label>
+            <div class="flex flex-col justify-end">
+              <label for="spouseMiddleName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Middle Name ng Asawa</label>
               <input type="text" id="spouseMiddleName" placeholder="GARCIA (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
-            <div>
-              <label for="spouseNameExt" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Name Extension (Jr, III, or N/A)</label>
+            <div class="flex flex-col justify-end">
+              <label for="spouseNameExt" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Name Ext. (Jr, III, N/A)</label>
               <input type="text" id="spouseNameExt" placeholder="JR, III, O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
