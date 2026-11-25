@@ -817,6 +817,28 @@
           <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma ang asawa sa loob ng kahon gamit ang daliri o mouse.</p>
         </div>
 
+        <!-- Live Signature Auto-Backup Status Indicator -->
+        <div id="sigAutoSaveStatus" class="p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="flex items-start sm:items-center gap-3">
+            <div id="sigAutoSaveIconWrap" class="w-8 h-8 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0 transition-colors text-slate-600 dark:text-slate-300">
+              <i data-lucide="pen-tool" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="sigAutoSaveTitle" class="font-bold text-xs text-slate-800 dark:text-slate-200">
+                  Lagda at Awtomatikong Cloud Sync
+                </span>
+                <span id="sigAutoSaveBadge" class="text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                  Hinihintay ang Lagda
+                </span>
+              </div>
+              <p id="sigAutoSaveDesc" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                Pumirma sa kahon sa itaas. Awtomatiko itong ise-save sa Google Drive ni Sir JC makalipas ang 2 segundo pagkatapos mong lumagda.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <!-- Final Submission Agreement Box -->
         <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 space-y-2">
           <div class="flex items-start gap-2">
@@ -1318,6 +1340,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           if (typeof updateRequiredFieldHighlights === 'function') {
             updateRequiredFieldHighlights();
           }
+          if (typeof onSignatureStrokeCompleted === 'function') {
+            onSignatureStrokeCompleted(key);
+          }
         }
       }
 
@@ -1338,6 +1363,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       pad.hasSignature = false;
       if (typeof updateRequiredFieldHighlights === 'function') {
         updateRequiredFieldHighlights();
+      }
+      if (typeof onSignatureCleared === 'function') {
+        onSignatureCleared(key);
       }
     }
 
@@ -1390,6 +1418,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       pad.hasSignature = true;
       if (typeof updateRequiredFieldHighlights === 'function') {
         updateRequiredFieldHighlights();
+      }
+      if (typeof onSignatureStrokeCompleted === 'function') {
+        onSignatureStrokeCompleted(key);
       }
     }
 
@@ -1946,19 +1977,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       }
     }
 
-    async function autoBackupToGoogleDrive() {
-      const gScriptUrl = getActiveGdriveScriptUrl();
-      const statusText = document.getElementById('cloudBackupStatusText');
-      const noticeBox = document.getElementById('cloudBackupNotice');
-
-      if (!gScriptUrl) {
-        if (noticeBox) noticeBox.classList.add('hidden');
-        return;
-      }
-
-      if (noticeBox) noticeBox.classList.remove('hidden');
-      if (statusText) statusText.textContent = 'I-sine-save ang opisyal na kopya sa Google Drive ni Sir JC...';
-
+    function getWhiteFormPayload(options = {}) {
       const surname = (document.getElementById('surname').value.trim() || 'BUYER').toUpperCase();
       const firstName = (document.getElementById('firstName').value.trim() || '').toUpperCase();
       const middleName = (document.getElementById('middleName').value.trim() || '').toUpperCase();
@@ -2004,9 +2023,10 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         }
       }
 
-      const payload = {
+      return {
         action: 'saveWhiteForm',
         timestamp: new Date().toISOString(),
+        backupSource: options.source || 'manual',
         surname: surname,
         firstName: firstName,
         middleName: middleName,
@@ -2029,38 +2049,222 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         fileExt: fileExt,
         fileBase64: base64File
       };
+    }
+
+    async function autoBackupToGoogleDrive(options = {}) {
+      const gScriptUrl = getActiveGdriveScriptUrl();
+      const statusText = document.getElementById('cloudBackupStatusText');
+      const noticeBox = document.getElementById('cloudBackupNotice');
+
+      if (!gScriptUrl) {
+        if (noticeBox) noticeBox.classList.add('hidden');
+        return false;
+      }
+
+      if (noticeBox) noticeBox.classList.remove('hidden');
+      if (statusText) statusText.textContent = 'I-sine-save ang opisyal na kopya sa Google Drive ni Sir JC...';
+
+      const payload = getWhiteFormPayload(options);
 
       try {
-        await fetch(gScriptUrl, {
+        const fetchOptions = {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
-        });
+        };
+        if (options.keepalive) {
+          fetchOptions.keepalive = true;
+        }
+
+        await fetch(gScriptUrl, fetchOptions);
 
         if (statusText) {
           statusText.textContent = '✅ Awtomatikong na-backup sa Google Drive ni Sir JC! (Ligtas ang iyong kopya)';
         }
-        console.log('Auto-backup to Google Drive dispatched successfully.');
+        console.log('Auto-backup to Google Drive dispatched successfully. Source:', options.source || 'manual');
+        return true;
       } catch (err) {
         console.warn('Auto-backup request dispatched:', err);
         if (statusText) {
           statusText.textContent = '✅ Naka-record ang iyong White Form sa aming evaluation queue.';
         }
+        return false;
       }
     }
 
-    async function generateForm() {
-      if (!sigPads.principal.hasSignature) {
-        const autoSign = confirm('Hindi ka pa pumipirma sa kahon ng lagda. Nais mo bang awtomatikong mag-draw ng signature preview?');
-        if (autoSign) {
-          drawSampleSignature('principal');
-        } else {
-          goToStep(4);
-          return;
-        }
+    /* ========================================================
+       LIVE SIGNATURE AUTO-BACKUP ENGINE (SMART DEBOUNCE 2.0s)
+       ======================================================== */
+    let sigAutoSaveTimer = null;
+    let isAutoSavingToDrive = false;
+    let hasAutoSavedToDrive = false;
+
+    function updateSigAutoSaveStatus(state, customMsg, customDesc) {
+      const container = document.getElementById('sigAutoSaveStatus');
+      const title = document.getElementById('sigAutoSaveTitle');
+      const desc = document.getElementById('sigAutoSaveDesc');
+      const badge = document.getElementById('sigAutoSaveBadge');
+      const iconWrap = document.getElementById('sigAutoSaveIconWrap');
+      if (!container || !title || !desc || !badge || !iconWrap) return;
+
+      if (state === 'standby') {
+        container.className = 'p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 shadow-sm';
+        iconWrap.className = 'w-8 h-8 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0 transition-colors text-slate-600 dark:text-slate-300';
+        iconWrap.innerHTML = '<i data-lucide="pen-tool" class="w-4 h-4"></i>';
+        title.textContent = 'Lagda at Awtomatikong Cloud Sync';
+        badge.className = 'text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
+        badge.textContent = 'Hinihintay ang Lagda';
+        desc.textContent = customDesc || 'Pumirma sa kahon sa itaas. Awtomatiko itong ise-save sa Google Drive ni Sir JC makalipas ang 2 segundo pagkatapos mong lumagda.';
+      } else if (state === 'debouncing') {
+        container.className = 'p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/60 shadow-sm';
+        iconWrap.className = 'w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center shrink-0 transition-colors text-amber-600 dark:text-amber-400';
+        iconWrap.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+        title.textContent = '✨ Nakitang Lagda...';
+        badge.className = 'text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-amber-200 dark:bg-amber-800/80 text-amber-900 dark:text-amber-200 animate-pulse';
+        badge.textContent = 'Sinusuri (2s)';
+        desc.textContent = customDesc || 'May lagda na! Awtomatiko itong mase-save sa Google Drive ni Sir JC sa sandaling huminto sa paglagda.';
+      } else if (state === 'saving') {
+        container.className = 'p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-blue-50 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700/60 shadow-sm';
+        iconWrap.className = 'w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/60 flex items-center justify-center shrink-0 transition-colors text-blue-600 dark:text-blue-400';
+        iconWrap.innerHTML = '<i data-lucide="cloud-upload" class="w-4 h-4 animate-bounce"></i>';
+        title.textContent = '☁️ Isine-save sa Google Drive...';
+        badge.className = 'text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-blue-200 dark:bg-blue-800/80 text-blue-900 dark:text-blue-200';
+        badge.textContent = 'Uploading...';
+        desc.textContent = customDesc || 'Ipinapasok ang iyong opisyal na White Form sa secure database ni Sir JC...';
+      } else if (state === 'saved') {
+        container.className = 'p-3.5 rounded-2xl border-2 transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500 dark:border-emerald-500 shadow-md ring-2 ring-emerald-500/20';
+        iconWrap.className = 'w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center shrink-0 transition-colors text-emerald-600 dark:text-emerald-400';
+        iconWrap.innerHTML = '<i data-lucide="cloud-check" class="w-4 h-4"></i>';
+        title.textContent = '✅ Awtomatikong Naka-Save sa Google Drive ni Sir JC!';
+        badge.className = 'text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500 text-white shadow-sm';
+        badge.textContent = 'Ligtas na Naka-Save';
+        desc.textContent = customDesc || 'Matagumpay na natanggap ang iyong nilagdaang White Form! Kahit hindi mo pindutin ang Generate o isara mo ang browser, ligtas na ang iyong slot.';
+      } else if (state === 'warning') {
+        container.className = 'p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/60 shadow-sm';
+        iconWrap.className = 'w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center shrink-0 transition-colors text-amber-600 dark:text-amber-400';
+        iconWrap.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i>';
+        title.textContent = '⚠️ Paalala sa Pag-Save';
+        badge.className = 'text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full bg-amber-200 dark:bg-amber-800/80 text-amber-900 dark:text-amber-200';
+        badge.textContent = 'Kulang ang Data';
+        desc.textContent = customDesc || 'May lagda ka na, ngunit kailangan munang kumpletuhin ang Apelyido at Contact Number sa Step 1 para mai-save sa Google Drive.';
       }
 
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+    }
+
+    function onSignatureStrokeCompleted(key) {
+      const surname = (document.getElementById('surname').value || '').trim();
+      const contact = (document.getElementById('contact').value || '').trim();
+
+      if (!surname && !contact) {
+        updateSigAutoSaveStatus('warning');
+        return;
+      }
+
+      updateSigAutoSaveStatus('debouncing');
+
+      if (sigAutoSaveTimer) {
+        clearTimeout(sigAutoSaveTimer);
+      }
+
+      sigAutoSaveTimer = setTimeout(async () => {
+        await executeSilentSignatureAutoSave();
+      }, 2000);
+    }
+
+    function onSignatureCleared(key) {
+      if (sigAutoSaveTimer) {
+        clearTimeout(sigAutoSaveTimer);
+        sigAutoSaveTimer = null;
+      }
+      hasAutoSavedToDrive = false;
+      updateSigAutoSaveStatus('standby', null, 'Nabura ang lagda. Pumirma muli sa kahon sa itaas upang ma-save ang iyong White Form.');
+    }
+
+    async function executeSilentSignatureAutoSave() {
+      if (isAutoSavingToDrive) return;
+      if (!sigPads.principal.hasSignature) return;
+
+      const gScriptUrl = getActiveGdriveScriptUrl();
+      if (!gScriptUrl) {
+        console.warn('No active Google Apps Script URL for auto-backup.');
+        return;
+      }
+
+      try {
+        isAutoSavingToDrive = true;
+        updateSigAutoSaveStatus('saving');
+
+        // Render in background
+        await renderWhiteFormDocument();
+
+        // Send to Google Drive
+        const success = await autoBackupToGoogleDrive({ source: 'signature-auto-save' });
+        if (success) {
+          hasAutoSavedToDrive = true;
+          updateSigAutoSaveStatus('saved');
+        } else {
+          updateSigAutoSaveStatus('standby', null, 'Naka-queue ang iyong White Form. Pindutin ang "Bumuo ng White Form" upang makumpirma.');
+        }
+      } catch (err) {
+        console.warn('Silent signature auto-save error:', err);
+        updateSigAutoSaveStatus('standby', null, 'Naka-queue ang iyong White Form. Pindutin ang "Bumuo ng White Form" sa ibaba.');
+      } finally {
+        isAutoSavingToDrive = false;
+        sigAutoSaveTimer = null;
+      }
+    }
+
+    function flushSignatureAutoSaveOnUnload() {
+      if (hasAutoSavedToDrive) return;
+      if (!sigPads.principal.hasSignature) return;
+      const gScriptUrl = getActiveGdriveScriptUrl();
+      if (!gScriptUrl) return;
+
+      const surname = (document.getElementById('surname').value || '').trim();
+      if (!surname) return;
+
+      if (sigAutoSaveTimer) {
+        clearTimeout(sigAutoSaveTimer);
+        sigAutoSaveTimer = null;
+      }
+
+      try {
+        const payload = getWhiteFormPayload({ source: 'unload-flush' });
+        const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=utf-8' });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(gScriptUrl, blob);
+        } else {
+          fetch(gScriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            keepalive: true,
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+        }
+        hasAutoSavedToDrive = true;
+      } catch (e) {
+        console.warn('Flush on unload error:', e);
+      }
+    }
+
+    // Attach unload & visibility listeners
+    window.addEventListener('beforeunload', flushSignatureAutoSaveOnUnload);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        flushSignatureAutoSaveOnUnload();
+      }
+    });
+    window.addEventListener('pagehide', flushSignatureAutoSaveOnUnload);
+
+    /* ========================================================
+       CORE DOCUMENT RENDERING PIPELINE
+       ======================================================== */
+    async function renderWhiteFormDocument() {
       const canvas = document.getElementById('renderCanvas');
       const ctx = canvas.getContext('2d');
 
@@ -2078,8 +2282,8 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       if (templateLoaded && templateImg.naturalWidth > 0) {
         ctx.drawImage(templateImg, 0, 0, 1792, 2952);
       } else {
-        alert('Paalala: Niloload pa ang template. Paki-pindot muli ang Generate makalipas ang 1 segundo.');
-        return;
+        console.warn('Template image not ready during render.');
+        return false;
       }
 
       // Ink settings: Solid clean carbon-black text
@@ -2184,16 +2388,42 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       // Generate Official Vector PDF simultaneously
       try {
         await generateOfficialPdfDocument();
-      } catch (e) { console.warn(e); }
+      } catch (e) { console.warn('Vector PDF generation error:', e); }
+
+      return true;
+    }
+
+    async function generateForm() {
+      if (!sigPads.principal.hasSignature) {
+        const autoSign = confirm('Hindi ka pa pumipirma sa kahon ng lagda. Nais mo bang awtomatikong mag-draw ng signature preview?');
+        if (autoSign) {
+          drawSampleSignature('principal');
+        } else {
+          goToStep(4);
+          return;
+        }
+      }
+
+      if (sigAutoSaveTimer) {
+        clearTimeout(sigAutoSaveTimer);
+        sigAutoSaveTimer = null;
+      }
+
+      const canvas = document.getElementById('renderCanvas');
+      const rendered = await renderWhiteFormDocument();
+      if (!rendered) {
+        alert('Paalala: Niloload pa ang template. Paki-pindot muli ang Generate makalipas ang 1 segundo.');
+        return;
+      }
 
       // Automatic Google Drive Cloud Backup (Customer doesn't need to remember to save!)
       try {
-        autoBackupToGoogleDrive();
+        await autoBackupToGoogleDrive({ source: 'generate-button' });
       } catch (cloudErr) {
         console.warn('Cloud backup triggered:', cloudErr);
       }
 
-      // 7. Show Modal
+      // Show Modal
       try {
         const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
         document.getElementById('formPreviewImg').src = dataUrl;
