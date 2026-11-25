@@ -791,21 +791,6 @@
               <input type="text" id="spouseWorkPlace" placeholder="LUNGSOD O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label for="spouseContactPerson" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Person ng Kumpanya (HR/Admin)</label>
-              <input type="text" id="spouseContactPerson" placeholder="HR NAME O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
-            </div>
-            <div>
-              <label for="spouseContact" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Number ng Kumpanya</label>
-              <input type="text" id="spouseContact" placeholder="0919 000 0000 O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
-            </div>
-            <div>
-              <label for="spouseEmail" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Email ng Kumpanya</label>
-              <input type="email" id="spouseEmail" placeholder="HR@COMPANY.COM O N/A" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
-            </div>
-          </div>
         </div>
 
         <div class="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
@@ -1897,9 +1882,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
 
           drawField(document.getElementById('spouseEmployer').value || 'N/A', leftMargin, 442.47 - 3);
           drawField(document.getElementById('spouseWorkPlace').value || 'N/A', leftMargin, 423.88 - 3);
-          drawField(document.getElementById('spouseContactPerson').value || 'N/A', leftMargin, 405.07 - 3);
-          drawField(document.getElementById('spouseContact').value || 'N/A', leftMargin, 386.27 - 3);
-          drawField(document.getElementById('spouseEmail').value || 'N/A', leftMargin, 367.67 - 3);
+          drawField('N/A', leftMargin, 405.07 - 3);
+          drawField('N/A', leftMargin, 386.27 - 3);
+          drawField('N/A', leftMargin, 367.67 - 3);
         }
 
         // Signature Names (Centered)
@@ -2137,9 +2122,6 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const spouseAddress = (document.getElementById('spouseAddress').value.trim() || '').toUpperCase();
       const spouseEmployer = (document.getElementById('spouseEmployer').value.trim() || '').toUpperCase();
       const spouseWorkPlace = (document.getElementById('spouseWorkPlace').value.trim() || '').toUpperCase();
-      const spouseContactPerson = (document.getElementById('spouseContactPerson').value.trim() || '').toUpperCase();
-      const spouseContact = (document.getElementById('spouseContact').value.trim() || '').toUpperCase();
-      const spouseEmail = (document.getElementById('spouseEmail').value.trim() || '').toUpperCase();
 
       // Convert generated PDF or Canvas JPG to base64
       let base64File = '';
@@ -2202,9 +2184,6 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         spouseAddress: spouseAddress,
         spouseEmployer: spouseEmployer,
         spouseWorkPlace: spouseWorkPlace,
-        spouseContactPerson: spouseContactPerson,
-        spouseContact: spouseContact,
-        spouseEmail: spouseEmail,
         fileExt: fileExt,
         fileBase64: base64File
       };
@@ -2508,9 +2487,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           { text: sFormattedIncome, x: 792, y: 1597, maxW: 900 },
           { text: document.getElementById('spouseEmployer').value || 'N/A', x: 792, y: 1652, maxW: 900 },
           { text: document.getElementById('spouseWorkPlace').value || 'N/A', x: 792, y: 1707, maxW: 900 },
-          { text: document.getElementById('spouseContactPerson').value || 'N/A', x: 792, y: 1762, maxW: 900 },
-          { text: document.getElementById('spouseContact').value || 'N/A', x: 792, y: 1817, maxW: 900 },
-          { text: document.getElementById('spouseEmail').value || 'N/A', x: 792, y: 1872, maxW: 900 }
+          { text: 'N/A', x: 792, y: 1762, maxW: 900 },
+          { text: 'N/A', x: 792, y: 1817, maxW: 900 },
+          { text: 'N/A', x: 792, y: 1872, maxW: 900 }
         ];
 
         sFields.forEach(f => {
