@@ -233,6 +233,11 @@
             <i data-lucide="cloud" class="w-3.5 h-3.5 text-blue-400"></i>
             <span class="hidden md:inline text-[11px] font-medium">Drive Sync</span>
           </button>
+          <button type="button" onclick="openAbsorbChatModal()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 flex items-center gap-1 transition shadow-sm shrink-0" title="Paste full Messenger chat reply to auto-fill form">
+            <i data-lucide="clipboard-paste" class="w-3 h-3 text-amber-400"></i>
+            <span class="hidden sm:inline">Absorb Chat</span>
+            <span class="sm:hidden">Absorb</span>
+          </button>
           <button type="button" onclick="fillSampleData()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-red-950/80 hover:bg-red-900 text-rose-200 border border-red-800/70 flex items-center gap-1 transition shadow-sm shrink-0" title="Autofill sample buyer data for testing">
             <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
             <span>Sample</span>
@@ -832,12 +837,17 @@
 
         <!-- Principal Signature Pad -->
         <div class="space-y-2">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <label class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
               <span>Lagda ng Principal Beneficiary (Borrower)</span>
               <span class="text-red-500">*</span>
             </label>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <label class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer font-bold">
+                <i data-lucide="image-plus" class="w-3.5 h-3.5"></i>
+                <span>Upload Signature</span>
+                <input type="file" id="sigUpload-principal" accept="image/*" class="hidden" onchange="handleSignatureImageUpload(event, 'principal')">
+              </label>
               <button type="button" onclick="drawSampleSignature('principal')" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
                 <i data-lucide="wand-2" class="w-3 h-3"></i> Sample Signature
               </button>
@@ -850,17 +860,41 @@
           <div class="border-2 border-dashed border-slate-400 dark:border-slate-500 rounded-2xl bg-white overflow-hidden shadow-inner p-1 sig-canvas-container">
             <canvas id="sigCanvas" class="sig-canvas w-full h-40 bg-white block rounded-xl" width="1000" height="260"></canvas>
           </div>
-          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Gamitin ang daliri o mouse para pumirma nang buo at malinaw.</p>
+          <div id="sigCleanupControls-principal" class="hidden p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/70 text-xs space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-bold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                Signature Auto-Clean &amp; Pen Thinning
+              </span>
+              <span id="sigThinLabel-principal" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white">Thin Pen (2)</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="sigThinRange-principal" class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Nipis ng Sulat (0 = Original, 4 = Extra Fine):</label>
+                <input type="range" id="sigThinRange-principal" min="0" max="4" step="1" value="2" oninput="reprocessUploadedSignature('principal')" class="w-full accent-blue-600 cursor-pointer">
+              </div>
+              <div>
+                <label for="sigThreshRange-principal" class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Linis ng Background (Sensitivity):</label>
+                <input type="range" id="sigThreshRange-principal" min="15" max="95" step="5" value="45" oninput="reprocessUploadedSignature('principal')" class="w-full accent-blue-600 cursor-pointer">
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Gamitin ang daliri o mouse, o i-upload ang picture ng pirma sa papel / Messenger drawing.</p>
         </div>
 
         <!-- Spouse Signature Pad (Conditional) -->
         <div id="spouse-sig-wrapper" class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800 hidden">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <label class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
               <span>Lagda ng Asawa (Spouse)</span>
               <span class="text-red-500">*</span>
             </label>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <label class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer font-bold">
+                <i data-lucide="image-plus" class="w-3.5 h-3.5"></i>
+                <span>Upload Signature</span>
+                <input type="file" id="sigUpload-spouse" accept="image/*" class="hidden" onchange="handleSignatureImageUpload(event, 'spouse')">
+              </label>
               <button type="button" onclick="drawSampleSignature('spouse')" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1">
                 <i data-lucide="wand-2" class="w-3 h-3"></i> Sample
               </button>
@@ -873,7 +907,26 @@
           <div class="border-2 border-dashed border-slate-400 dark:border-slate-500 rounded-2xl bg-white overflow-hidden shadow-inner p-1 sig-canvas-container">
             <canvas id="spouseSigCanvas" class="sig-canvas w-full h-40 bg-white block rounded-xl" width="1000" height="260"></canvas>
           </div>
-          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma ang asawa sa loob ng kahon gamit ang daliri o mouse.</p>
+          <div id="sigCleanupControls-spouse" class="hidden p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/70 text-xs space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-bold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                Spouse Signature Auto-Clean &amp; Pen Thinning
+              </span>
+              <span id="sigThinLabel-spouse" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white">Thin Pen (2)</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="sigThinRange-spouse" class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Nipis ng Sulat (0 = Original, 4 = Extra Fine):</label>
+                <input type="range" id="sigThinRange-spouse" min="0" max="4" step="1" value="2" oninput="reprocessUploadedSignature('spouse')" class="w-full accent-blue-600 cursor-pointer">
+              </div>
+              <div>
+                <label for="sigThreshRange-spouse" class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Linis ng Background (Sensitivity):</label>
+                <input type="range" id="sigThreshRange-spouse" min="15" max="95" step="5" value="45" oninput="reprocessUploadedSignature('spouse')" class="w-full accent-blue-600 cursor-pointer">
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">Pumirma ang asawa sa loob ng kahon gamit ang daliri o mouse, o mag-upload ng signature photo.</p>
         </div>
 
         <!-- Live Signature Auto-Backup Status Indicator -->
@@ -1256,10 +1309,10 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       }
       dayEl.innerHTML = dayHtml;
 
-      // Populate Years from 2008 down to 1945
+      // Populate Years from 2008 down to 1940
       const currentYear = new Date().getFullYear();
       let yearHtml = '<option value="">Taon (Year)</option>';
-      for (let y = 2008; y >= 1945; y--) {
+      for (let y = 2008; y >= 1940; y--) {
         const approxAge = currentYear - y;
         yearHtml += '<option value="' + y + '">' + y + ' (' + approxAge + ' taong gulang)</option>';
       }
@@ -1321,6 +1374,9 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         if (sigPads[key].ctx) {
           sigPads[key].ctx.strokeStyle = color;
           sigPads[key].ctx.shadowColor = color;
+        }
+        if (uploadedSigSources[key]) {
+          reprocessUploadedSignature(key);
         }
       });
 
@@ -1437,6 +1493,13 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       pad.ctx.clearRect(0, 0, pad.canvas.width, pad.canvas.height);
       pad.points = [];
       pad.hasSignature = false;
+      if (typeof uploadedSigSources !== 'undefined') {
+        uploadedSigSources[key] = null;
+      }
+      const ctrl = document.getElementById('sigCleanupControls-' + key);
+      if (ctrl) ctrl.classList.add('hidden');
+      const fileInput = document.getElementById('sigUpload-' + key);
+      if (fileInput) fileInput.value = '';
       if (typeof updateRequiredFieldHighlights === 'function') {
         updateRequiredFieldHighlights();
       }
@@ -2937,9 +3000,10 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       alert('Napunan na ang sample buyer data sa ALL CAPS kasama ang bold ink signature at Date of Birth (Aug 14, 1995)! Pwede mo nang i-click ang Next.');
     }
 
-    // Force all text inputs to automatically uppercase as user types
+    // Force all text inputs to automatically uppercase as user types (skip raw chat paste box)
     function initUppercaseInputs() {
       document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+        if (el.id === 'absorbChatInput') return;
         el.addEventListener('input', () => {
           const start = el.selectionStart;
           const end = el.selectionEnd;
@@ -2993,6 +3057,505 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       if (modal) {
         modal.classList.add('hidden');
       }
+    }
+
+    /* ========================================================
+       CHAT ABSORBER ENGINE (AUTO-FILL FROM MESSENGER REPLY)
+       ======================================================== */
+    const BLANK_MESSENGER_CHAT_TEMPLATE =
+      "Please fill out the details below so we can check your initial criteria for the Pag-IBIG 4PH program (final approval is from Pag-IBIG):\n\n" +
+      "APPLICANT DETAILS\n" +
+      "- Last Name:\n" +
+      "- First Name:\n" +
+      "- Middle Name:\n" +
+      "- Name Extension (Jr, III, or N/A):\n" +
+      "- Date of Birth:\n" +
+      "- Gender:\n" +
+      "- Maiden Name (if applicable):\n" +
+      "- Marital Status:\n" +
+      "- Pag-IBIG MID Number 12 digits:\n" +
+      "- Contact Number:\n" +
+      "- Email Address:\n" +
+      "- Employment Category:\n" +
+      "- Source of Income / Job or Business:\n" +
+      "- Gross Monthly Income (PHP):\n" +
+      "- Present Home Address (Region / Province / Municipality):\n\n" +
+      "SPOUSE DETAILS\n" +
+      "- Last Name:\n" +
+      "- First Name:\n" +
+      "- Middle Name:\n" +
+      "- Name Extension (Jr, III, or N/A):\n" +
+      "- Date of Birth:\n" +
+      "- Gender:\n" +
+      "- Maiden Name (if applicable):\n" +
+      "- Pag-IBIG MID Number 12 digits:\n" +
+      "- Contact Number:\n" +
+      "- Email Address:\n" +
+      "- Employment Category:\n" +
+      "- Source of Income / Job or Business:\n" +
+      "- Gross Monthly Income (PHP):\n" +
+      "- Present Home Address (Region / Province / Municipality):";
+
+    function openAbsorbChatModal() {
+      const modal = document.getElementById('absorbChatModal');
+      const input = document.getElementById('absorbChatInput');
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+        if (input) setTimeout(() => input.focus(), 100);
+      }
+    }
+
+    function closeAbsorbChatModal() {
+      const modal = document.getElementById('absorbChatModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function copyBlankChatTemplate() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(BLANK_MESSENGER_CHAT_TEMPLATE).then(() => {
+          showToast('Na-kopya ang blankong Messenger questionnaire!');
+        }).catch(() => {
+          prompt('Kopyahin ang template:', BLANK_MESSENGER_CHAT_TEMPLATE);
+        });
+      } else {
+        prompt('Kopyahin ang template:', BLANK_MESSENGER_CHAT_TEMPLATE);
+      }
+    }
+
+    function parseFlexibleDate(raw) {
+      if (!raw) return null;
+      const clean = String(raw).trim().replace(/,/g, ' ').replace(/\s+/g, ' ');
+      if (!clean || /^(N\/A|NONE|WALA|-)$/i.test(clean)) return null;
+
+      // YYYY-MM-DD or YYYY/MM/DD
+      let m = clean.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+      if (m) return { year: m[1], month: m[2].padStart(2, '0'), day: m[3].padStart(2, '0') };
+
+      // MM/DD/YYYY or MM-DD-YYYY (handles DD/MM/YYYY if first > 12)
+      m = clean.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+      if (m) {
+        let p1 = parseInt(m[1], 10), p2 = parseInt(m[2], 10);
+        if (p1 > 12 && p2 <= 12) { const tmp = p1; p1 = p2; p2 = tmp; }
+        return { year: m[3], month: String(p1).padStart(2, '0'), day: String(p2).padStart(2, '0') };
+      }
+
+      const monthMap = {
+        jan: '01', january: '01', enero: '01',
+        feb: '02', february: '02', pebrero: '02',
+        mar: '03', march: '03', marso: '03',
+        apr: '04', april: '04', abril: '04',
+        may: '05', mayo: '05',
+        jun: '06', june: '06', hunyo: '06',
+        jul: '07', july: '07', hulyo: '07',
+        aug: '08', august: '08', agosto: '08',
+        sep: '09', sept: '09', september: '09', setyembre: '09',
+        oct: '10', october: '10', oktubre: '10',
+        nov: '11', november: '11', nobyembre: '11',
+        dec: '12', december: '12', disyembre: '12'
+      };
+
+      // Month DD YYYY (e.g. May 14 1985)
+      m = clean.match(/^([a-zA-Z]+)\s+(\d{1,2})\s+(\d{4})$/);
+      if (m && monthMap[m[1].toLowerCase()]) {
+        return { year: m[3], month: monthMap[m[1].toLowerCase()], day: m[2].padStart(2, '0') };
+      }
+
+      // DD Month YYYY (e.g. 14 May 1985)
+      m = clean.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
+      if (m && monthMap[m[2].toLowerCase()]) {
+        return { year: m[3], month: monthMap[m[2].toLowerCase()], day: m[1].padStart(2, '0') };
+      }
+      return null;
+    }
+
+    function applyParsedDate(type, rawDate) {
+      const parsed = parseFlexibleDate(rawDate);
+      if (!parsed) return false;
+      const prefix = type === 'spouse' ? 'spouse-dob-' : 'dob-';
+      const monthEl = document.getElementById(prefix + 'month');
+      const dayEl = document.getElementById(prefix + 'day');
+      const yearEl = document.getElementById(prefix + 'year');
+      if (!monthEl || !dayEl || !yearEl) return false;
+
+      if (![...yearEl.options].some(o => o.value === parsed.year)) {
+        const opt = document.createElement('option');
+        opt.value = parsed.year;
+        opt.textContent = parsed.year;
+        yearEl.appendChild(opt);
+      }
+      monthEl.value = parsed.month;
+      dayEl.value = parsed.day;
+      yearEl.value = parsed.year;
+      syncDateOfBirth(type);
+      return true;
+    }
+
+    function normalizeGender(val) {
+      const u = String(val || '').trim().toUpperCase();
+      if (/^(F|FEMALE|BABAE|WOMAN)$/.test(u)) return 'FEMALE';
+      if (/^(M|MALE|LALAKI|MAN)$/.test(u)) return 'MALE';
+      return '';
+    }
+
+    function normalizeMarital(val) {
+      const u = String(val || '').trim().toUpperCase();
+      if (/(MARRIED|KASAL)/.test(u)) return 'MARRIED';
+      if (/(WIDOW|BYUD|BALO)/.test(u)) return 'WIDOWED';
+      if (/(SEPARAT|HIWALAY)/.test(u)) return 'SEPARATED';
+      if (/(SINGLE|DALAGA|BINATA|WALANG ASAWA|UNMARRIED)/.test(u)) return 'SINGLE';
+      return '';
+    }
+
+    function normalizeOccType(val, isSpouse) {
+      const u = String(val || '').trim().toUpperCase();
+      if (!u) return '';
+      if (/(OFW|OVERSEAS|SEAMAN|SEAFARER|ABROAD)/.test(u)) return 'OVERSEAS FILIPINO WORKER';
+      if (/(GOV|GOVERNMENT|LGU|PUBLIC|TEACHER|DEPED|PNP|AFP|BARANGAY)/.test(u)) return 'GOVERNMENT EMPLOYEE';
+      if (/(VA|VIRTUAL|FREELANC|ONLINE|REMOTE|UPWORK|FIVERR)/.test(u)) return 'VIRTUAL ASSISTANT / FREELANCE';
+      if (/(SELF|BUSINESS|NEGOSY|OWNER|PROPRIETOR|VENDOR|DRIVER|FARMER|TRICYCLE)/.test(u)) return 'SELF-EMPLOYED';
+      if (/(COMMISS|AGENT|BROKER|SALES)/.test(u)) return 'COMMISSION-BASED';
+      if (isSpouse && /^(N\/A|NONE|WALA|UNEMPLOYED|HOUSEWIFE|HOUSEBAND|NO WORK)/.test(u)) return 'UNEMPLOYED / HOUSEWIFE / N/A';
+      if (/(PRIVATE|LOCAL|EMPLOY|BPO|STAFF|CORP|COMPANY|FACTORY)/.test(u)) return 'PRIVATE EMPLOYEE';
+      return isSpouse ? '' : 'PRIVATE EMPLOYEE';
+    }
+
+    function parseIncomeNumber(val) {
+      if (!val) return '';
+      const clean = String(val).replace(/[₱,\s]/g, '').replace(/php/gi, '').replace(/\/mo.*$/i, '');
+      const kMatch = clean.match(/^(\d+(?:\.\d+)?)k$/i);
+      if (kMatch) return String(Math.round(parseFloat(kMatch[1]) * 1000));
+      const numMatch = clean.match(/(\d+(?:\.\d+)?)/);
+      return numMatch ? numMatch[1] : '';
+    }
+
+    function formatMidValue(val) {
+      const digits = String(val || '').replace(/\D/g, '').substring(0, 12);
+      if (digits.length > 8) return digits.substring(0, 4) + '-' + digits.substring(4, 8) + '-' + digits.substring(8);
+      if (digits.length > 4) return digits.substring(0, 4) + '-' + digits.substring(4);
+      return digits;
+    }
+
+    function parseMessengerLeadChat(rawText) {
+      const lines = String(rawText || '').replace(/\r/g, '').split('\n');
+      const result = { applicant: {}, spouse: {} };
+      let section = 'applicant';
+      let lastKey = null;
+
+      function mapKey(rawKey) {
+        const k = rawKey.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (k.includes('last name') || k.includes('surname') || k.includes('apelyido')) return 'lastName';
+        if (k.includes('first name') || k.includes('given name') || k === 'pangalan') return 'firstName';
+        if (k.includes('middle name') || k.includes('gitnang')) return 'middleName';
+        if (k.includes('extension') || k.includes('suffix') || k.includes('ext')) return 'nameExt';
+        if (k.includes('date of birth') || k.includes('birth') || k === 'dob' || k.includes('kapanganakan')) return 'dob';
+        if (k.includes('gender') || k.includes('sex') || k.includes('kasarian')) return 'gender';
+        if (k.includes('maiden')) return 'maidenName';
+        if (k.includes('marital') || k.includes('civil')) return 'maritalStatus';
+        if (k.includes('pag ibig') || k.includes('pagibig') || k.includes('mid')) return 'pagibigMid';
+        if (k.includes('contact') || k.includes('mobile') || k.includes('phone') || k.includes('cell')) return 'contact';
+        if (k.includes('email')) return 'email';
+        if (k.includes('employment category') || k.includes('category') || k.includes('kategorya')) return 'occType';
+        if (k.includes('source of income') || k.includes('job or business') || k.includes('occupation') || k.includes('trabaho')) return 'occupation';
+        if (k.includes('employer') || k.includes('company')) return 'employer';
+        if (k.includes('gross monthly income') || k.includes('monthly income') || k.includes('income') || k.includes('salary') || k.includes('sahod')) return 'income';
+        if (k.includes('address') || k.includes('tirahan')) return 'address';
+        return null;
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) { lastKey = null; continue; }
+        if (/^spouse\s*details/i.test(line)) { section = 'spouse'; lastKey = null; continue; }
+        if (/^applicant\s*details/i.test(line)) { section = 'applicant'; lastKey = null; continue; }
+
+        const m = line.match(/^[-•*]?\s*([^:]{2,70}?)\s*:\s*(.*)$/);
+        if (m) {
+          const mapped = mapKey(m[1]);
+          if (mapped) {
+            result[section][mapped] = m[2].trim();
+            lastKey = mapped;
+            continue;
+          }
+        }
+        if (lastKey && !/^[-•*]/.test(line)) {
+          result[section][lastKey] = (result[section][lastKey] ? result[section][lastKey] + ' ' : '') + line;
+        }
+      }
+      return result;
+    }
+
+    function runAbsorbChatParser() {
+      const raw = (document.getElementById('absorbChatInput').value || '').trim();
+      if (!raw) {
+        alert('Paki-paste muna ang sagot ng kliyente mula sa Messenger.');
+        return;
+      }
+
+      const parsed = parseMessengerLeadChat(raw);
+      const a = parsed.applicant;
+      const s = parsed.spouse;
+      let filledCount = 0;
+
+      function setVal(id, val) {
+        const el = document.getElementById(id);
+        if (!el || val === undefined || val === null) return false;
+        const clean = String(val).trim();
+        if (!clean) return false;
+        el.value = el.tagName === 'SELECT' ? clean : clean.toUpperCase();
+        filledCount++;
+        return true;
+      }
+
+      setVal('surname', a.lastName);
+      setVal('firstName', a.firstName);
+      setVal('middleName', a.middleName);
+      setVal('nameExt', a.nameExt || 'N/A');
+      if (applyParsedDate('principal', a.dob)) filledCount++;
+      const aGender = normalizeGender(a.gender);
+      if (aGender) setVal('gender', aGender);
+      setVal('maidenName', a.maidenName || 'N/A');
+
+      const marital = normalizeMarital(a.maritalStatus);
+      if (marital) setVal('maritalStatus', marital);
+
+      if (a.pagibigMid) {
+        const formattedMid = formatMidValue(a.pagibigMid);
+        if (formattedMid.replace(/\D/g, '').length >= 8) {
+          setVal('pagibigMid', formattedMid);
+          const yesRadio = document.querySelector('input[name="pagibigMember"][value="YES"]');
+          if (yesRadio) yesRadio.checked = true;
+        } else if (/^(N\/A|NONE|WALA)/i.test(a.pagibigMid)) {
+          setVal('pagibigMid', 'N/A');
+          const noRadio = document.querySelector('input[name="pagibigMember"][value="NO"]');
+          if (noRadio) noRadio.checked = true;
+        }
+      }
+
+      setVal('contact', a.contact);
+      setVal('email', a.email);
+      setVal('address', a.address);
+
+      const aOccType = normalizeOccType(a.occType || a.occupation, false);
+      if (aOccType) setVal('occType', aOccType);
+
+      if (a.occupation) {
+        const occVal = a.occupation.trim();
+        const atParts = occVal.split(/\s*(?:@|\bat\b|-)\s*/i);
+        setVal('occupation', atParts[0] || occVal);
+        setVal('employer', a.employer || atParts[1] || occVal);
+      } else if (a.employer) {
+        setVal('employer', a.employer);
+      }
+
+      if (a.address && !document.getElementById('workPlace').value.trim()) {
+        setVal('workPlace', a.occType && /OFW/i.test(a.occType) ? 'OVERSEAS' : a.address);
+      }
+
+      const aInc = parseIncomeNumber(a.income);
+      if (aInc) setVal('income', aInc);
+
+      // Spouse details if Married or spouse info present
+      const hasSpouseData = Boolean(s.lastName || s.firstName || s.pagibigMid || s.contact);
+      if (marital === 'MARRIED' || (!marital && hasSpouseData)) {
+        if (!marital && hasSpouseData) setVal('maritalStatus', 'MARRIED');
+        setVal('spouseSurname', s.lastName);
+        setVal('spouseFirstName', s.firstName);
+        setVal('spouseMiddleName', s.middleName);
+        setVal('spouseNameExt', s.nameExt || 'N/A');
+        if (applyParsedDate('spouse', s.dob)) filledCount++;
+        const sGender = normalizeGender(s.gender);
+        if (sGender) setVal('spouseGender', sGender);
+        setVal('spouseMaidenName', s.maidenName || 'N/A');
+        if (s.pagibigMid) {
+          const sMidFmt = formatMidValue(s.pagibigMid);
+          setVal('spousePagibigMid', sMidFmt.replace(/\D/g, '').length >= 8 ? sMidFmt : s.pagibigMid);
+        }
+        setVal('spousePersonalContact', s.contact);
+        setVal('spousePersonalEmail', s.email);
+        const sOccType = normalizeOccType(s.occType || s.occupation, true);
+        if (sOccType) setVal('spouseOccType', sOccType);
+        setVal('spouseOccupation', s.occupation);
+        const sInc = parseIncomeNumber(s.income);
+        if (sInc) setVal('spouseIncome', sInc);
+        setVal('spouseAddress', s.address || a.address);
+      }
+
+      handleMaritalChange();
+      updateTrackRequirements();
+      evaluateIncomeCeiling();
+      if (typeof updateRequiredFieldHighlights === 'function') updateRequiredFieldHighlights();
+      formDirtySinceLastUpload = true;
+
+      closeAbsorbChatModal();
+      goToStep(1);
+      showToast('Na-absorb ang ' + filledCount + ' fields mula sa Messenger chat! I-review at pumirma sa Step 4.');
+    }
+
+    /* ========================================================
+       SIGNATURE IMAGE UPLOAD, AUTO-CLEAN & PEN-THINNING ENGINE
+       ======================================================== */
+    const uploadedSigSources = { principal: null, spouse: null };
+
+    function handleSignatureImageUpload(event, key) {
+      const file = event && event.target && event.target.files ? event.target.files[0] : null;
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          uploadedSigSources[key] = img;
+          const ctrl = document.getElementById('sigCleanupControls-' + key);
+          if (ctrl) ctrl.classList.remove('hidden');
+          reprocessUploadedSignature(key);
+          showToast('Nalinis at nailagay ang signature! I-adjust ang Nipis slider kung makapal ang sulat.');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function erodeThickStrokesOnly(mask, w, h, passes) {
+      let cur = mask;
+      for (let p = 0; p < passes; p++) {
+        const next = new Uint8Array(cur);
+        for (let y = 1; y < h - 1; y++) {
+          const row = y * w;
+          for (let x = 1; x < w - 1; x++) {
+            const idx = row + x;
+            if (!cur[idx]) continue;
+            // Count 4-connected and 8-connected foreground neighbors
+            const n4 = cur[idx - 1] + cur[idx + 1] + cur[idx - w] + cur[idx + w];
+            if (n4 === 4) continue; // Interior pixel, wait for outer edge first
+            const n8 = n4 + cur[idx - w - 1] + cur[idx - w + 1] + cur[idx + w - 1] + cur[idx + w + 1];
+            // Only peel boundary pixels of thick strokes (>=5 neighbors), preserving thin 1-2px lines & junctions
+            if (n8 >= 5) {
+              next[idx] = 0;
+            }
+          }
+        }
+        cur = next;
+      }
+      return cur;
+    }
+
+    function reprocessUploadedSignature(key) {
+      const img = uploadedSigSources[key];
+      const pad = sigPads[key];
+      if (!img || !pad || !pad.canvas || !pad.ctx) return;
+
+      const thinEl = document.getElementById('sigThinRange-' + key);
+      const threshEl = document.getElementById('sigThreshRange-' + key);
+      const thinLabel = document.getElementById('sigThinLabel-' + key);
+      const thinPasses = thinEl ? parseInt(thinEl.value, 10) : 2;
+      const sensitivity = threshEl ? parseInt(threshEl.value, 10) : 45;
+
+      const thinNames = ['Original (0)', 'Medium (1)', 'Thin Pen (2)', 'Fine Pen (3)', 'Extra Fine (4)'];
+      if (thinLabel) thinLabel.textContent = thinNames[thinPasses] || ('Thin (' + thinPasses + ')');
+
+      // Downscale large camera photos cleanly for fast processing
+      const maxProcW = 900, maxProcH = 360;
+      const scale = Math.min(1, maxProcW / img.naturalWidth, maxProcH / img.naturalHeight);
+      const w = Math.max(10, Math.round(img.naturalWidth * scale));
+      const h = Math.max(10, Math.round(img.naturalHeight * scale));
+
+      const off = document.createElement('canvas');
+      off.width = w;
+      off.height = h;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0, w, h);
+      const imgData = octx.getImageData(0, 0, w, h);
+      const d = imgData.data;
+
+      // Sample border pixels to auto-detect background luminance (paper vs dark Messenger screen)
+      let bgSum = 0, bgCount = 0;
+      for (let x = 0; x < w; x += 2) {
+        [0, h - 1].forEach(y => {
+          const i = (y * w + x) * 4;
+          bgSum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+          bgCount++;
+        });
+      }
+      for (let y = 0; y < h; y += 2) {
+        [0, w - 1].forEach(x => {
+          const i = (y * w + x) * 4;
+          bgSum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+          bgCount++;
+        });
+      }
+      const bgLum = bgCount ? (bgSum / bgCount) : 255;
+      const isDarkBg = bgLum < 110;
+
+      // Build binary foreground ink mask
+      let mask = new Uint8Array(w * h);
+      for (let idx = 0; idx < w * h; idx++) {
+        const i = idx * 4;
+        if (d[i + 3] < 35) continue;
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        const sat = Math.max(r, g, b) - Math.min(r, g, b);
+        const diff = isDarkBg ? (lum - bgLum) : (bgLum - lum);
+        if (diff + sat * 0.45 > sensitivity) {
+          mask[idx] = 1;
+        }
+      }
+
+      // Apply controlled stroke thinning if requested
+      if (thinPasses > 0) {
+        mask = erodeThickStrokesOnly(mask, w, h, thinPasses);
+      }
+
+      // Find tight bounding box & paint with currentPenColor
+      let minX = w, minY = h, maxX = -1, maxY = -1;
+      const hex = (currentPenColor || '#0a2254').replace('#', '');
+      const penR = parseInt(hex.substring(0, 2), 16) || 10;
+      const penG = parseInt(hex.substring(2, 4), 16) || 34;
+      const penB = parseInt(hex.substring(4, 6), 16) || 84;
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const idx = y * w + x;
+          const i = idx * 4;
+          if (mask[idx]) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            d[i] = penR;
+            d[i + 1] = penG;
+            d[i + 2] = penB;
+            d[i + 3] = 255;
+          } else {
+            d[i + 3] = 0;
+          }
+        }
+      }
+
+      const padCtx = pad.ctx;
+      const padCanvas = pad.canvas;
+      padCtx.clearRect(0, 0, padCanvas.width, padCanvas.height);
+
+      if (maxX < minX || maxY < minY) {
+        pad.hasSignature = false;
+        if (typeof updateRequiredFieldHighlights === 'function') updateRequiredFieldHighlights();
+        return;
+      }
+
+      octx.putImageData(imgData, 0, 0);
+      const cropW = maxX - minX + 1;
+      const cropH = maxY - minY + 1;
+      const marginX = 40, marginY = 20;
+      const targetScale = Math.min((padCanvas.width - marginX * 2) / cropW, (padCanvas.height - marginY * 2) / cropH);
+      const drawW = cropW * targetScale;
+      const drawH = cropH * targetScale;
+      const drawX = (padCanvas.width - drawW) / 2;
+      const drawY = (padCanvas.height - drawH) / 2;
+
+      padCtx.drawImage(off, minX, minY, cropW, cropH, drawX, drawY, drawW, drawH);
+      pad.hasSignature = true;
+      if (typeof updateRequiredFieldHighlights === 'function') updateRequiredFieldHighlights();
+      if (typeof onSignatureStrokeCompleted === 'function') onSignatureStrokeCompleted(key);
     }
 
 </script>
@@ -3143,6 +3706,52 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ==============================================
+       ABSORB CLIENT MESSENGER CHAT MODAL
+       ============================================== -->
+  <div id="absorbChatModal" onclick="if(event.target === this) closeAbsorbChatModal()" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center shrink-0">
+            <i data-lucide="clipboard-paste" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">
+              Absorb Client Messenger Chat
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">I-paste ang sagot ng kliyente mula sa Messenger para awtomatikong mapunan ang form.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAbsorbChatModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <label for="absorbChatInput" class="block text-xs font-bold text-slate-700 dark:text-slate-200">
+            I-paste dito ang buong chat (APPLICANT DETAILS / SPOUSE DETAILS):
+          </label>
+          <button type="button" onclick="copyBlankChatTemplate()" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+            <i data-lucide="copy" class="w-3 h-3"></i> Copy Blank Prompt
+          </button>
+        </div>
+        <textarea id="absorbChatInput" rows="11" placeholder="APPLICANT DETAILS&#10;- Last Name: DELA CRUZ&#10;- First Name: JUAN&#10;- Middle Name: SANTOS&#10;- Name Extension (Jr, III, or N/A): N/A&#10;- Date of Birth: May 14, 1985&#10;..." class="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono border-2 border-slate-300 dark:border-slate-700 focus:border-amber-500 outline-none"></textarea>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+        <button type="button" onclick="document.getElementById('absorbChatInput').value=''" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition">
+          Clear
+        </button>
+        <button type="button" onclick="runAbsorbChatParser()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 text-white text-xs font-extrabold shadow-md transition flex items-center gap-1.5">
+          <i data-lucide="zap" class="w-4 h-4"></i>
+          <span>Absorb &amp; Auto-Fill Form</span>
+        </button>
+      </div>
     </div>
   </div>
 </body>
