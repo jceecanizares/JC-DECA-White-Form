@@ -251,6 +251,11 @@
             <span class="hidden sm:inline">Absorb Chat</span>
             <span class="sm:hidden">Absorb</span>
           </button>
+          <button type="button" onclick="openAbsorbWhiteFormModal()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/50 flex items-center gap-1 transition shadow-sm" title="Paste an existing White Form payload to absorb and edit">
+            <i data-lucide="file-edit" class="w-3 h-3 text-purple-400"></i>
+            <span class="hidden sm:inline">Absorb Form</span>
+            <span class="sm:hidden">Form</span>
+          </button>
           <button type="button" onclick="fillSampleData()" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-bold rounded-lg bg-red-950/80 hover:bg-red-900 text-rose-200 border border-red-800/70 flex items-center gap-1 transition shadow-sm" title="Autofill sample buyer data for testing">
             <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
             <span>Sample</span>
@@ -3400,22 +3405,211 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       return result;
     }
 
-    function runAbsorbChatParser() {
-      const raw = (document.getElementById('absorbChatInput').value || '').trim();
-      if (!raw) {
-        alert('Paki-paste muna ang sagot ng kliyente mula sa Messenger.');
-        return;
+    /* ========================================================
+       REVIEW & EDIT PANEL (shared by Chat Absorber & White Form Absorber)
+       ======================================================== */
+
+    // Holds the last parsed data before applying to form
+    let _reviewData = null;
+
+    function openReviewEditPanel(parsedData, sourceLabel) {
+      _reviewData = parsedData;
+      const a = parsedData.applicant || {};
+      const s = parsedData.spouse || {};
+      const r = parsedData.rep || {};
+
+      // Helper to build a review input row
+      function row(label, key, section, placeholder, type) {
+        const val = (section === 'a' ? a : section === 's' ? s : r)[key] || '';
+        const pAttr = placeholder ? ` placeholder="${placeholder}"` : '';
+        return `<div class="flex flex-col gap-0.5">
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">${label}</label>
+          <input type="${type||'text'}" data-review-section="${section}" data-review-key="${key}"
+            value="${val.replace(/"/g,'&quot;').replace(/</g,'&lt;')}"
+            ${pAttr}
+            class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 uppercase focus:border-red-500 outline-none transition">
+        </div>`;
       }
 
-      const parsed = parseMessengerLeadChat(raw);
-      const a = parsed.applicant;
-      const s = parsed.spouse;
-      const r = parsed.rep || {};
+      function sectionHead(title, color) {
+        return `<div class="col-span-2 flex items-center gap-2 mt-3 mb-1">
+          <span class="text-[11px] font-extrabold tracking-widest uppercase text-${color}-400 border-b border-${color}-400/40 pb-0.5 w-full">${title}</span>
+        </div>`;
+      }
+
+      const maritalVal = a.maritalStatus || '';
+      const isMarried = /MARRIED/i.test(maritalVal);
+      const hasOfw = /OFW|OVERSEAS/i.test(a.occType || '');
+      const hasRep = r.fullName || r.country || r.contact || r.address;
+
+      let html = `<div class="grid grid-cols-2 gap-2.5">`;
+
+      // === APPLICANT ===
+      html += sectionHead('👤 Applicant Details', 'red');
+      html += row('Last Name / Surname *', 'lastName', 'a', 'DELA CRUZ');
+      html += row('First Name *', 'firstName', 'a', 'JUAN');
+      html += row('Middle Name', 'middleName', 'a', 'SANTOS');
+      html += row('Name Ext (Jr, III, N/A)', 'nameExt', 'a', 'N/A');
+      html += row('Date of Birth (May 14 1990)', 'dob', 'a', 'May 14, 1990');
+      html += `<div class="flex flex-col gap-0.5">
+        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Gender *</label>
+        <select data-review-section="a" data-review-key="gender" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 focus:border-red-500 outline-none transition">
+          <option value="">-- Gender --</option>
+          <option value="MALE" ${(a.gender||'').toUpperCase()==='MALE'?'selected':''}>MALE</option>
+          <option value="FEMALE" ${(a.gender||'').toUpperCase()==='FEMALE'?'selected':''}>FEMALE</option>
+        </select>
+      </div>`;
+      html += row('Maiden Name (or N/A)', 'maidenName', 'a', 'N/A');
+      html += `<div class="flex flex-col gap-0.5">
+        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Marital Status *</label>
+        <select data-review-section="a" data-review-key="maritalStatus" id="review-marital" onchange="toggleReviewSpouseSection()" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 focus:border-red-500 outline-none transition">
+          <option value="">-- Status --</option>
+          <option value="SINGLE" ${maritalVal==='SINGLE'?'selected':''}>SINGLE</option>
+          <option value="MARRIED" ${maritalVal==='MARRIED'?'selected':''}>MARRIED</option>
+          <option value="WIDOWED" ${maritalVal==='WIDOWED'?'selected':''}>WIDOWED</option>
+          <option value="SEPARATED" ${maritalVal==='SEPARATED'?'selected':''}>SEPARATED</option>
+        </select>
+      </div>`;
+      html += row('Pag-IBIG MID (12 digits)', 'pagibigMid', 'a', '1212-3456-7890');
+      html += row('Contact Number *', 'contact', 'a', '0919 123 4567');
+      html += row('Email Address', 'email', 'a', 'juan@gmail.com', 'email');
+      html += `<div class="flex flex-col gap-0.5 col-span-2">
+        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Present Home Address *</label>
+        <input type="text" data-review-section="a" data-review-key="address" value="${(a.address||'').replace(/"/g,'&quot;')}" placeholder="BRGY. NANCAYASAN, URDANETA, PANGASINAN" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 uppercase focus:border-red-500 outline-none transition">
+      </div>`;
+
+      // === WORK & INCOME ===
+      html += sectionHead('💼 Work & Income', 'amber');
+      html += `<div class="flex flex-col gap-0.5">
+        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Employment Category *</label>
+        <select data-review-section="a" data-review-key="occType" id="review-occtype" onchange="toggleReviewOfwSection()" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 focus:border-red-500 outline-none transition">
+          <option value="">-- Category --</option>
+          <option value="PRIVATE EMPLOYEE" ${a.occType==='PRIVATE EMPLOYEE'?'selected':''}>PRIVATE EMPLOYEE</option>
+          <option value="GOVERNMENT EMPLOYEE" ${a.occType==='GOVERNMENT EMPLOYEE'?'selected':''}>GOVERNMENT EMPLOYEE</option>
+          <option value="VIRTUAL ASSISTANT / FREELANCE" ${a.occType==='VIRTUAL ASSISTANT / FREELANCE'?'selected':''}>VA / FREELANCER</option>
+          <option value="OVERSEAS FILIPINO WORKER" ${a.occType==='OVERSEAS FILIPINO WORKER'?'selected':''}>OFW</option>
+          <option value="SELF-EMPLOYED" ${a.occType==='SELF-EMPLOYED'?'selected':''}>SELF-EMPLOYED</option>
+          <option value="COMMISSION-BASED" ${a.occType==='COMMISSION-BASED'?'selected':''}>COMMISSION-BASED</option>
+        </select>
+      </div>`;
+      html += row('Source of Income / Job Title *', 'occupation', 'a', 'STAFF / VA / SEAFARER');
+      html += row('Employer / Business Name *', 'employer', 'a', 'COMPANY NAME');
+      html += row('Place of Work / Address *', 'workPlace', 'a', 'URDANETA / OVERSEAS');
+      html += `<div class="flex flex-col gap-0.5">
+        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Employment Status</label>
+        <select data-review-section="a" data-review-key="empStatus" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 focus:border-red-500 outline-none transition">
+          <option value="PERMANENT / REGULAR" ${(a.empStatus||'').includes('PERMANENT')?'selected':''}>PERMANENT / REGULAR</option>
+          <option value="CONTRACTUAL" ${(a.empStatus||'').includes('CONTRACT')?'selected':''}>CONTRACTUAL</option>
+          <option value="PART-TIME / TEMPORARY" ${(a.empStatus||'').includes('PART')?'selected':''}>PART-TIME / TEMPORARY</option>
+          <option value="PROBATIONARY" ${(a.empStatus||'').includes('PROB')?'selected':''}>PROBATIONARY</option>
+        </select>
+      </div>`;
+      html += row('Gross Monthly Income (PHP) *', 'income', 'a', '20000', 'number');
+
+      // === OFW REP (conditional) ===
+      html += `<div id="review-ofw-section" class="col-span-2 ${(hasOfw || hasRep) ? '' : 'hidden'}">
+        <div class="grid grid-cols-2 gap-2.5">
+          ${sectionHead('✈️ OFW: Country & Rep in PH', 'emerald')}
+          ${row('Country / Location Abroad *', 'country', 'r', 'SAUDI ARABIA')}
+          ${row('Full Name of Authorized Rep *', 'fullName', 'r', 'MARIA DELA CRUZ')}
+          ${row('Rep Contact Number *', 'contact', 'r', '0917 123 4567')}
+          ${row('Rep Email Address', 'email', 'r', 'rep@gmail.com', 'email')}
+          <div class="flex flex-col gap-0.5 col-span-2">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Rep Home Address in PH *</label>
+            <input type="text" data-review-section="r" data-review-key="address" value="${(r.address||'').replace(/"/g,'&quot;')}" placeholder="BRGY., CITY, PROVINCE" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 uppercase focus:border-red-500 outline-none transition">
+          </div>
+        </div>
+      </div>`;
+
+      // === SPOUSE (conditional) ===
+      html += `<div id="review-spouse-section" class="col-span-2 ${isMarried ? '' : 'hidden'}">
+        <div class="grid grid-cols-2 gap-2.5">
+          ${sectionHead('💍 Spouse Details', 'blue')}
+          ${row('Spouse Last Name *', 'lastName', 's', 'DELA CRUZ')}
+          ${row('Spouse First Name *', 'firstName', 's', 'MARIA')}
+          ${row('Spouse Middle Name', 'middleName', 's', 'SANTOS')}
+          ${row('Spouse Name Ext (Jr, N/A)', 'nameExt', 's', 'N/A')}
+          ${row('Spouse Date of Birth', 'dob', 's', 'June 20, 1992')}
+          <div class="flex flex-col gap-0.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Spouse Gender</label>
+            <select data-review-section="s" data-review-key="gender" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 focus:border-red-500 outline-none transition">
+              <option value="">-- Gender --</option>
+              <option value="MALE" ${(s.gender||'').toUpperCase()==='MALE'?'selected':''}>MALE</option>
+              <option value="FEMALE" ${(s.gender||'').toUpperCase()==='FEMALE'?'selected':''}>FEMALE</option>
+            </select>
+          </div>
+          ${row('Spouse Maiden Name (or N/A)', 'maidenName', 's', 'N/A')}
+          ${row('Spouse Pag-IBIG MID', 'pagibigMid', 's', '3456-7890-1234')}
+          ${row('Spouse Contact Number', 'contact', 's', '0917 456 7890')}
+          ${row('Spouse Email', 'email', 's', 'spouse@gmail.com', 'email')}
+          <div class="flex flex-col gap-0.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Spouse Employment Category</label>
+            <select data-review-section="s" data-review-key="occType" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 focus:border-red-500 outline-none transition">
+              <option value="">-- Category --</option>
+              <option value="PRIVATE EMPLOYEE" ${s.occType==='PRIVATE EMPLOYEE'?'selected':''}>PRIVATE EMPLOYEE</option>
+              <option value="GOVERNMENT EMPLOYEE" ${s.occType==='GOVERNMENT EMPLOYEE'?'selected':''}>GOVERNMENT EMPLOYEE</option>
+              <option value="VIRTUAL ASSISTANT / FREELANCE" ${s.occType==='VIRTUAL ASSISTANT / FREELANCE'?'selected':''}>VA / FREELANCER</option>
+              <option value="OVERSEAS FILIPINO WORKER" ${s.occType==='OVERSEAS FILIPINO WORKER'?'selected':''}>OFW</option>
+              <option value="SELF-EMPLOYED" ${s.occType==='SELF-EMPLOYED'?'selected':''}>SELF-EMPLOYED</option>
+              <option value="UNEMPLOYED / HOUSEWIFE / N/A" ${(s.occType||'').includes('UNEMPLOYED')?'selected':''}>UNEMPLOYED / HOUSEWIFE / N/A</option>
+            </select>
+          </div>
+          ${row('Spouse Job / Source of Income', 'occupation', 's', 'STAFF / HOUSEWIFE / N/A')}
+          ${row('Spouse Gross Monthly Income (PHP)', 'income', 's', '0', 'number')}
+          <div class="flex flex-col gap-0.5 col-span-2">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Spouse Present Address</label>
+            <input type="text" data-review-section="s" data-review-key="address" value="${(s.address||'').replace(/"/g,'&quot;')}" placeholder="SAME AS APPLICANT OR DIFFERENT ADDRESS" class="review-field w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 uppercase focus:border-red-500 outline-none transition">
+          </div>
+        </div>
+      </div>`;
+
+      html += `</div>`;
+
+      document.getElementById('reviewEditBody').innerHTML = html;
+      document.getElementById('reviewEditSourceLabel').textContent = sourceLabel || 'Absorbed Data';
+      document.getElementById('reviewEditModal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function toggleReviewSpouseSection() {
+      const val = document.getElementById('review-marital') ? document.getElementById('review-marital').value : '';
+      const sec = document.getElementById('review-spouse-section');
+      if (sec) sec.classList.toggle('hidden', !/MARRIED/i.test(val));
+    }
+
+    function toggleReviewOfwSection() {
+      const val = document.getElementById('review-occtype') ? document.getElementById('review-occtype').value : '';
+      const sec = document.getElementById('review-ofw-section');
+      if (sec) sec.classList.toggle('hidden', !/OFW|OVERSEAS/i.test(val));
+    }
+
+    function closeReviewEditModal() {
+      document.getElementById('reviewEditModal').classList.add('hidden');
+    }
+
+    function applyReviewDataToForm() {
+      // Collect all current review field values
+      const fields = document.querySelectorAll('#reviewEditBody .review-field');
+      const data = { applicant: {}, spouse: {}, rep: {} };
+      fields.forEach(el => {
+        const sec = el.dataset.reviewSection;
+        const key = el.dataset.reviewKey;
+        const val = el.value.trim();
+        if (sec && key && val) {
+          if (sec === 'a') data.applicant[key] = val;
+          else if (sec === 's') data.spouse[key] = val;
+          else if (sec === 'r') data.rep[key] = val;
+        }
+      });
+
+      const a = data.applicant;
+      const s = data.spouse;
+      const r = data.rep;
       let filledCount = 0;
 
       function setVal(id, val) {
         const el = document.getElementById(id);
-        if (!el || val === undefined || val === null) return false;
+        if (!el || !val) return false;
         const clean = String(val).trim();
         if (!clean) return false;
         el.value = el.tagName === 'SELECT' ? clean : clean.toUpperCase();
@@ -3428,11 +3622,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       setVal('middleName', a.middleName);
       setVal('nameExt', a.nameExt || 'N/A');
       if (applyParsedDate('principal', a.dob)) filledCount++;
-      const aGender = normalizeGender(a.gender);
+      const aGender = normalizeGender(a.gender || '');
       if (aGender) setVal('gender', aGender);
       setVal('maidenName', a.maidenName || 'N/A');
 
-      const marital = normalizeMarital(a.maritalStatus);
+      const marital = normalizeMarital(a.maritalStatus || '');
       if (marital) setVal('maritalStatus', marital);
 
       if (a.pagibigMid) {
@@ -3452,35 +3646,25 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       setVal('email', a.email);
       setVal('address', a.address);
 
-      const aOccType = normalizeOccType(a.occType || a.occupation, false);
+      const aOccType = a.occType || normalizeOccType('', false);
       if (aOccType) setVal('occType', aOccType);
-
-      if (a.occupation) {
-        const occVal = a.occupation.trim();
-        const atParts = occVal.split(/\s*(?:@|\bat\b|-)\s*/i);
-        setVal('occupation', atParts[0] || occVal);
-        setVal('employer', a.employer || atParts[1] || occVal);
-      } else if (a.employer) {
-        setVal('employer', a.employer);
-      }
-
-      if (a.address && !document.getElementById('workPlace').value.trim()) {
-        setVal('workPlace', a.occType && /OFW/i.test(a.occType) ? 'OVERSEAS' : a.address);
-      }
-
+      setVal('occupation', a.occupation);
+      setVal('employer', a.employer);
+      setVal('workPlace', a.workPlace || (a.occType && /OFW/i.test(a.occType) ? 'OVERSEAS' : ''));
+      if (a.empStatus) setVal('empStatus', a.empStatus);
       const aInc = parseIncomeNumber(a.income);
       if (aInc) setVal('income', aInc);
 
-      // Spouse details if Married or spouse info present
+      // Spouse
       const hasSpouseData = Boolean(s.lastName || s.firstName || s.pagibigMid || s.contact);
-      if (marital === 'MARRIED' || (!marital && hasSpouseData)) {
+      if ((marital === 'MARRIED') || (!marital && hasSpouseData)) {
         if (!marital && hasSpouseData) setVal('maritalStatus', 'MARRIED');
         setVal('spouseSurname', s.lastName);
         setVal('spouseFirstName', s.firstName);
         setVal('spouseMiddleName', s.middleName);
         setVal('spouseNameExt', s.nameExt || 'N/A');
         if (applyParsedDate('spouse', s.dob)) filledCount++;
-        const sGender = normalizeGender(s.gender);
+        const sGender = normalizeGender(s.gender || '');
         if (sGender) setVal('spouseGender', sGender);
         setVal('spouseMaidenName', s.maidenName || 'N/A');
         if (s.pagibigMid) {
@@ -3489,14 +3673,14 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         }
         setVal('spousePersonalContact', s.contact);
         setVal('spousePersonalEmail', s.email);
-        const sOccType = normalizeOccType(s.occType || s.occupation, true);
-        if (sOccType) setVal('spouseOccType', sOccType);
+        if (s.occType) setVal('spouseOccType', s.occType);
         setVal('spouseOccupation', s.occupation);
         const sInc = parseIncomeNumber(s.income);
         if (sInc) setVal('spouseIncome', sInc);
         setVal('spouseAddress', s.address || a.address);
       }
 
+      // OFW rep
       if (aOccType === 'OVERSEAS FILIPINO WORKER' || r.country || r.fullName || r.contact || r.address) {
         setVal('ofwCountry', r.country || a.country);
         setVal('ofwRepName', r.fullName);
@@ -3511,9 +3695,146 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       if (typeof updateRequiredFieldHighlights === 'function') updateRequiredFieldHighlights();
       formDirtySinceLastUpload = true;
 
-      closeAbsorbChatModal();
+      closeReviewEditModal();
       goToStep(1);
-      showToast('Na-absorb ang ' + filledCount + ' fields mula sa Messenger chat! I-review at pumirma sa Step 4.');
+      showToast('✅ Na-apply ang ' + filledCount + ' fields sa form! I-review at pumirma sa Step 4.');
+    }
+
+    /* ========================================================
+       WHITE FORM PAYLOAD ABSORBER (paste ALL-CAPS payload → Review Panel)
+       ======================================================== */
+    function openAbsorbWhiteFormModal() {
+      const modal = document.getElementById('absorbWhiteFormModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        const inp = document.getElementById('absorbWhiteFormInput');
+        if (inp) setTimeout(() => inp.focus(), 100);
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function closeAbsorbWhiteFormModal() {
+      const modal = document.getElementById('absorbWhiteFormModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function parseWhiteFormPayload(raw) {
+      // Parses the ALL-CAPS White Form payload format produced by /decahome whiteform
+      const result = { applicant: {}, spouse: {}, rep: {} };
+      const lines = String(raw || '').replace(/\r/g, '').split('\n');
+      let section = 'applicant';
+
+      function extractVal(line) {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx === -1) return '';
+        return line.slice(colonIdx + 1).trim();
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+        const upper = line.toUpperCase();
+
+        // Section headers
+        if (/\[SPOUSE DETAILS/.test(upper)) { section = 'spouse'; continue; }
+        if (/\[OFW COUNTRY/.test(upper) || /\[AUTHORIZED REPRESENTATIVE/.test(upper)) { section = 'rep'; continue; }
+        if (/\[PRINCIPAL BENEFICIARY/.test(upper)) { section = 'applicant'; continue; }
+
+        const val = extractVal(line);
+        if (!val) continue;
+
+        const u = upper;
+        if (u.startsWith('SURNAME:')) {
+          if (section === 'applicant') result.applicant.lastName = val;
+          else if (section === 'spouse') result.spouse.lastName = val;
+        } else if (u.startsWith('FIRST NAME:')) {
+          if (section === 'applicant') result.applicant.firstName = val;
+          else result.spouse.firstName = val;
+        } else if (u.startsWith('MIDDLE NAME:')) {
+          if (section === 'applicant') result.applicant.middleName = val;
+          else result.spouse.middleName = val;
+        } else if (u.startsWith('NAME EXTENSION')) {
+          if (section === 'applicant') result.applicant.nameExt = val;
+          else result.spouse.nameExt = val;
+        } else if (u.startsWith('DATE OF BIRTH:')) {
+          if (section === 'applicant') result.applicant.dob = val;
+          else result.spouse.dob = val;
+        } else if (u.startsWith('GENDER')) {
+          if (section === 'applicant') result.applicant.gender = val;
+          else result.spouse.gender = val;
+        } else if (u.startsWith('MAIDEN NAME')) {
+          if (section === 'applicant') result.applicant.maidenName = val;
+          else result.spouse.maidenName = val;
+        } else if (u.startsWith('MARITAL STATUS:')) {
+          result.applicant.maritalStatus = val;
+        } else if (u.startsWith('PAG-IBIG MEMBER?') || u.startsWith('PAG-IBIG MEMBER :')) {
+          result.applicant.pagibigMemberRaw = val;
+        } else if (u.startsWith('PAG-IBIG MID NUMBER:')) {
+          if (section === 'applicant') result.applicant.pagibigMid = val;
+          else result.spouse.pagibigMid = val;
+        } else if (u.startsWith('CONTACT NUMBER:') || u.startsWith('PERSONAL CONTACT')) {
+          if (section === 'applicant') result.applicant.contact = val;
+          else result.spouse.contact = val;
+        } else if (u.startsWith('EMAIL ADDRESS:') || u.startsWith('PERSONAL EMAIL')) {
+          if (section === 'applicant') result.applicant.email = val;
+          else result.spouse.email = val;
+        } else if (u.startsWith('PRESENT HOME ADDRESS:')) {
+          if (section === 'applicant') result.applicant.address = val;
+          else result.spouse.address = val;
+        } else if (u.startsWith("EMPLOYER'S BUSINESS NAME:")) {
+          result.applicant.employer = val;
+        } else if (u.startsWith('PLACE OF WORK/BUSINESS:')) {
+          result.applicant.workPlace = val;
+        } else if (u.startsWith('OCCUPATION / DESIGNATION')) {
+          result.applicant.occupation = val;
+        } else if (u.startsWith('EMPLOYMENT STATUS:')) {
+          result.applicant.empStatus = val;
+        } else if (u.startsWith('OCCUPATION TYPE') || u.startsWith('EMPLOYMENT CATEGORY')) {
+          if (section === 'applicant') result.applicant.occType = normalizeOccType(val, false) || val;
+          else result.spouse.occType = normalizeOccType(val, true) || val;
+        } else if (u.startsWith('BASIC MONTHLY INCOME') || u.startsWith('GROSS MONTHLY INCOME:')) {
+          if (section === 'applicant') result.applicant.income = parseIncomeNumber(val) || val;
+          else result.spouse.income = parseIncomeNumber(val) || val;
+        } else if (u.startsWith('SOURCE OF INCOME') || u.startsWith('SOURCE OF INCOME / JOB')) {
+          result.spouse.occupation = val;
+        } else if (u.startsWith('OFW COUNTRY / LOCATION')) {
+          result.rep.country = val;
+        } else if (u.startsWith('REPRESENTATIVE FULL NAME:')) {
+          result.rep.fullName = val;
+        } else if (u.startsWith('REPRESENTATIVE CONTACT')) {
+          result.rep.contact = val;
+        } else if (u.startsWith('REPRESENTATIVE EMAIL')) {
+          result.rep.email = val;
+        } else if (u.startsWith('REPRESENTATIVE ADDRESS')) {
+          result.rep.address = val;
+        }
+      }
+      return result;
+    }
+
+    function runAbsorbWhiteFormParser() {
+      const raw = (document.getElementById('absorbWhiteFormInput').value || '').trim();
+      if (!raw) {
+        alert('Paki-paste muna ang White Form payload (ALL-CAPS format).');
+        return;
+      }
+      const parsed = parseWhiteFormPayload(raw);
+      closeAbsorbWhiteFormModal();
+      openReviewEditPanel(parsed, '📋 White Form Payload');
+    }
+
+    /* ========================================================
+       CHAT ABSORBER ENGINE — now opens Review & Edit Panel
+       ======================================================== */
+    function runAbsorbChatParser() {
+      const raw = (document.getElementById('absorbChatInput').value || '').trim();
+      if (!raw) {
+        alert('Paki-paste muna ang sagot ng kliyente mula sa Messenger.');
+        return;
+      }
+      const parsed = parseMessengerLeadChat(raw);
+      closeAbsorbChatModal();
+      openReviewEditPanel(parsed, '💬 Messenger Chat');
     }
 
     /* ========================================================
@@ -3878,5 +4199,95 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       </div>
     </div>
   </div>
+<!-- ============================================== -->
+  <!--  REVIEW & EDIT PANEL MODAL (Absorb Preview)   -->
+  <!-- ============================================== -->
+  <div id="reviewEditModal" onclick="if(event.target === this) closeReviewEditModal()" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full shadow-2xl flex flex-col max-h-[94vh]">
+      <!-- Header -->
+      <div class="flex items-start justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-green-500/20 text-green-400 border border-green-500/40 flex items-center justify-center shrink-0">
+            <i data-lucide="file-pen" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Review & Edit — Before Applying to Form</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Source: <span id="reviewEditSourceLabel" class="font-bold text-green-600 dark:text-green-400">Absorbed Data</span>. I-correct ang mga mali bago i-apply.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeReviewEditModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Callout -->
+      <div class="mx-5 mt-3 p-2.5 rounded-xl bg-green-950/30 border border-green-500/30 text-[11px] text-green-300 flex items-start gap-2 shrink-0">
+        <i data-lucide="info" class="w-3.5 h-3.5 text-green-400 shrink-0 mt-0.5"></i>
+        <span>Lahat ng fields ay naka-uppercase na. I-edit kung may mali — lalo na ang petsa, MID, at income. Pagkatapos, i-click ang <strong>Apply to Form</strong>.</span>
+      </div>
+
+      <!-- Scrollable body -->
+      <div id="reviewEditBody" class="overflow-y-auto flex-1 px-5 py-3 space-y-1.5 text-xs"></div>
+
+      <!-- Footer buttons -->
+      <div class="px-5 py-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <button type="button" onclick="closeReviewEditModal()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition">
+          Huwag muna (Cancel)
+        </button>
+        <button type="button" onclick="applyReviewDataToForm()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-sm font-extrabold shadow-md transition flex items-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span>Apply to Form →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!--  ABSORB WHITE FORM MODAL (paste payload)       -->
+  <!-- ============================================== -->
+  <div id="absorbWhiteFormModal" onclick="if(event.target === this) closeAbsorbWhiteFormModal()" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center shrink-0">
+            <i data-lucide="file-edit" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Absorb White Form Payload</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">I-paste ang ALL-CAPS White Form payload para ma-load at ma-edit bago i-apply.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAbsorbWhiteFormModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Tip -->
+      <div class="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/30 text-[11px] text-purple-300 flex items-start gap-2">
+        <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5"></i>
+        <span>I-paste ang buong <strong>White Form payload</strong> (ang ALL-CAPS text mula sa /decahome whiteform o mula sa nakaraang encoding). Pagkatapos i-absorb, makikita mo ang <strong>Review & Edit Panel</strong> para i-correct ang anumang mali bago i-apply sa form.</span>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <label for="absorbWhiteFormInput" class="block text-xs font-bold text-slate-700 dark:text-slate-200">
+            I-paste dito ang White Form payload (ALL-CAPS format):
+          </label>
+        </div>
+        <textarea id="absorbWhiteFormInput" rows="13" placeholder="=== DECA GOLD PRINCIPAL BENEFICIARY DETAILS (WHITE FORM) ===&#10;GROUP NAME: DECA GOLD CASSIA DECA/NORTH FORBES REALTY&#10;...&#10;[PRINCIPAL BENEFICIARY DETAILS]&#10;SURNAME: DELA CRUZ&#10;FIRST NAME: JUAN&#10;MIDDLE NAME: SANTOS&#10;DATE OF BIRTH: 05/14/1990&#10;PAG-IBIG MEMBER?: YES&#10;PAG-IBIG MID NUMBER: 1212-3456-7890&#10;..." class="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono border-2 border-slate-300 dark:border-slate-700 focus:border-purple-500 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"></textarea>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+        <button type="button" onclick="document.getElementById('absorbWhiteFormInput').value=''" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition">
+          Clear
+        </button>
+        <button type="button" onclick="runAbsorbWhiteFormParser()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-xs font-extrabold shadow-md transition flex items-center gap-1.5">
+          <i data-lucide="file-search" class="w-4 h-4"></i>
+          <span>Absorb &amp; Review Form</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
