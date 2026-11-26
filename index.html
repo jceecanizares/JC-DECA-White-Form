@@ -2071,35 +2071,35 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           color: textColor
         });
 
-        // Embed Principal Signature PNG (Placed cleanly above the line, overlapping the printed name authentically)
+        // Embed Principal Signature PNG (Placed cleanly above the line, hovering naturally over the printed name)
         if (sigPads.principal.hasSignature) {
           const pSigPng = sigPads.principal.canvas.toDataURL('image/png');
           const pImg = await pdfDoc.embedPng(pSigPng);
           const maxW = 115;
-          const maxH = 34;
-          const scale = Math.min(maxW / pImg.width, maxH / pImg.height);
+          const maxH = 32;
+          const scale = Math.min(maxW / pImg.width, maxH / pImg.height, 0.9);
           const drawW = pImg.width * scale;
           const drawH = pImg.height * scale;
           page.drawImage(pImg, {
             x: 135.05 - (drawW / 2),
-            y: 261.45 + 1,
+            y: 261.45 + 7,
             width: drawW,
             height: drawH
           });
         }
 
-        // Embed Spouse Signature PNG (Placed cleanly above the line, overlapping spouse printed name)
+        // Embed Spouse Signature PNG (Placed cleanly above the line, hovering naturally over spouse printed name)
         if (isMarried && sigPads.spouse.hasSignature) {
           const sSigPng = sigPads.spouse.canvas.toDataURL('image/png');
           const sImg = await pdfDoc.embedPng(sSigPng);
           const maxW = 115;
-          const maxH = 34;
-          const scale = Math.min(maxW / sImg.width, maxH / sImg.height);
+          const maxH = 32;
+          const scale = Math.min(maxW / sImg.width, maxH / sImg.height, 0.9);
           const drawW = sImg.width * scale;
           const drawH = sImg.height * scale;
           page.drawImage(sImg, {
             x: 311.8 - (drawW / 2),
-            y: 261.45 + 1,
+            y: 261.45 + 7,
             width: drawW,
             height: drawH
           });
@@ -2654,14 +2654,14 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const pMid = (document.getElementById('middleName').value || '').trim();
       const pSur = (document.getElementById('surname').value || 'DELA CRUZ').trim();
       const pFullName = (pFirst + ' ' + (pMid ? pMid + ' ' : '') + pSur).replace(/\s+/g, ' ').toUpperCase();
-      ctx.fillText(pFullName, 395, 2176);
+      ctx.fillText(pFullName, 395, 2158);
 
       if (isMarried) {
         const sFirst = (document.getElementById('spouseFirstName').value || 'MARIA').trim();
         const sMid = (document.getElementById('spouseMiddleName').value || '').trim();
         const sSur = (document.getElementById('spouseSurname').value || 'DELA CRUZ').trim();
         const sFullName = (sFirst + ' ' + (sMid ? sMid + ' ' : '') + sSur).replace(/\s+/g, ' ').toUpperCase();
-        ctx.fillText(sFullName, 913, 2176);
+        ctx.fillText(sFullName, 913, 2158);
       }
 
       // Date at bottom right (Centered over Date line at X=1414)
@@ -2779,14 +2779,15 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         const strokeW = maxX - minX + 1;
         const strokeH = maxY - minY + 1;
 
-        // Proportional scale: strictly satisfies BOTH maxW (340px) and maxH (68px)
-        const scale = Math.min(maxW / strokeW, maxH / strokeH);
-        const drawW = strokeW * scale;
-        const drawH = strokeH * scale;
+        // Proportional scale: strictly preserves natural size without expanding or distorting
+        const scale = Math.min(260 / strokeW, 64 / strokeH, 0.95);
+        const drawW = Math.round(strokeW * scale);
+        const drawH = Math.round(strokeH * scale);
 
-        const drawX = targetCenterX - (drawW / 2);
-        // Position signature resting directly on the green line (lineY = 2194) and cleanly overlapping the printed name (baseline Y = 2187)
-        const drawY = (lineY - 2) - drawH;
+        const drawX = Math.round(targetCenterX - (drawW / 2));
+        // Sits naturally above the printed name and line (line is at Y=2182, name rests at Y=2152)
+        // This ensures the signature ink drapes naturally without completely blanketing or colliding with labels below
+        const drawY = Math.round((lineY - 14) - drawH);
 
         ctx.save();
         ctx.drawImage(padCanvas, minX, minY, strokeW, strokeH, drawX, drawY, drawW, drawH);
@@ -3416,55 +3417,100 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     let extractedSignatures = { principal: null, spouse: null };
 
     // Clean transparent background from cropped signature image
+    // Automatically removes horizontal line artifacts and text below the baseline
     function cleanSignatureCanvas(rawCanvas) {
       const ctx = rawCanvas.getContext('2d');
-      const imgData = ctx.getImageData(0, 0, rawCanvas.width, rawCanvas.height);
+      const w = rawCanvas.width;
+      const h = rawCanvas.height;
+      const imgData = ctx.getImageData(0, 0, w, h);
       const d = imgData.data;
-      let hasInk = false;
-      let darkPixels = 0;
 
-      // Threshold: white/off-white paper turns transparent
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i + 1], b = d[i + 2];
-        const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+      // 1. Detect ink pixels (blue, dark, grey)
+      let mask = new Uint8Array(w * h);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const idx = y * w + x;
+          const i = idx * 4;
+          const r = d[i], g = d[i + 1], b = d[i + 2];
+          const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
 
-        if (brightness > 200) {
-          d[i + 3] = 0; // Transparent
-        } else if (brightness > 165) {
-          const alphaFactor = (200 - brightness) / 35;
-          d[i + 3] = Math.round(d[i + 3] * alphaFactor);
-        } else {
-          // Ink pixel: ensure solid dark/blue tone
-          d[i + 3] = 255;
-          darkPixels++;
+          // Ink detection: anything darker than off-white paper
+          if (brightness < 195) {
+            mask[idx] = 1;
+          }
         }
       }
 
-      // Check if signature has meaningful ink content (> 40 dark pixels)
-      if (darkPixels > 40) {
-        hasInk = true;
-        ctx.putImageData(imgData, 0, 0);
+      // 2. Identify and erase straight horizontal line (ruler/printed line)
+      // Any row with a continuous horizontal run of >= 20% of canvas width is a form ruler line!
+      let lowestRulerY = -1;
+      for (let y = 0; y < h; y++) {
+        let maxRun = 0, curRun = 0;
+        for (let x = 0; x < w; x++) {
+          if (mask[y * w + x]) {
+            curRun++;
+            if (curRun > maxRun) maxRun = curRun;
+          } else {
+            curRun = 0;
+          }
+        }
+        if (maxRun > w * 0.22) {
+          // Found a horizontal ruler line!
+          lowestRulerY = y;
+          for (let by = Math.max(0, y - 1); by <= Math.min(h - 1, y + 1); by++) {
+            for (let x = 0; x < w; x++) {
+              mask[by * w + x] = 0;
+            }
+          }
+        }
       }
-      return hasInk;
+
+      // If a ruler line was detected, ANY ink below that ruler line is printed name/labels!
+      // Erase everything below the lowest ruler line so only the flourish above remains
+      if (lowestRulerY !== -1 && lowestRulerY > h * 0.4) {
+        for (let y = lowestRulerY; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            mask[y * w + x] = 0;
+          }
+        }
+      }
+
+      // 3. Render back to canvas with crisp transparent background
+      let darkPixels = 0;
+      for (let idx = 0; idx < w * h; idx++) {
+        const i = idx * 4;
+        if (mask[idx]) {
+          d[i + 3] = 255;
+          darkPixels++;
+        } else {
+          d[i + 3] = 0;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+      return darkPixels > 30;
     }
 
-    // Extract signature boxes from a rendered White Form canvas (Image or PDF)
     function extractSignaturesFromFormCanvas(formCanvas) {
       const W = formCanvas.width;
       const H = formCanvas.height;
       const extracted = { principal: null, spouse: null };
 
       try {
-        // Principal Signature bounding box:
-        // centered around x=0.22, y from ~0.71 to 0.77
-        const pX = Math.round(W * 0.08);
-        const pY = Math.round(H * 0.715);
-        const pW = Math.round(W * 0.28);
-        const pH = Math.round(H * 0.055);
+        // In the official White Form:
+        // Signature Line is at ~73.9% of total height (Y=2182 on 2952px canvas)
+        // Printed Name rests right at the line: ~73.0% - 73.9%
+        // Signature ink flourishes: ~69.0% - 73.2%
+        // By setting pY = 0.690 * H and pH = 0.043 * H, we strictly capture the signature ink
+        // and completely avoid capturing the printed name or the labels below!
+        const pX = Math.round(W * 0.10);
+        const pY = Math.round(H * 0.690);
+        const pW = Math.round(W * 0.25);
+        const pH = Math.round(H * 0.043);
 
         const pCrop = document.createElement('canvas');
-        pCrop.width = 600;
-        pCrop.height = 160;
+        pCrop.width = pW;
+        pCrop.height = pH;
         const pCtx = pCrop.getContext('2d');
         pCtx.drawImage(formCanvas, pX, pY, pW, pH, 0, 0, pCrop.width, pCrop.height);
 
@@ -3472,16 +3518,15 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           extracted.principal = pCrop.toDataURL('image/png');
         }
 
-        // Spouse Signature bounding box:
-        // centered around x=0.51, y from ~0.71 to 0.77
-        const sX = Math.round(W * 0.37);
-        const sY = Math.round(H * 0.715);
-        const sW = Math.round(W * 0.28);
-        const sH = Math.round(H * 0.055);
+        // Spouse Signature bounding box (strictly above spouse line)
+        const sX = Math.round(W * 0.39);
+        const sY = Math.round(H * 0.690);
+        const sW = Math.round(W * 0.25);
+        const sH = Math.round(H * 0.043);
 
         const sCrop = document.createElement('canvas');
-        sCrop.width = 600;
-        sCrop.height = 160;
+        sCrop.width = sW;
+        sCrop.height = sH;
         const sCtx = sCrop.getContext('2d');
         sCtx.drawImage(formCanvas, sX, sY, sW, sH, 0, 0, sCrop.width, sCrop.height);
 
@@ -3496,6 +3541,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     }
 
     // Load an extracted signature image into the actual interactive canvas
+    // Maintains 1:1 original natural proportions without distortion or giant enlargement
     function loadExtractedSignatureToPad(key, dataUrl) {
       if (!dataUrl || !sigPads[key] || !sigPads[key].canvas) return;
       const pad = sigPads[key];
@@ -3505,13 +3551,17 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const img = new Image();
       img.onload = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const maxW = canvas.width * 0.85;
-        const maxH = canvas.height * 0.85;
-        const scale = Math.min(maxW / img.width, maxH / img.height);
-        const drawW = img.width * scale;
-        const drawH = img.height * scale;
-        const drawX = (canvas.width - drawW) / 2;
-        const drawY = (canvas.height - drawH) / 2;
+
+        // Keep authentic natural proportions:
+        // Do not force-fill the box; scale naturally to look like a real human signature
+        const naturalMaxW = 420;
+        const naturalMaxH = 110;
+        const scale = Math.min(naturalMaxW / img.width, naturalMaxH / img.height, 1.25);
+        const drawW = Math.round(img.width * scale);
+        const drawH = Math.round(img.height * scale);
+        const drawX = Math.round((canvas.width - drawW) / 2);
+        // Sits slightly above bottom baseline of pad
+        const drawY = Math.round((canvas.height - drawH) / 2);
 
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
         pad.hasSignature = true;
