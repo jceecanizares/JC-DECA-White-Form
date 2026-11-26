@@ -2026,7 +2026,10 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           drawField('N/A', leftMargin, 367.67 - 3);
         }
 
-        // Signature Names (Centered)
+        // Signature Names & Date on Official Baseline (Line is at Y = 261.45 pt)
+        // Baseline for text above the line: 261.45 + 2 pt (rests crisply right on top of the signature line)
+        const nameBaselineY = 261.45 + 2.5;
+
         const pFirst = (document.getElementById('firstName').value || 'JUAN').trim();
         const pMid = (document.getElementById('middleName').value || '').trim();
         const pSur = (document.getElementById('surname').value || 'DELA CRUZ').trim();
@@ -2035,7 +2038,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         const pNameWidth = fontBold.widthOfTextAtSize(pFullName, 9);
         page.drawText(pFullName, {
           x: 135.05 - (pNameWidth / 2),
-          y: 261.45 - 2,
+          y: nameBaselineY,
           size: 9,
           font: fontBold,
           color: textColor
@@ -2049,7 +2052,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           const sNameWidth = fontBold.widthOfTextAtSize(sFullName, 9);
           page.drawText(sFullName, {
             x: 311.8 - (sNameWidth / 2),
-            y: 261.45 - 2,
+            y: nameBaselineY,
             size: 9,
             font: fontBold,
             color: textColor
@@ -2062,41 +2065,41 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         const dateWidth = fontBold.widthOfTextAtSize(dateStr, 9);
         page.drawText(dateStr, {
           x: 482.85 - (dateWidth / 2),
-          y: 261.45 - 2,
+          y: nameBaselineY,
           size: 9,
           font: fontBold,
           color: textColor
         });
 
-        // Embed Principal Signature PNG
+        // Embed Principal Signature PNG (Placed cleanly above the line, overlapping the printed name authentically)
         if (sigPads.principal.hasSignature) {
           const pSigPng = sigPads.principal.canvas.toDataURL('image/png');
           const pImg = await pdfDoc.embedPng(pSigPng);
           const maxW = 115;
-          const maxH = 26;
+          const maxH = 34;
           const scale = Math.min(maxW / pImg.width, maxH / pImg.height);
           const drawW = pImg.width * scale;
           const drawH = pImg.height * scale;
           page.drawImage(pImg, {
             x: 135.05 - (drawW / 2),
-            y: 263,
+            y: 261.45 + 1,
             width: drawW,
             height: drawH
           });
         }
 
-        // Embed Spouse Signature PNG
+        // Embed Spouse Signature PNG (Placed cleanly above the line, overlapping spouse printed name)
         if (isMarried && sigPads.spouse.hasSignature) {
           const sSigPng = sigPads.spouse.canvas.toDataURL('image/png');
           const sImg = await pdfDoc.embedPng(sSigPng);
           const maxW = 115;
-          const maxH = 26;
+          const maxH = 34;
           const scale = Math.min(maxW / sImg.width, maxH / sImg.height);
           const drawW = sImg.width * scale;
           const drawH = sImg.height * scale;
           page.drawImage(sImg, {
             x: 311.8 - (drawW / 2),
-            y: 263,
+            y: 261.45 + 1,
             width: drawW,
             height: drawH
           });
