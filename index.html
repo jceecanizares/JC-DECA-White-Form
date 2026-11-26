@@ -3408,14 +3408,137 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     }
 
     /* ========================================================
+       AUTOMATIC SIGNATURE RETENTION & EXTRACTION ENGINE
+       ======================================================== */
+    let extractedSignatures = { principal: null, spouse: null };
+
+    // Clean transparent background from cropped signature image
+    function cleanSignatureCanvas(rawCanvas) {
+      const ctx = rawCanvas.getContext('2d');
+      const imgData = ctx.getImageData(0, 0, rawCanvas.width, rawCanvas.height);
+      const d = imgData.data;
+      let hasInk = false;
+      let darkPixels = 0;
+
+      // Threshold: white/off-white paper turns transparent
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+
+        if (brightness > 200) {
+          d[i + 3] = 0; // Transparent
+        } else if (brightness > 165) {
+          const alphaFactor = (200 - brightness) / 35;
+          d[i + 3] = Math.round(d[i + 3] * alphaFactor);
+        } else {
+          // Ink pixel: ensure solid dark/blue tone
+          d[i + 3] = 255;
+          darkPixels++;
+        }
+      }
+
+      // Check if signature has meaningful ink content (> 40 dark pixels)
+      if (darkPixels > 40) {
+        hasInk = true;
+        ctx.putImageData(imgData, 0, 0);
+      }
+      return hasInk;
+    }
+
+    // Extract signature boxes from a rendered White Form canvas (Image or PDF)
+    function extractSignaturesFromFormCanvas(formCanvas) {
+      const W = formCanvas.width;
+      const H = formCanvas.height;
+      const extracted = { principal: null, spouse: null };
+
+      try {
+        // Principal Signature bounding box:
+        // centered around x=0.22, y from ~0.71 to 0.77
+        const pX = Math.round(W * 0.08);
+        const pY = Math.round(H * 0.715);
+        const pW = Math.round(W * 0.28);
+        const pH = Math.round(H * 0.055);
+
+        const pCrop = document.createElement('canvas');
+        pCrop.width = 600;
+        pCrop.height = 160;
+        const pCtx = pCrop.getContext('2d');
+        pCtx.drawImage(formCanvas, pX, pY, pW, pH, 0, 0, pCrop.width, pCrop.height);
+
+        if (cleanSignatureCanvas(pCrop)) {
+          extracted.principal = pCrop.toDataURL('image/png');
+        }
+
+        // Spouse Signature bounding box:
+        // centered around x=0.51, y from ~0.71 to 0.77
+        const sX = Math.round(W * 0.37);
+        const sY = Math.round(H * 0.715);
+        const sW = Math.round(W * 0.28);
+        const sH = Math.round(H * 0.055);
+
+        const sCrop = document.createElement('canvas');
+        sCrop.width = 600;
+        sCrop.height = 160;
+        const sCtx = sCrop.getContext('2d');
+        sCtx.drawImage(formCanvas, sX, sY, sW, sH, 0, 0, sCrop.width, sCrop.height);
+
+        if (cleanSignatureCanvas(sCrop)) {
+          extracted.spouse = sCrop.toDataURL('image/png');
+        }
+      } catch (err) {
+        console.warn('Signature extraction from canvas encountered:', err);
+      }
+
+      return extracted;
+    }
+
+    // Load an extracted signature image into the actual interactive canvas
+    function loadExtractedSignatureToPad(key, dataUrl) {
+      if (!dataUrl || !sigPads[key] || !sigPads[key].canvas) return;
+      const pad = sigPads[key];
+      const canvas = pad.canvas;
+      const ctx = pad.ctx;
+
+      const img = new Image();
+      img.onload = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const maxW = canvas.width * 0.85;
+        const maxH = canvas.height * 0.85;
+        const scale = Math.min(maxW / img.width, maxH / img.height);
+        const drawW = img.width * scale;
+        const drawH = img.height * scale;
+        const drawX = (canvas.width - drawW) / 2;
+        const drawY = (canvas.height - drawH) / 2;
+
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        pad.hasSignature = true;
+
+        if (typeof uploadedSigSources !== 'undefined') {
+          uploadedSigSources[key] = img;
+        }
+
+        const ctrl = document.getElementById('sigCleanupControls-' + key);
+        if (ctrl) ctrl.classList.remove('hidden');
+
+        if (typeof updateRequiredFieldHighlights === 'function') {
+          updateRequiredFieldHighlights();
+        }
+      };
+      img.src = dataUrl;
+    }
+
+    /* ========================================================
        REVIEW & EDIT PANEL (shared by Chat Absorber & White Form Absorber)
        ======================================================== */
 
     // Holds the last parsed data before applying to form
     let _reviewData = null;
 
-    function openReviewEditPanel(parsedData, sourceLabel) {
+    function openReviewEditPanel(parsedData, sourceLabel, sigs) {
       _reviewData = parsedData;
+      if (sigs) {
+        extractedSignatures = sigs;
+      }
       const a = parsedData.applicant || {};
       const s = parsedData.spouse || {};
       const r = parsedData.rep || {};
@@ -3507,6 +3630,38 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         </select>
       </div>`;
       html += row('Gross Monthly Income (PHP) *', 'income', 'a', '20000', 'number');
+
+      // === SIGNATURE STATUS (RETAINED FROM UPLOADED FORM) ===
+      const hasPSig = Boolean(extractedSignatures && extractedSignatures.principal);
+      const hasSSig = Boolean(extractedSignatures && extractedSignatures.spouse);
+
+      html += `<div class="col-span-2 mt-2 p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/70 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <i data-lucide="feather" class="w-4 h-4 text-emerald-500"></i>
+            <span>Signature Retention Status (Hindi na kailangan pumirma ulit)</span>
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${hasPSig ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+            ${hasPSig ? '✓ Na-preserve ang Pirma' : 'Walang Na-detect na Pirma'}
+          </span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div class="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-semibold text-slate-500 block">Principal Signature:</span>
+              <span class="text-[11px] font-bold ${hasPSig ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}">${hasPSig ? 'Mapananatili sa Step 4' : 'Manual sa Step 4'}</span>
+            </div>
+            ${hasPSig ? `<img src="${extractedSignatures.principal}" alt="Principal Signature" class="h-8 max-w-[120px] object-contain rounded bg-white p-0.5 border border-slate-200">` : ''}
+          </div>
+          <div class="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-semibold text-slate-500 block">Spouse Signature:</span>
+              <span class="text-[11px] font-bold ${hasSSig ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}">${hasSSig ? 'Mapananatili sa Step 4' : (isMarried ? 'Manual sa Step 4' : 'N/A')}</span>
+            </div>
+            ${hasSSig ? `<img src="${extractedSignatures.spouse}" alt="Spouse Signature" class="h-8 max-w-[120px] object-contain rounded bg-white p-0.5 border border-slate-200">` : ''}
+          </div>
+        </div>
+      </div>`;
 
       // === OFW REP (conditional) ===
       html += `<div id="review-ofw-section" class="col-span-2 ${(hasOfw || hasRep) ? '' : 'hidden'}">
@@ -3691,6 +3846,14 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         setVal('ofwRepAddress', r.address);
       }
 
+      // Automatically retain and restore extracted signatures
+      if (extractedSignatures && extractedSignatures.principal) {
+        loadExtractedSignatureToPad('principal', extractedSignatures.principal);
+      }
+      if (extractedSignatures && extractedSignatures.spouse && marital === 'MARRIED') {
+        loadExtractedSignatureToPad('spouse', extractedSignatures.spouse);
+      }
+
       handleMaritalChange();
       updateTrackRequirements();
       evaluateIncomeCeiling();
@@ -3699,7 +3862,8 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
 
       closeReviewEditModal();
       goToStep(1);
-      showToast('✅ Na-apply ang ' + filledCount + ' fields sa form! I-review at pumirma sa Step 4.');
+      const sigMsg = (extractedSignatures && extractedSignatures.principal) ? ' Kasama ang pirma!' : '';
+      showToast('✅ Na-apply ang ' + filledCount + ' fields sa form!' + sigMsg + ' I-review at i-generate ang PDF.');
     }
 
     /* ========================================================
@@ -3882,7 +4046,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         }
 
         // Scanned PDF fallback: Render page to canvas and OCR with Tesseract
-        updateOcrProgress('Scanned PDF ito. Kinukunan ng imahe para i-OCR...', 50);
+        updateOcrProgress('Kinukunan ng imahe para i-OCR at kunin ang pirma...', 50);
         const viewport = page.getViewport({ scale: 2.0 });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
@@ -3890,8 +4054,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         const ctx = canvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
+        // Automatically extract signature from rendered PDF canvas
+        const sigs = extractSignaturesFromFormCanvas(canvas);
+
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        await runTesseractOnImage(dataUrl, '📄 Scanned PDF (' + file.name + ')');
+        await runTesseractOnImage(dataUrl, '📄 PDF (' + file.name + ')', sigs);
       } else {
         throw new Error('PDF.js library is not available.');
       }
@@ -3901,12 +4068,24 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const reader = new FileReader();
       reader.onload = async function(e) {
         const imageSource = e.target.result;
-        await runTesseractOnImage(imageSource, '🖼️ Image (' + file.name + ')');
+        const img = new Image();
+        img.onload = async function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          // Automatically extract signature from uploaded image
+          const sigs = extractSignaturesFromFormCanvas(canvas);
+          await runTesseractOnImage(imageSource, '🖼️ Image (' + file.name + ')', sigs);
+        };
+        img.src = imageSource;
       };
       reader.readAsDataURL(file);
     }
 
-    async function runTesseractOnImage(imageSource, label) {
+    async function runTesseractOnImage(imageSource, label, sigs) {
       if (typeof Tesseract === 'undefined') {
         throw new Error('Tesseract.js OCR library is not available.');
       }
@@ -3931,7 +4110,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const parsed = parseExtractedOcrText(text);
 
       closeAbsorbWhiteFormModal();
-      openReviewEditPanel(parsed, label);
+      openReviewEditPanel(parsed, label, sigs);
     }
 
     function parseExtractedOcrText(text) {
