@@ -20,6 +20,8 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3701,14 +3703,36 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     }
 
     /* ========================================================
-       WHITE FORM PAYLOAD ABSORBER (paste ALL-CAPS payload → Review Panel)
+       WHITE FORM PAYLOAD & IMAGE/PDF ABSORBER
        ======================================================== */
+    let currentAbsorbTab = 'file';
+
+    function setAbsorbTab(tab) {
+      currentAbsorbTab = tab;
+      const fileTabBtn = document.getElementById('absorbTabFileBtn');
+      const textTabBtn = document.getElementById('absorbTabTextBtn');
+      const fileContent = document.getElementById('absorbTabFileContent');
+      const textContent = document.getElementById('absorbTabTextContent');
+
+      if (tab === 'file') {
+        fileTabBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-sm transition';
+        textTabBtn.className = 'flex-1 py-2 text-xs font-semibold rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition';
+        fileContent.classList.remove('hidden');
+        textContent.classList.add('hidden');
+      } else {
+        textTabBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-sm transition';
+        fileTabBtn.className = 'flex-1 py-2 text-xs font-semibold rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition';
+        textContent.classList.remove('hidden');
+        fileContent.classList.add('hidden');
+      }
+    }
+
     function openAbsorbWhiteFormModal() {
       const modal = document.getElementById('absorbWhiteFormModal');
       if (modal) {
         modal.classList.remove('hidden');
-        const inp = document.getElementById('absorbWhiteFormInput');
-        if (inp) setTimeout(() => inp.focus(), 100);
+        setAbsorbTab('file');
+        resetFileAbsorberUI();
         if (window.lucide) lucide.createIcons();
       }
     }
@@ -3716,6 +3740,342 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     function closeAbsorbWhiteFormModal() {
       const modal = document.getElementById('absorbWhiteFormModal');
       if (modal) modal.classList.add('hidden');
+    }
+
+    function resetFileAbsorberUI() {
+      const fileInput = document.getElementById('whiteFormFileInput');
+      if (fileInput) fileInput.value = '';
+      const previewCont = document.getElementById('filePreviewContainer');
+      if (previewCont) previewCont.classList.add('hidden');
+      const dropZone = document.getElementById('fileDropZone');
+      if (dropZone) dropZone.classList.remove('hidden');
+      const progressBox = document.getElementById('ocrProgressBox');
+      if (progressBox) progressBox.classList.add('hidden');
+      const procBtn = document.getElementById('processDocBtn');
+      if (procBtn) {
+        procBtn.disabled = true;
+        procBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    let selectedDocumentFile = null;
+
+    function handleFileSelection(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      handleSelectedDocument(file);
+    }
+
+    function handleDropFile(event) {
+      event.preventDefault();
+      const dt = event.dataTransfer;
+      if (dt && dt.files && dt.files.length) {
+        handleSelectedDocument(dt.files[0]);
+      }
+    }
+
+    function handleSelectedDocument(file) {
+      selectedDocumentFile = file;
+      const previewCont = document.getElementById('filePreviewContainer');
+      const previewImg = document.getElementById('filePreviewImage');
+      const previewIcon = document.getElementById('filePreviewPdfIcon');
+      const fileNameEl = document.getElementById('selectedFileName');
+      const fileSizeEl = document.getElementById('selectedFileSize');
+      const dropZone = document.getElementById('fileDropZone');
+      const procBtn = document.getElementById('processDocBtn');
+
+      fileNameEl.textContent = file.name;
+      fileSizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          previewImg.classList.remove('hidden');
+          previewIcon.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImg.classList.add('hidden');
+        previewIcon.classList.remove('hidden');
+      }
+
+      dropZone.classList.add('hidden');
+      previewCont.classList.remove('hidden');
+
+      if (procBtn) {
+        procBtn.disabled = false;
+        procBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function updateOcrProgress(statusText, percent) {
+      const box = document.getElementById('ocrProgressBox');
+      const label = document.getElementById('ocrStatusLabel');
+      const bar = document.getElementById('ocrProgressBar');
+      if (!box) return;
+      box.classList.remove('hidden');
+      if (label) label.textContent = statusText;
+      if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+    }
+
+    async function processSelectedDocument() {
+      if (!selectedDocumentFile) {
+        alert('Paki-pili muna ang Image o PDF file ng White Form.');
+        return;
+      }
+
+      const file = selectedDocumentFile;
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      const procBtn = document.getElementById('processDocBtn');
+      if (procBtn) {
+        procBtn.disabled = true;
+        procBtn.classList.add('opacity-50');
+      }
+
+      try {
+        if (isPdf) {
+          await processPdfDocument(file);
+        } else {
+          await processImageDocument(file);
+        }
+      } catch (err) {
+        console.error('Error processing document:', err);
+        alert('Nagkaroon ng problema sa pag-basa ng dokumento: ' + (err.message || err) + '\nSubukang i-paste ang text sa Text Payload tab kung hindi mabasa.');
+      } finally {
+        if (procBtn) {
+          procBtn.disabled = false;
+          procBtn.classList.remove('opacity-50');
+        }
+      }
+    }
+
+    async function processPdfDocument(file) {
+      updateOcrProgress('Binabasa ang PDF document...', 20);
+      const arrayBuffer = await file.arrayBuffer();
+
+      // Configure PDF.js worker
+      if (window.pdfjsLib) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        updateOcrProgress('Ine-extract ang text content mula sa PDF...', 45);
+        const textContent = await page.getTextContent();
+        let extractedText = '';
+
+        if (textContent && textContent.items && textContent.items.length > 0) {
+          textContent.items.forEach(item => {
+            extractedText += item.str + '\n';
+          });
+        }
+
+        // If PDF contains selectable text and has enough content
+        if (extractedText.trim().length > 80 && (/SURNAME|FIRST NAME|BENEFICIARY|DECA GOLD|MARITAL/i.test(extractedText))) {
+          updateOcrProgress('Kino-convert ang PDF text...', 85);
+          const parsed = parseExtractedOcrText(extractedText);
+          closeAbsorbWhiteFormModal();
+          openReviewEditPanel(parsed, '📄 PDF White Form (' + file.name + ')');
+          return;
+        }
+
+        // Scanned PDF fallback: Render page to canvas and OCR with Tesseract
+        updateOcrProgress('Scanned PDF ito. Kinukunan ng imahe para i-OCR...', 50);
+        const viewport = page.getViewport({ scale: 2.0 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        await runTesseractOnImage(dataUrl, '📄 Scanned PDF (' + file.name + ')');
+      } else {
+        throw new Error('PDF.js library is not available.');
+      }
+    }
+
+    async function processImageDocument(file) {
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const imageSource = e.target.result;
+        await runTesseractOnImage(imageSource, '🖼️ Image (' + file.name + ')');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function runTesseractOnImage(imageSource, label) {
+      if (typeof Tesseract === 'undefined') {
+        throw new Error('Tesseract.js OCR library is not available.');
+      }
+
+      updateOcrProgress('Inihahanda ang OCR engine...', 20);
+
+      const worker = await Tesseract.createWorker('eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const p = Math.round((m.progress || 0) * 60) + 30;
+            updateOcrProgress('Binabasa ang sulat / imahe... (' + Math.round((m.progress || 0) * 100) + '%)', p);
+          }
+        }
+      });
+
+      updateOcrProgress('Ini-scan ang mga detalye ng White Form...', 40);
+      const ret = await worker.recognize(imageSource);
+      await worker.terminate();
+
+      updateOcrProgress('Tapos na! Inaayos ang impormasyon...', 95);
+      const text = ret.data.text;
+      const parsed = parseExtractedOcrText(text);
+
+      closeAbsorbWhiteFormModal();
+      openReviewEditPanel(parsed, label);
+    }
+
+    function parseExtractedOcrText(text) {
+      // First try standard ALL-CAPS parsing if format matches
+      if (text.includes('=== DECA GOLD') || text.includes('[PRINCIPAL BENEFICIARY')) {
+        return parseWhiteFormPayload(text);
+      }
+
+      // Robust OCR parsing: searches line-by-line using flexible fuzzy patterns
+      const result = { applicant: {}, spouse: {}, rep: {} };
+      const lines = String(text || '').replace(/\r/g, '').split('\n').map(l => l.trim()).filter(Boolean);
+      let isSpouseSection = false;
+      let isRepSection = false;
+
+      function cleanVal(v) {
+        if (!v) return '';
+        return v.replace(/^[;:,._\-\s|]+/, '').replace(/[;._\-\s|]+$/, '').trim();
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const u = line.toUpperCase();
+
+        if (u.includes('SPOUSE') || u.includes('PANGALAN NG ASAWA')) {
+          isSpouseSection = true;
+          isRepSection = false;
+        }
+        if (u.includes('REPRESENTATIVE') || u.includes('ATTORNEY-IN-FACT') || u.includes('OFW COUNTRY')) {
+          isRepSection = true;
+        }
+
+        // Helper to grab text following keyword on same line or next line
+        function getFieldVal(patterns) {
+          for (const pat of patterns) {
+            const match = line.match(pat);
+            if (match && match[1]) {
+              const val = cleanVal(match[1]);
+              if (val.length > 0) return val;
+            }
+          }
+          // Check if key is alone on this line, and value is on the very next line
+          for (const pat of patterns) {
+            if (pat.test(line) && i + 1 < lines.length) {
+              const nextL = cleanVal(lines[i + 1]);
+              if (nextL.length > 0 && !/^(SURNAME|FIRST|MIDDLE|DATE|PAG-IBIG|CONTACT|EMAIL|ADDRESS|OCCUPATION|EMPLOYER|SPOUSE)/i.test(nextL)) {
+                return nextL;
+              }
+            }
+          }
+          return null;
+        }
+
+        const target = isRepSection ? result.rep : (isSpouseSection ? result.spouse : result.applicant);
+
+        // Surname / Last Name
+        if (!target.lastName) {
+          const v = getFieldVal([/SURNAME\s*[:\-_.\s|]+\s*(.+)/i, /LAST\s*NAME\s*[:\-_.\s|]+\s*(.+)/i, /APELYIDO\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.lastName = v;
+        }
+
+        // First Name
+        if (!target.firstName) {
+          const v = getFieldVal([/FIRST\s*NAME\s*[:\-_.\s|]+\s*(.+)/i, /PANGALAN\s*[:\-_.\s|]+\s*(.+)/i, /GIVEN\s*NAME\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.firstName = v;
+        }
+
+        // Middle Name
+        if (!target.middleName) {
+          const v = getFieldVal([/MIDDLE\s*NAME\s*[:\-_.\s|]+\s*(.+)/i, /GITNANG\s*PANGALAN\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.middleName = v;
+        }
+
+        // Date of Birth
+        if (!target.dob) {
+          const v = getFieldVal([/DATE\s*OF\s*BIRTH\s*[:\-_.\s|]+\s*(.+)/i, /BIRTHDATE\s*[:\-_.\s|]+\s*(.+)/i, /DOB\s*[:\-_.\s|]+\s*(.+)/i, /KAPANGANAKAN\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.dob = v;
+        }
+
+        // Contact Number
+        if (!target.contact) {
+          const v = getFieldVal([/CONTACT\s*NO[.]?\s*[:\-_.\s|]+\s*(.+)/i, /CONTACT\s*NUMBER\s*[:\-_.\s|]+\s*(.+)/i, /MOBILE\s*[:\-_.\s|]+\s*(.+)/i, /PHONE\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.contact = v;
+        }
+
+        // Pag-IBIG MID
+        if (!target.pagibigMid) {
+          const v = getFieldVal([/MID\s*NO[.]?\s*[:\-_.\s|]+\s*(.+)/i, /PAG[-\s]*IBIG\s*MID\s*[:\-_.\s|]+\s*(.+)/i, /PAG[-\s]*IBIG\s*NO[.]?\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.pagibigMid = v;
+          else {
+            const midMatch = line.match(/\b(\d{4}[-\s]?\d{4}[-\s]?\d{4})\b/);
+            if (midMatch) target.pagibigMid = midMatch[1];
+          }
+        }
+
+        // Email Address
+        if (!target.email) {
+          const emailMatch = line.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+          if (emailMatch) target.email = emailMatch[1];
+        }
+
+        // Address
+        if (!target.address) {
+          const v = getFieldVal([/PRESENT\s*HOME\s*ADDRESS\s*[:\-_.\s|]+\s*(.+)/i, /ADDRESS\s*[:\-_.\s|]+\s*(.+)/i, /TIRAHAN\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.address = v;
+        }
+
+        // Employer
+        if (!result.applicant.employer) {
+          const v = getFieldVal([/EMPLOYER['’]?S?\s*(?:BUSINESS)?\s*NAME\s*[:\-_.\s|]+\s*(.+)/i, /COMPANY\s*NAME\s*[:\-_.\s|]+\s*(.+)/i, /KUMPANYA\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) result.applicant.employer = v;
+        }
+
+        // Occupation / Job
+        if (!target.occupation) {
+          const v = getFieldVal([/OCCUPATION\s*(?:\/\s*DESIGNATION)?\s*[:\-_.\s|]+\s*(.+)/i, /SOURCE\s*OF\s*INCOME\s*[:\-_.\s|]+\s*(.+)/i, /JOB\s*[:\-_.\s|]+\s*(.+)/i, /TRABAHO\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.occupation = v;
+        }
+
+        // Gross Monthly Income
+        if (!target.income) {
+          const v = getFieldVal([/MONTHLY\s*INCOME\s*[:\-_.\s|]+\s*(.+)/i, /BASIC\s*MONTHLY\s*INCOME\s*[:\-_.\s|]+\s*(.+)/i, /GROSS\s*INCOME\s*[:\-_.\s|]+\s*(.+)/i, /SAHOD\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.income = parseIncomeNumber(v) || v;
+        }
+
+        // Marital Status
+        if (!result.applicant.maritalStatus) {
+          const v = getFieldVal([/MARITAL\s*STATUS\s*[:\-_.\s|]+\s*(.+)/i, /CIVIL\s*STATUS\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) result.applicant.maritalStatus = normalizeMarital(v) || v;
+        }
+
+        // Gender
+        if (!target.gender) {
+          const v = getFieldVal([/GENDER\s*[:\-_.\s|]+\s*(.+)/i, /SEX\s*[:\-_.\s|]+\s*(.+)/i, /KASARIAN\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) target.gender = normalizeGender(v) || v;
+        }
+
+        // Place of work
+        if (!result.applicant.workPlace) {
+          const v = getFieldVal([/PLACE\s*OF\s*WORK\s*[:\-_.\s|]+\s*(.+)/i, /LUGAR\s*NG\s*TRABAHO\s*[:\-_.\s|]+\s*(.+)/i]);
+          if (v) result.applicant.workPlace = v;
+        }
+      }
+
+      return result;
     }
 
     function parseWhiteFormPayload(raw) {
@@ -3735,7 +4095,6 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         if (!line) continue;
         const upper = line.toUpperCase();
 
-        // Section headers
         if (/\[SPOUSE DETAILS/.test(upper)) { section = 'spouse'; continue; }
         if (/\[OFW COUNTRY/.test(upper) || /\[AUTHORIZED REPRESENTATIVE/.test(upper)) { section = 'rep'; continue; }
         if (/\[PRINCIPAL BENEFICIARY/.test(upper)) { section = 'applicant'; continue; }
@@ -3820,7 +4179,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       }
       const parsed = parseWhiteFormPayload(raw);
       closeAbsorbWhiteFormModal();
-      openReviewEditPanel(parsed, '📋 White Form Payload');
+      openReviewEditPanel(parsed, '📋 Text Payload');
     }
 
     /* ========================================================
@@ -4243,18 +4602,19 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
   </div>
 
   <!-- ============================================== -->
-  <!--  ABSORB WHITE FORM MODAL (paste payload)       -->
+  <!--  ABSORB WHITE FORM MODAL (IMAGE / PDF / TEXT) -->
   <!-- ============================================== -->
-  <div id="absorbWhiteFormModal" onclick="if(event.target === this) closeAbsorbWhiteFormModal()" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+  <div id="absorbWhiteFormModal" onclick="if(event.target === this) closeAbsorbWhiteFormModal()" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-xl w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center shrink-0">
-            <i data-lucide="file-edit" class="w-5 h-5"></i>
+            <i data-lucide="file-scan" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white">Absorb White Form Payload</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">I-paste ang ALL-CAPS White Form payload para ma-load at ma-edit bago i-apply.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Absorb White Form (IMG, JPEG, PDF)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">I-absorb ang picture o PDF ng White Form para ma-edit at ma-regenerate.</p>
           </div>
         </div>
         <button type="button" onclick="closeAbsorbWhiteFormModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
@@ -4262,29 +4622,94 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         </button>
       </div>
 
-      <!-- Tip -->
-      <div class="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/30 text-[11px] text-purple-300 flex items-start gap-2">
-        <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5"></i>
-        <span>I-paste ang buong <strong>White Form payload</strong> (ang ALL-CAPS text mula sa /decahome whiteform o mula sa nakaraang encoding). Pagkatapos i-absorb, makikita mo ang <strong>Review & Edit Panel</strong> para i-correct ang anumang mali bago i-apply sa form.</span>
+      <!-- Segmented Tabs: File Upload vs Text Payload -->
+      <div class="flex bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-700/60 shrink-0">
+        <button type="button" id="absorbTabFileBtn" onclick="setAbsorbTab('file')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-sm transition flex items-center justify-center gap-1.5">
+          <i data-lucide="image" class="w-3.5 h-3.5"></i>
+          <span>Image / PDF Upload</span>
+        </button>
+        <button type="button" id="absorbTabTextBtn" onclick="setAbsorbTab('text')" class="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition flex items-center justify-center gap-1.5">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+          <span>Text Payload</span>
+        </button>
       </div>
 
-      <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <label for="absorbWhiteFormInput" class="block text-xs font-bold text-slate-700 dark:text-slate-200">
-            I-paste dito ang White Form payload (ALL-CAPS format):
-          </label>
+      <!-- Scrollable Tab Content Container -->
+      <div class="overflow-y-auto flex-1 space-y-3 pr-0.5">
+        <!-- TAB 1: FILE UPLOAD (IMG / JPEG / PDF) -->
+        <div id="absorbTabFileContent" class="space-y-3">
+          <!-- Drop zone -->
+          <div id="fileDropZone" ondragover="event.preventDefault(); this.classList.add('border-purple-500');" ondragleave="this.classList.remove('border-purple-500');" ondrop="handleDropFile(event)" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center hover:border-purple-500 transition cursor-pointer bg-slate-50/50 dark:bg-slate-800/40" onclick="document.getElementById('whiteFormFileInput').click()">
+            <input type="file" id="whiteFormFileInput" accept="image/png,image/jpeg,image/jpg,image/webp,application/pdf" class="hidden" onchange="handleFileSelection(event)">
+            <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 mx-auto flex items-center justify-center mb-2">
+              <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-200">I-click o i-drag ang White Form dito</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Tumatanggap ng <strong>JPG, JPEG, PNG, o PDF</strong> (Scanned o Digital)</p>
+          </div>
+
+          <!-- File Selected Preview Card -->
+          <div id="filePreviewContainer" class="hidden p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/60 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <img id="filePreviewImage" src="" alt="White Form preview" class="w-12 h-12 object-cover rounded-xl border border-purple-300 dark:border-purple-800 shrink-0 hidden">
+              <div id="filePreviewPdfIcon" class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center shrink-0">
+                <i data-lucide="file-type-pdf" class="w-6 h-6 text-purple-500"></i>
+              </div>
+              <div class="min-w-0">
+                <p id="selectedFileName" class="text-xs font-bold text-slate-900 dark:text-white truncate">white-form.jpg</p>
+                <p id="selectedFileSize" class="text-[10px] text-slate-500 dark:text-slate-400">120 KB</p>
+              </div>
+            </div>
+            <button type="button" onclick="resetFileAbsorberUI()" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Palitan ang file">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- Progress Bar & Status (hidden by default) -->
+          <div id="ocrProgressBox" class="hidden p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+            <div class="flex items-center justify-between text-[11px]">
+              <span id="ocrStatusLabel" class="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+                <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Binabasa ang White Form...
+              </span>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+              <div id="ocrProgressBar" class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2 rounded-full transition-all duration-200" style="width: 15%"></div>
+            </div>
+          </div>
+
+          <!-- Action for File Upload -->
+          <div class="pt-2 flex justify-end">
+            <button type="button" id="processDocBtn" onclick="processSelectedDocument()" disabled class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-md transition flex items-center gap-1.5 opacity-50 cursor-not-allowed">
+              <i data-lucide="scan" class="w-4 h-4"></i>
+              <span>Absorb &amp; Scan Document</span>
+            </button>
+          </div>
         </div>
-        <textarea id="absorbWhiteFormInput" rows="13" placeholder="=== DECA GOLD PRINCIPAL BENEFICIARY DETAILS (WHITE FORM) ===&#10;GROUP NAME: DECA GOLD CASSIA DECA/NORTH FORBES REALTY&#10;...&#10;[PRINCIPAL BENEFICIARY DETAILS]&#10;SURNAME: DELA CRUZ&#10;FIRST NAME: JUAN&#10;MIDDLE NAME: SANTOS&#10;DATE OF BIRTH: 05/14/1990&#10;PAG-IBIG MEMBER?: YES&#10;PAG-IBIG MID NUMBER: 1212-3456-7890&#10;..." class="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono border-2 border-slate-300 dark:border-slate-700 focus:border-purple-500 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"></textarea>
-      </div>
 
-      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
-        <button type="button" onclick="document.getElementById('absorbWhiteFormInput').value=''" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition">
-          Clear
-        </button>
-        <button type="button" onclick="runAbsorbWhiteFormParser()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-xs font-extrabold shadow-md transition flex items-center gap-1.5">
-          <i data-lucide="file-search" class="w-4 h-4"></i>
-          <span>Absorb &amp; Review Form</span>
-        </button>
+        <!-- TAB 2: TEXT PAYLOAD (ALL-CAPS) -->
+        <div id="absorbTabTextContent" class="space-y-3 hidden">
+          <div class="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/30 text-[11px] text-purple-300 flex items-start gap-2">
+            <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5"></i>
+            <span>I-paste ang <strong>White Form payload</strong> (ang ALL-CAPS text mula sa /decahome whiteform). Awtomatikong magbubukas ang <strong>Review & Edit Panel</strong> para ma-correct bago i-regenerate.</span>
+          </div>
+
+          <div class="space-y-1">
+            <label for="absorbWhiteFormInput" class="block text-xs font-bold text-slate-700 dark:text-slate-200">
+              I-paste ang White Form Text (ALL-CAPS):
+            </label>
+            <textarea id="absorbWhiteFormInput" rows="9" placeholder="=== DECA GOLD PRINCIPAL BENEFICIARY DETAILS (WHITE FORM) ===&#10;SURNAME: DELA CRUZ&#10;FIRST NAME: JUAN&#10;DATE OF BIRTH: 05/14/1990&#10;PAG-IBIG MID NUMBER: 1212-3456-7890&#10;..." class="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono border-2 border-slate-300 dark:border-slate-700 focus:border-purple-500 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"></textarea>
+          </div>
+
+          <div class="pt-1 flex items-center justify-between">
+            <button type="button" onclick="document.getElementById('absorbWhiteFormInput').value=''" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition">
+              Clear
+            </button>
+            <button type="button" onclick="runAbsorbWhiteFormParser()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-xs font-extrabold shadow-md transition flex items-center gap-1.5">
+              <i data-lucide="file-search" class="w-4 h-4"></i>
+              <span>Absorb &amp; Review Text</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
