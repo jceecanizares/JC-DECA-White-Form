@@ -3204,10 +3204,13 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       "- Contact Number:\n" +
       "- Email Address:\n" +
       "- Employment Category:\n" +
+      "- Employment Status (Permanent/Regular, Contractual, Part-Time, Probationary):\n" +
+      "- Employer's Business Name:\n" +
+      "- Place of Work / Business:\n" +
       "- Source of Income / Job or Business:\n" +
       "- Gross Monthly Income (PHP):\n" +
       "- Present Home Address (Region / Province / Municipality):\n\n" +
-      "SPOUSE DETAILS\n" +
+      "SPOUSE DETAILS (IF MARRIED)\n" +
       "- Last Name:\n" +
       "- First Name:\n" +
       "- Middle Name:\n" +
@@ -3220,11 +3223,17 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       "- Email Address:\n" +
       "- Employment Category:\n" +
       "- Source of Income / Job or Business:\n" +
+      "- Employer's Business Name:\n" +
+      "- Place of Work / Business:\n" +
+      "- Contact Person (HR / Admin) of Employer:\n" +
+      "- Employer / HR Contact Number/s:\n" +
+      "- Employer / HR Email Address:\n" +
       "- Gross Monthly Income (PHP):\n" +
       "- Present Home Address (Region / Province / Municipality):\n\n" +
       "AUTHORIZED REPRESENTATIVE IN PH (IF OFW ONLY)\n" +
       "- Country / Location Abroad:\n" +
       "- Full Name:\n" +
+      "- Relationship to Principal:\n" +
       "- Contact Number:\n" +
       "- Email Address:\n" +
       "- Present Home Address:";
@@ -3387,10 +3396,16 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         if (k.includes('gender') || k.includes('sex') || k.includes('kasarian')) return 'gender';
         if (k.includes('maiden')) return 'maidenName';
         if (k.includes('marital') || k.includes('civil')) return 'maritalStatus';
+        if (k.includes('relationship')) return 'relation';
         if (k.includes('pag ibig') || k.includes('pagibig') || k.includes('mid')) return 'pagibigMid';
+        if (k.includes('contact person') || k.includes('hr admin') || k.includes('hr name')) return 'hrName';
+        if (k.includes('employer hr contact') || k.includes('employer phone') || k.includes('hr contact')) return 'hrContact';
+        if (k.includes('employer hr email') || k.includes('employer email') || k.includes('hr email')) return 'hrEmail';
         if (k.includes('contact') || k.includes('mobile') || k.includes('phone') || k.includes('cell')) return 'contact';
         if (k.includes('email')) return 'email';
         if (k.includes('employment category') || k.includes('category') || k.includes('kategorya')) return 'occType';
+        if (k.includes('employment status')) return 'empStatus';
+        if (k.includes('place of work') || k.includes('workplace')) return 'workPlace';
         if (k.includes('source of income') || k.includes('job or business') || k.includes('occupation') || k.includes('trabaho')) return 'occupation';
         if (k.includes('employer') || k.includes('company')) return 'employer';
         if (k.includes('gross monthly income') || k.includes('monthly income') || k.includes('income') || k.includes('salary') || k.includes('sahod')) return 'income';
@@ -3732,6 +3747,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
           ${sectionHead('✈️ OFW: Country & Rep in PH', 'emerald')}
           ${row('Country / Location Abroad *', 'country', 'r', 'SAUDI ARABIA')}
           ${row('Full Name of Authorized Rep *', 'fullName', 'r', 'MARIA DELA CRUZ')}
+          ${row('Relationship to Principal', 'relation', 'r', 'SPOUSE / SIBLING / PARENT')}
           ${row('Rep Contact Number *', 'contact', 'r', '0917 123 4567')}
           ${row('Rep Email Address', 'email', 'r', 'rep@gmail.com', 'email')}
           <div class="flex flex-col gap-0.5 col-span-2">
@@ -3775,6 +3791,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
             </select>
           </div>
           ${row('Spouse Job / Source of Income', 'occupation', 's', 'STAFF / HOUSEWIFE / N/A')}
+          ${row('Spouse Employer / Business Name', 'employer', 's', 'COMPANY NAME / N/A')}
+          ${row('Spouse Place of Work / Business', 'workPlace', 's', 'URDANETA / N/A')}
+          ${row('Spouse HR / Admin Contact Person', 'hrName', 's', 'HR NAME / N/A')}
+          ${row('Spouse Employer / HR Contact', 'hrContact', 's', '0917 000 0000 / N/A')}
+          ${row('Spouse Employer / HR Email', 'hrEmail', 's', 'hr@company.com / N/A', 'email')}
           ${row('Spouse Gross Monthly Income (PHP)', 'income', 's', '0', 'number')}
           <div class="flex flex-col gap-0.5 col-span-2">
             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Spouse Present Address</label>
@@ -3895,6 +3916,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         setVal('spousePersonalEmail', s.email);
         if (s.occType) setVal('spouseOccType', s.occType);
         setVal('spouseOccupation', s.occupation);
+        setVal('spouseEmployer', s.employer);
+        setVal('spouseWorkPlace', s.workPlace);
+        setVal('spouseHrName', s.hrName);
+        setVal('spouseHrContact', s.hrContact);
+        setVal('spouseHrEmail', s.hrEmail);
         const sInc = parseIncomeNumber(s.income);
         if (sInc) setVal('spouseIncome', sInc);
         setVal('spouseAddress', s.address || a.address);
@@ -3904,6 +3930,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       if (aOccType === 'OVERSEAS FILIPINO WORKER' || r.country || r.fullName || r.contact || r.address) {
         setVal('ofwCountry', r.country || a.country);
         setVal('ofwRepName', r.fullName);
+        setVal('ofwRepRelation', r.relation);
         setVal('ofwRepContact', r.contact);
         setVal('ofwRepEmail', r.email);
         setVal('ofwRepAddress', r.address);
