@@ -675,6 +675,10 @@
               <input type="text" id="ofwRepName" placeholder="BUONG PANGALAN NG KINATAWAN SA PH" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
             </div>
             <div>
+              <label for="ofwRepRelation" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Relasyon sa Principal (Relationship) *</label>
+              <input type="text" id="ofwRepRelation" placeholder="HAL. ASAWA, KAPATID, MAGULANG, PINSAN" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
+            </div>
+            <div>
               <label for="ofwRepContact" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Number ng Authorized Person *</label>
               <input type="text" id="ofwRepContact" placeholder="0919 123 4567" maxlength="13" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-400 rounded-xl focus:ring-2 focus:ring-emerald-600 text-slate-900 font-semibold transition">
             </div>
@@ -2236,6 +2240,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const spouseAddress = (document.getElementById('spouseAddress').value.trim() || '').toUpperCase();
       const ofwCountry = (document.getElementById('ofwCountry').value.trim() || '').toUpperCase();
       const ofwRepName = (document.getElementById('ofwRepName').value.trim() || '').toUpperCase();
+      const ofwRepRelation = (document.getElementById('ofwRepRelation')?.value.trim() || '').toUpperCase();
       const ofwRepContact = (document.getElementById('ofwRepContact').value.trim() || '').toUpperCase();
       const ofwRepEmail = (document.getElementById('ofwRepEmail').value.trim() || '').toUpperCase();
       const ofwRepAddress = (document.getElementById('ofwRepAddress').value.trim() || '').toUpperCase();
@@ -2302,6 +2307,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         spouseAddress: spouseAddress,
         ofwCountry: ofwCountry,
         ofwRepName: ofwRepName,
+        ofwRepRelation: ofwRepRelation,
         ofwRepContact: ofwRepContact,
         ofwRepEmail: ofwRepEmail,
         ofwRepAddress: ofwRepAddress,
@@ -2972,6 +2978,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       if (occType === 'OVERSEAS FILIPINO WORKER') {
         const ofwCountry = (document.getElementById('ofwCountry').value.trim() || 'N/A').toUpperCase();
         const repName = (document.getElementById('ofwRepName').value.trim() || 'N/A').toUpperCase();
+        const repRelation = (document.getElementById('ofwRepRelation')?.value.trim() || 'N/A').toUpperCase();
         const repContact = (document.getElementById('ofwRepContact').value.trim() || 'N/A').toUpperCase();
         const repEmail = (document.getElementById('ofwRepEmail').value.trim() || 'N/A').toUpperCase();
         const repAddress = (document.getElementById('ofwRepAddress').value.trim() || 'N/A').toUpperCase();
