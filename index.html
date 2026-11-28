@@ -855,6 +855,26 @@
               <label for="spouseOccupation" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Source of Income / Job or Business ng Asawa</label>
               <input type="text" id="spouseOccupation" placeholder="TRABAHO, POSISYON, O NEGOSYO (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
             </div>
+            <div>
+              <label for="spouseEmployer" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Employer's Business Name ng Asawa</label>
+              <input type="text" id="spouseEmployer" placeholder="PANGALAN NG KUMPANYA O NEGOSYO (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label for="spouseWorkPlace" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Place of Work / Business ng Asawa</label>
+              <input type="text" id="spouseWorkPlace" placeholder="LUNGSOD / BANSA KUNG SAAN NAGTATRABAHO (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label for="spouseHrName" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Person (HR/Admin) ng Employer ng Asawa</label>
+              <input type="text" id="spouseHrName" placeholder="PANGALAN NG HR / ADMIN (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label for="spouseHrContact" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Contact Number/s ng Employer ng Asawa</label>
+              <input type="text" id="spouseHrContact" placeholder="TELEPONO NG HR / EMPLOYER (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
+            <div>
+              <label for="spouseHrEmail" class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Email Address ng Employer ng Asawa</label>
+              <input type="email" id="spouseHrEmail" placeholder="HR@COMPANY.COM (O N/A)" class="uppercase-input w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-red-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+            </div>
           </div>
         </div>
 
@@ -2236,6 +2256,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       const spousePersonalEmail = (document.getElementById('spousePersonalEmail').value.trim() || '').toUpperCase();
       const spouseOccType = (document.getElementById('spouseOccType').value || 'N/A').toUpperCase();
       const spouseOccupation = (document.getElementById('spouseOccupation').value.trim() || '').toUpperCase();
+      const spouseEmployer = (document.getElementById('spouseEmployer')?.value.trim() || '').toUpperCase();
+      const spouseWorkPlace = (document.getElementById('spouseWorkPlace')?.value.trim() || '').toUpperCase();
+      const spouseHrName = (document.getElementById('spouseHrName')?.value.trim() || '').toUpperCase();
+      const spouseHrContact = (document.getElementById('spouseHrContact')?.value.trim() || '').toUpperCase();
+      const spouseHrEmail = (document.getElementById('spouseHrEmail')?.value.trim() || '').toUpperCase();
       const spouseIncome = document.getElementById('spouseIncome').value.trim();
       const spouseAddress = (document.getElementById('spouseAddress').value.trim() || '').toUpperCase();
       const ofwCountry = (document.getElementById('ofwCountry').value.trim() || '').toUpperCase();
@@ -2303,6 +2328,11 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         spousePersonalEmail: spousePersonalEmail,
         spouseOccType: spouseOccType,
         spouseOccupation: spouseOccupation,
+        spouseEmployer: spouseEmployer,
+        spouseWorkPlace: spouseWorkPlace,
+        spouseHrName: spouseHrName,
+        spouseHrContact: spouseHrContact,
+        spouseHrEmail: spouseHrEmail,
         spouseIncome: spouseIncome,
         spouseAddress: spouseAddress,
         ofwCountry: ofwCountry,
