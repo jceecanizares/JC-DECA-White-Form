@@ -398,6 +398,16 @@
           <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Hakbang 1 ng 4</span>
         </div>
 
+        <!-- Facebook / Messenger Profile Name (Standard Setup) -->
+        <div class="p-3.5 bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl">
+          <label for="fbName" class="block text-xs font-bold text-blue-950 dark:text-blue-200 mb-1 flex items-center gap-1.5">
+            <i data-lucide="facebook" class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"></i>
+            <span>Facebook Profile / Messenger Name (Para sa Google Sheets Auto-Input)</span>
+          </label>
+          <input type="text" id="fbName" placeholder="Halimbawa: Juan Dela Cruz (Messenger Name)" class="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border-2 border-blue-300 dark:border-blue-700 rounded-lg focus:ring-2 focus:ring-blue-600 text-slate-900 dark:text-slate-100 font-semibold transition">
+          <p class="text-[11px] text-blue-700 dark:text-blue-400 mt-1">Awtomatikong ilalagay sa tapat ng FB Name column sa inyong Master Google Sheet.</p>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
           <!-- Surname -->
           <div class="flex flex-col justify-end">
@@ -1223,7 +1233,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
       <!-- Modal Actions Toolbar -->
       <div class="p-4 sm:p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-3">
         
-        <!-- 🌟 PRIMARY HIGHLIGHTED HERO ACTION: DOWNLOAD IMAGE (JPG) FOR PHONE GALLERY -->
+        <!-- 🌟 PRIMARY HIGHLIGHTED HERO ACTION: DOWNLOAD IMAGE (JPG) -->
         <button type="button" onclick="downloadImage()" class="w-full px-5 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-xl shadow-red-900/30 ring-4 ring-red-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0">
           <i data-lucide="image-down" class="w-6 h-6 text-amber-300 animate-bounce"></i>
           <div class="text-left">
@@ -1231,54 +1241,15 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
               <span>I-download ang Larawan (JPG)</span>
               <span class="text-[10px] uppercase font-black bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">Pinakamadali</span>
             </div>
-            <div class="text-[10px] sm:text-[11px] font-semibold text-rose-100 opacity-95">Direktang papasok sa Gallery • Pinakamadaling i-send sa Messenger</div>
+            <div class="text-[10px] sm:text-[11px] font-semibold text-rose-100 opacity-95">Direktang papasok sa Gallery • O i-long press ang larawan sa taas</div>
           </div>
         </button>
 
-        <!-- Messenger Direct Send Actions (Auto-Saves Image First) -->
-        <div class="space-y-2">
-          <!-- 1. Send to JC Personal Messenger -->
-          <button onclick="sendToMessengerWithAutoSave('https://m.me/jhn.cnzrs')" class="w-full px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition">
-            <i data-lucide="send" class="w-4 h-4 text-amber-300"></i>
-            <span>1. I-save & I-send sa Personal Messenger ni JC (m.me/jhn.cnzrs)</span>
-          </button>
-
-          <!-- 2. Send to Official Page Messenger -->
-          <button onclick="sendToMessengerWithAutoSave('https://m.me/DecaHomeUrda')" class="w-full px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-slate-700 shadow-sm transition">
-            <i data-lucide="message-square" class="w-4 h-4 text-blue-400"></i>
-            <span>2. I-save & I-send sa Page (@DecaHomeUrda)</span>
-          </button>
-        </div>
-
-        <!-- Document & Viewing Grid (PDF & Tab) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <!-- Download Official Vector PDF -->
-          <button type="button" onclick="downloadOfficialPdf()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition" title="I-download bilang opisyal na vector PDF document">
-            <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-500"></i>
-            <span>I-download ang Opisyal na PDF (File)</span>
-          </button>
-
-          <!-- View Full Image in New Tab -->
-          <button type="button" onclick="openImageInNewTab()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-xs flex items-center justify-center gap-2 transition">
-            <i data-lucide="external-link" class="w-4 h-4 text-blue-500"></i>
-            <span>Tingnan sa Bagong Tab</span>
-          </button>
-        </div>
-
-        <!-- Utility Actions: Copy Summary & Print Form -->
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <!-- Copy Lead Summary -->
-          <button type="button" onclick="copyLeadSummary()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 transition">
-            <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-500"></i>
-            <span>Kopyahin ang Buod</span>
-          </button>
-
-          <!-- Print Form -->
-          <button type="button" onclick="printForm()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700 transition">
-            <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-400"></i>
-            <span>I-print Form</span>
-          </button>
-        </div>
+        <!-- Clean Chat JC Now CTA (Auto-Saved to Drive) -->
+        <a href="https://m.me/DecaHomeUrda" target="_blank" class="w-full px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition">
+          <i data-lucide="message-circle" class="w-4 h-4 text-amber-300"></i>
+          <span>I-chat ang Page (@DecaHomeUrda) — Naka-save na ang White Form mo!</span>
+        </a>
 
         <!-- Endorsement & Referral Strip -->
         <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300 flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -2226,6 +2197,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
     }
 
     function getWhiteFormPayload(options = {}) {
+      const fbName = (document.getElementById('fbName') ? document.getElementById('fbName').value.trim() : '');
       const surname = (document.getElementById('surname').value.trim() || 'BUYER').toUpperCase();
       const firstName = (document.getElementById('firstName').value.trim() || '').toUpperCase();
       const middleName = (document.getElementById('middleName').value.trim() || '').toUpperCase();
@@ -2293,6 +2265,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         action: 'saveWhiteForm',
         timestamp: new Date().toISOString(),
         backupSource: options.source || 'manual',
+        fbName: fbName,
         surname: surname,
         firstName: firstName,
         middleName: middleName,
@@ -2904,7 +2877,7 @@ Kung nais mong mag-pre-qualify o kumuha ng libreng White Form, i-message mo si S
         banner.classList.add('ring-4', 'ring-amber-500');
         setTimeout(() => banner.classList.remove('ring-4', 'ring-amber-500'), 2500);
       }
-      alert('📱 PAALALA SA MESSENGER USER:\n\nHindi pinapayagan ng Messenger in-app browser ang direct background download ng files.\n\n👉 Para ma-save sa gallery:\nPindutin nang matagal (Long-Press / Hold) ang larawan sa preview at i-tap ang "Save Image" o "I-save ang Larawan"!');
+      showToast('📱 Naka-save na sa system ni JC! I-long press ang larawan kung gusto ng kopya sa gallery.');
     }
 
     function sendToMessengerWithAutoSave(destinationUrl) {
